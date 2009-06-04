@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analytics", "Analytics\Analytics.csproj", "{C14A2844-C1EF-406E-A83A-7F058567BFA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Addin_Excel2007", "Addin_Excel2007\Addin_Excel2007.csproj", "{CA49FD05-7063-4676-95E2-08A77B2646B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "WPFUIv2\UI.csproj", "{DF756E88-B3BE-486C-8820-8FE81C175180}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D187DA83-207E-4D9C-8D4F-E04C13630DB7}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Documents and Settings\fredrik.johansson\Skrivbord\MIT License.txt = ..\..\Documents and Settings\fredrik.johansson\Skrivbord\MIT License.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C14A2844-C1EF-406E-A83A-7F058567BFA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C14A2844-C1EF-406E-A83A-7F058567BFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C14A2844-C1EF-406E-A83A-7F058567BFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C14A2844-C1EF-406E-A83A-7F058567BFA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA49FD05-7063-4676-95E2-08A77B2646B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA49FD05-7063-4676-95E2-08A77B2646B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA49FD05-7063-4676-95E2-08A77B2646B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA49FD05-7063-4676-95E2-08A77B2646B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF756E88-B3BE-486C-8820-8FE81C175180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF756E88-B3BE-486C-8820-8FE81C175180}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF756E88-B3BE-486C-8820-8FE81C175180}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF756E88-B3BE-486C-8820-8FE81C175180}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = .
+	EndGlobalSection
+EndGlobal

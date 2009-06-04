@@ -1,0 +1,47 @@
+﻿<Metrics>
+  <Category name="Visitor" type="M1">
+    <Metric name="bounces" value="ga:bounces"/>
+    <Metric name="entrances" value="ga:entrances"/>
+    <Metric name="exits" value="ga:exits"/>
+    <Metric name="new visits" value="ga:newVisits"/>
+    <Metric name="pageviews" value="ga:pageviews"/>
+    <Metric name="time on page" value="ga:timeOnPage"/>
+    <Metric name="time on site" value="ga:timeOnSite"/>
+    <Metric name="visitors" value="ga:visitors"/>
+    <Metric name="visits" value="ga:visits"/>
+  </Category>
+  <Category name="Campaign" type="M2">
+    <Metric name="ad clicks" value="ga:adClicks"/>
+    <Metric name="ad cost" value="ga:adCost"/>
+    <Metric name="CPC" value="ga:CPC"/>
+    <Metric name="CPM" value="ga:CPM"/>
+    <Metric name="CTR" value="ga:CTR"/>
+    <Metric name="impressions" value="ga:impressions"/>
+  </Category>
+  <Category name="Content" type="M3">
+    <Metric name="unique page views" value="ga:uniquePageviews"/>
+  </Category>
+  <Category name="Ecommerce" type="M4">
+    <Metric name="item revenue" value="ga:itemRevenue"/>
+    <Metric name="item quantity" value="ga:itemQuantity"/>
+    <Metric name="transaction revenue" value="ga:transactionRevenue"/>
+    <Metric name="transactions" value="ga:transactions"/>
+    <Metric name="transaction shipping" value="ga:transactionShipping"/>
+    <Metric name="trasnsaction tax" value="ga:transactionTax"/>
+    <Metric name="unique purchases" value="ga:uniquePurchases"/>
+  </Category>
+
+  <Category name="Internal Search" type="M5">
+    <Metric name="search depth" value="ga:searchDepth"/>
+    <Metric name="search duration" value="ga:searchDuration"/>
+    <Metric name="search exits" value="ga:searchExits"/>
+    <Metric name="search refinements" value="ga:searchRefinements"/>
+    <Metric name="search uniques" value="ga:searchUniques"/>
+    <Metric name="search visits" value="ga:searchVisits"/>
+  </Category>
+  <Category name="Goals" type="M6">
+    <Metric name="goal completions all" value="ga:goalCompletionsAll"/>
+    <Metric name="goal starts all" value="ga:goalStartsAll"/>
+    <Metric name="goal value all" value="ga:goalValueAll"/>
+  </Category>
+</Metrics>

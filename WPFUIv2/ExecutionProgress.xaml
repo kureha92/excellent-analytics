@@ -1,0 +1,11 @@
+﻿<Window x:Class="UI.ExecutionProgress"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="ExecutionProgress" SizeToContent="WidthAndHeight" WindowStyle="None" AllowsTransparency="True" BorderThickness="0" BorderBrush="Transparent" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" ResizeMode="NoResize"> 
+        <Border Padding="5" BorderBrush="LightBlue" BorderThickness="1" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" CanVerticallyScroll="False" CanHorizontallyScroll="False">
+                <Label Height="30" Content="Retrieving data..." />
+                <Image Height="32" Width="32" Source="Resources\ajax-loader.gif"  />
+            </StackPanel>
+        </Border>
+</Window>

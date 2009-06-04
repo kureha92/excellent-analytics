@@ -1,0 +1,163 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net;
+using System.IO;
+using System.Xml.Linq;
+using System.Xml;
+
+namespace Analytics.Authorization
+{
+    public class AccountManager
+    {
+        public delegate void AuthProgress( int progress , string progressMessage);
+        public event AuthProgress authProgress;
+
+        private void NotifySubscribers(int progress , string progressMessage)
+        {
+            if (authProgress != null)
+            {
+                this.authProgress(progress, progressMessage);
+            }        
+        }
+
+
+        public UserAccount GetAccountData(string eMail , string authToken)
+        {
+            UserAccount uAcc = new UserAccount(authToken , eMail);
+            UTF8Encoding encoding = new UTF8Encoding();
+            WebRequest request = HttpWebRequest.Create(Data.General.GA_RequestURIs.Default.AccountFeed + eMail);
+            request.Method = "GET";
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentLength = 0;
+            request.Headers.Add("Authorization: GoogleLogin auth=" + uAcc.AuthToken);
+
+            HttpWebResponse response = null;
+
+            XDocument xDoc = null;
+            try
+            {
+                using (response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response != null && response.StatusCode == HttpStatusCode.OK)
+                    {
+                        xDoc = XDocument.Load(new StreamReader(response.GetResponseStream()));
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw webEx;
+            }
+            finally 
+            {
+                uAcc.Entrys = ExtractDataFromXml(xDoc);
+            }
+          
+            return uAcc;
+        }
+
+        private List<Entry> ExtractDataFromXml(XDocument xDoc)
+        {
+            List<Entry> entrys = new List<Entry>();
+            XNamespace dxp = "http://schemas.google.com/analytics/2009";
+            XNamespace atom = "http://www.w3.org/2005/Atom";
+
+            string webPropertyId = "ga:webPropertyId";
+            string profileID = "ga:profileId";
+            string accountName = "ga:accountName";
+            string accountId = "ga:accountId";
+
+            string name = "name";
+            string value = "value";
+            XName title = atom + "title";
+            XName link = atom + "link";
+            XName updated = atom + "updated";
+
+            XName entryElementName = atom + "entry";
+            XName propertyElementName = dxp + "property";
+
+            IEnumerable<XElement> entryElements = xDoc.Root.Elements(entryElementName);
+
+            foreach (XElement entryEmelent in entryElements)
+            {
+                Entry entry = new Entry();
+                entry.Title = entryEmelent.Element(title).Value;
+                entry.AccountLink = entryEmelent.Element(link).Value;
+                entry.LastUpdated = entryEmelent.Element(updated).Value;
+
+                foreach (XElement propEle in entryEmelent.Elements(propertyElementName))
+                {
+                    if (propEle.Attribute(name).Value == profileID)
+                    {
+                        entry.ProfileId = "ga:" + propEle.Attribute(value).Value;
+                    }
+                    if (propEle.Attribute(name).Value == webPropertyId)
+                    {
+                        entry.WebPropertyId = propEle.Attribute(value).Value;
+                    }
+                    if (propEle.Attribute(name).Value == accountId)
+                    {
+                        entry.AccountId = propEle.Attribute(value).Value;
+                    }
+                    if (propEle.Attribute(name).Value == accountName)
+                    {
+                        entry.AccountName = propEle.Attribute(value).Value;
+                    }
+                }
+                entrys.Add(entry);
+            }
+            return entrys;
+        }
+
+
+        public string Authenticate(string email, string password , out HttpStatusCode responseCode)
+        {
+            string uri = "https://www.google.com/accounts/ClientLogin";
+            WebRequest request = HttpWebRequest.Create(uri);
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded";
+            UTF8Encoding encoding = new UTF8Encoding();
+            string service = "analytics";
+            string source = "DropIT-GA_Addin-0.01";
+            string requestContent = "accountType=GOOGLE&Email=" + email + "&Passwd=" + password + "&service=" + service + "&source=" + source;
+            request.ContentLength = encoding.GetByteCount(requestContent);
+
+
+            NotifySubscribers(10, "begin auth");
+
+            HttpWebResponse response = null;
+            try
+            {
+                using (Stream reqStm = request.GetRequestStream())
+                {
+                    reqStm.Write(encoding.GetBytes(requestContent), 0,
+                                 encoding.GetByteCount(requestContent));
+                    NotifySubscribers(20, "send request");
+                }
+                using (response = (HttpWebResponse)request.GetResponse())
+                {
+                    if (response != null && response.StatusCode == HttpStatusCode.OK)
+                    {
+                        NotifySubscribers(60, "get response");
+                        StreamReader responseReader = new StreamReader(response.GetResponseStream());
+                        string responseContent = responseReader.ReadToEnd();
+                        string[] ids = responseContent.Split('\n');
+                        string authLine = (string)ids.First(id => id.StartsWith("Auth="));
+                        string authToken = authLine.Substring(authLine.LastIndexOf('=') + 1);
+                        responseCode = response.StatusCode;
+                        NotifySubscribers(100, "auth successful");
+                        return authToken;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                NotifySubscribers(60, "request failed" );
+            }
+            responseCode = response != null ? response.StatusCode : HttpStatusCode.Forbidden;
+            return null;
+        }
+    }
+}

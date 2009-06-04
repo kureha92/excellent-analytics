@@ -1,0 +1,68 @@
+﻿<Dimensions>
+  <Category name="Visitor" type="D1">
+    <Dimension name="browser" value="ga:browser" />
+    <Dimension name="browser version" value="ga:browserVersion" />
+    <Dimension name="connection speed" value="ga:connectionSpeed" />
+    <Dimension name="count of visits" value="ga:countOfVisits" />
+    <Dimension name="continent" value="ga:continent" />
+    <Dimension name="country" value="ga:country" />
+    <Dimension name="region" value="ga:region" />
+    <Dimension name="city" value="ga:city" />
+    <Dimension name="year" value="ga:year" />
+    <Dimension name="week" value="ga:week" />
+    <Dimension name="date" value="ga:date" />
+    <Dimension name="day" value="ga:day" />
+    <Dimension name="hour" value="ga:hour" />
+    <Dimension name="days since last visit" value="ga:daysSinceLastVisit" />
+    <Dimension name="flash version" value="ga:flashVersion" />
+    <Dimension name="hostname" value="ga:hostname" />
+    <Dimension name="java enabled" value="ga:javaEnabled" />
+    <Dimension name="language" value="ga:language" />
+    <Dimension name="latitude" value="ga:latitude" />
+    <Dimension name="longditude" value="ga:longitude" />
+    <Dimension name="month" value="ga:month" />
+    <Dimension name="network domain" value="ga:networkDomain" />
+    <Dimension name="network location" value="ga:networkLocation" />
+    <Dimension name="page depth" value="ga:pageDepth" />
+    <Dimension name="operating system" value="ga:operatingSystem" />
+    <Dimension name="operating system version" value="ga:operatingSystemVersion" />
+    <Dimension name="screen colors" value="ga:screenColors" />
+    <Dimension name="screen resolution" value="ga:screenResolution" />
+    <Dimension name="subcontinent" value="ga:subContinent" />
+    <Dimension name="user defined value" value="ga:userDefinedValue" />
+    <Dimension name="visitor type" value="ga:visitorType" />
+  </Category>
+  <Category name="Campaign" type="D2">
+    <Dimension name="ad content" value="ga:adContent" />
+    <Dimension name="ad group" value="ga:adGroup" />
+    <Dimension name="ad slot" value="ga:adSlot" />
+    <Dimension name="ad slot position" value="ga:adSlotPosition" />
+    <Dimension name="campaing" value="ga:campaign" />
+    <Dimension name="keyword" value="ga:keyword" />
+    <Dimension name="medium" value="ga:medium" />
+    <Dimension name="referral path" value="ga:referralPath" />
+    <Dimension name="source" value="ga:source" />
+  </Category>
+  <Category name="Content" type="D3">
+    <Dimension name="exit page path" value="ga:exitPagePath" />
+    <Dimension name="landing page path" value="ga:landingPagePath" />
+    <Dimension name="page path" value="ga:pagePath" />
+    <Dimension name="page title" value="ga:pageTitle" />
+  </Category>
+  <Category name="Ecommerce" type="D4">
+    <Dimension name="affiliation" value="ga:affiliation" />
+    <Dimension name="days to transaction" value="ga:daysToTransaction" />
+    <Dimension name="product category" value="ga:productCategory" />
+    <Dimension name="product name" value="ga:productName" />
+    <Dimension name="product sku" value="ga:productSku" />
+    <Dimension name="transaction id" value="ga:transactionId" />
+  </Category>
+  <Category name="Internal Search" type="D5">
+    <Dimension name="search category" value="ga:searchCategory" />
+    <Dimension name="search destination page" value="ga:searchDestinationPage" />
+    <Dimension name="search keyword" value="ga:searchKeyword" />
+    <Dimension name="search keyword refinement" value="ga:searchKeywordRefinement" />
+    <Dimension name="search start page" value="ga:searchStartPage" />
+    <Dimension name="search used" value="ga:searchUsed" />
+  </Category>
+</Dimensions>

@@ -1,0 +1,8 @@
+﻿<Operators>
+  <Operator operator="==" description="Exact match" urlEncoded="%3D%3D" />
+  <Operator operator="!=" description="Does not match" urlEncoded="!%3D" />
+  <Operator operator="=~" description="Contains a match for the regular expression" urlEncoded="%3D~" />
+  <Operator operator="!~" description="Does not match regular expression" urlEncoded="!~" />
+  <Operator operator="=@" description="Contains substring" urlEncoded="%3D@" />
+  <Operator operator="!@" description="Does not contain substring" urlEncoded="!@" />
+</Operators>
