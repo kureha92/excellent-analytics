@@ -306,8 +306,8 @@ namespace Analytics.Data
                 LogicalOperator lOp;
                 switch (logicalOp)
                 {
-                    case ',':   lOp = LogicalOperator.And; break;
-                    case ';':   lOp = LogicalOperator.Or; break;
+                    case ';':   lOp = LogicalOperator.And; break;
+                    case ',':   lOp = LogicalOperator.Or; break;
                     default:    lOp = LogicalOperator.None; break;
                 }
                 SizeKeyType sizeType;

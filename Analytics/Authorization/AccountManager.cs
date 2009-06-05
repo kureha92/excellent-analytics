@@ -108,7 +108,7 @@ namespace Analytics.Authorization
                 }
                 entrys.Add(entry);
             }
-            return entrys;
+            return entrys.OrderBy(p => p.Title).ToList<Entry>();
         }
 
 
@@ -120,7 +120,7 @@ namespace Analytics.Authorization
             request.ContentType = "application/x-www-form-urlencoded";
             UTF8Encoding encoding = new UTF8Encoding();
             string service = "analytics";
-            string source = "DropIT-GA_Addin-0.01";
+            string source = "Drop IT AB-Excellent Analytics-0.01";
             string requestContent = "accountType=GOOGLE&Email=" + email + "&Passwd=" + password + "&service=" + service + "&source=" + source;
             request.ContentLength = encoding.GetByteCount(requestContent);
 
@@ -128,6 +128,7 @@ namespace Analytics.Authorization
             NotifySubscribers(10, "begin auth");
 
             HttpWebResponse response = null;
+            HttpStatusCode errorCode = HttpStatusCode.Forbidden;
             try
             {
                 using (Stream reqStm = request.GetRequestStream())
@@ -152,11 +153,15 @@ namespace Analytics.Authorization
                     }
                 }
             }
-            catch (Exception)
+            catch (WebException ex)
             {
-                NotifySubscribers(60, "request failed" );
+                if (ex.Status == WebExceptionStatus.NameResolutionFailure)
+                {
+                    errorCode = HttpStatusCode.NotFound;
+                }
+                NotifySubscribers(60, "request failed: " + ex.Status.ToString());
             }
-            responseCode = response != null ? response.StatusCode : HttpStatusCode.Forbidden;
+            responseCode = response != null ? response.StatusCode : errorCode;
             return null;
         }
     }

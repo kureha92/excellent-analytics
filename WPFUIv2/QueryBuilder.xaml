@@ -9,7 +9,7 @@
     xmlns:data="clr-namespace:Analytics.Data;assembly=Analytics"
     SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow" AllowsTransparency="False"   
     WindowStartupLocation="CenterScreen" ShowInTaskbar="True" ResizeMode="CanMinimize"  
-        Title="QueryBuilder"  Background="LightGray" 
+        Title="Excellent Analytics"  Background="LightGray" 
         MouseEnter="Window_MouseEnter"
     >
     
@@ -108,7 +108,7 @@
                 <Button Width="100" HorizontalContentAlignment="Center" Click="Expand" Content="Metrics" />
             </Expander.Header>
         </Expander>
-    <Expander Panel.ZIndex="1"  Canvas.Left="311" Canvas.Top="217" Collapsed="FilterExpander_Collapsed" Cursor="Hand"  x:Name="FilterExpander" Expanded="FilterExpander_Expanded" ExpandDirection="Down" IsExpanded="False" Height="24.277" Width="127">
+    <Expander Panel.ZIndex="1"  Canvas.Left="311" Canvas.Top="217" Collapsed="FilterExpander_Collapsed" Cursor="Hand"  x:Name="FilterExpander" Expanded="FilterExpander_Expanded" ExpandDirection="Down" IsExpanded="False" >
         <Canvas Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-297,5,0,0" Width="539.946" Height="263.75">
             <Label Content="Operator" Canvas.Left="176" Canvas.Top="46"  Width="52" />
             <ComboBox ItemTemplate="{StaticResource comboOperatorTemplate}" x:Name="comboBoxOperator" Width="134" Canvas.Left="180" Canvas.Top="64.408" Height="21.109" />
@@ -132,7 +132,7 @@
     <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="311" ItemTemplate="{StaticResource defaultString}" Canvas.Top="238.539" BorderBrush="Transparent" Height="227.693" x:Name="activeFilters" Width="249" />
     
     <Button FontWeight="Bold" MouseEnter="ExecuteButton_MouseEnter" MouseLeave="ExecuteButton_MouseLeave" x:Name="ExecuteButton" Height="24" Click="ExecuteButton_Click" Content="Execute"  Width="60"
-    Canvas.Left="510" Canvas.Top="524"/>
+    Canvas.Left="503" Canvas.Top="524"/>
     <Button x:Name="CancelButton" Height="24" Click="CancelButton_Click" Content="Cancel" Width="60"
     Canvas.Left="413" Canvas.Top="524"/>
         <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="280" Canvas.Top="424" ErrorMessage="" Visibility="Collapsed" />

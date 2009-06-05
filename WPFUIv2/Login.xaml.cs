@@ -50,10 +50,13 @@ namespace UI
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Authenticate();
+        }
+
+        private void Authenticate()
+        {
             if (this.activeUser == null)
             {
-                progressLabel.Visibility = Visibility.Visible;
-
                 string email = textBEmail.Text;
                 string password = textBPassword.Password;
                 AccountManager accMan = new AccountManager();
@@ -61,10 +64,16 @@ namespace UI
 
                 HttpStatusCode status;
                 string authToken = accMan.Authenticate(email, password, out status);
-                if (!String.IsNullOrEmpty(authToken) && authSuccessful != null)
+                if (!String.IsNullOrEmpty(authToken) && status == HttpStatusCode.OK && authSuccessful != null)
                 {
                     this.Close();
                     authSuccessful(authToken, email);
+                }
+                else
+                {
+                    mainNotify.Visibility = Visibility.Visible;
+                    mainNotify.ErrorMessage = status == HttpStatusCode.Forbidden ? "Invalid password / username" :
+                    status == HttpStatusCode.NotFound ? "A connection could not be established" : "Error: " + status.ToString();
                 }
             }
             else
@@ -83,17 +92,21 @@ namespace UI
 
         void accMan_authProgress(int progress, string progressMessage)
         {
-            progressLabel.Content = progressMessage;
-        }
-
-        private void textBPassword_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-
+             mainNotify.ErrorMessage = progressMessage;
         }
 
         private void buttonCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void Canvas_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                VisualStateManager.GoToState(buttonLogin, "Pressed", true);
+                Authenticate();
+            }
         }
     }
 }

@@ -76,8 +76,8 @@ namespace Analytics.Data
 
         public override string ToString()
         {
-            return LOperator == LogicalOperator.And ? "," : LOperator == LogicalOperator.Or ? ";" : string.Empty
-            + Value + Operator.URIEncoded + Expression;
+            return (LOperator == LogicalOperator.And ? ";" : LOperator == LogicalOperator.Or ? "," : string.Empty)
+            + Value + Operator.URIEncoded + Expression.Trim().Replace(" ", "%20").Replace(",", "\\,").Replace(";", "\\;").Replace("\\", @"\\,");
         }
 
         public string ToSimplifiedString()

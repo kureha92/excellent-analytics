@@ -389,7 +389,7 @@ namespace UI
 
             expandPropertyHeight = new DoubleAnimation(0.0, 264.0, new Duration(TimeSpan.FromSeconds(0.2)));
             expandPropertyHeight.DecelerationRatio = 0.9;
-            expandPropertyWidth = new DoubleAnimation(0.0, 550, new Duration(TimeSpan.FromSeconds(0.2)));
+            expandPropertyWidth = new DoubleAnimation(0.0, 547, new Duration(TimeSpan.FromSeconds(0.2)));
             expandPropertyWidth.DecelerationRatio = 0.9;
         }
 
@@ -400,7 +400,7 @@ namespace UI
 
         private void SetCalendars()
         {
-            DateTime startDate = DateTime.Now.AddMonths(-6);
+            DateTime startDate = DateTime.Now.AddDays(-7);
             DateTime endDate = DateTime.Now;
 
             if (this.query != null && !String.IsNullOrEmpty(query.StartDate) && !String.IsNullOrEmpty(query.EndDate))
