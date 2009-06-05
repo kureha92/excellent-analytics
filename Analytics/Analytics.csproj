@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Analytics.cd" />
     <None Include="Data\General\GA_RequestURIs.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>GA_RequestURIs.Designer.cs</LastGenOutput>

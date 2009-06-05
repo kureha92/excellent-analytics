@@ -13,8 +13,6 @@ namespace Analytics.Data
                           
         }
 
-        public enum asdf { ett = 0, tva = 1 };
-
         public override string ToString()
         {
             StringBuilder filterBuilder = new StringBuilder();
