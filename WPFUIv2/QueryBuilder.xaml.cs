@@ -20,6 +20,8 @@ using Analytics.Authorization;
 using System.Windows.Interop;
 using Analytics.Data.Enums;
 
+using UI;
+
 namespace UI
 {
     /// <summary>
@@ -200,8 +202,8 @@ namespace UI
             string errorMsg;
             if (ValidateForm(out errorMsg))
             {
-                this.query.StartDate = (startDateCalendar.SelectedDate as Nullable<DateTime>).Value.ToShortDateString();
-                this.query.EndDate = (endDateCalendar.SelectedDate as Nullable<DateTime>).Value.ToShortDateString();
+                this.query.StartDate = ToUnifiedCultureFormat((startDateCalendar.SelectedDate as Nullable<DateTime>).Value);
+                this.query.EndDate = ToUnifiedCultureFormat((endDateCalendar.SelectedDate as Nullable<DateTime>).Value);
 
                 this.query.Ids.Clear();
                 this.query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId);
@@ -462,7 +464,11 @@ namespace UI
             }
             return true;
         }
-        
+
+        public string ToUnifiedCultureFormat(DateTime date)
+        {
+            return date.Year + "-" + date.Month + "-" + date.Date;
+        }
         #endregion
    }
 }
