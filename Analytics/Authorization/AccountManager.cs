@@ -27,7 +27,7 @@ namespace Analytics.Authorization
         {
             UserAccount uAcc = new UserAccount(authToken , eMail);
             UTF8Encoding encoding = new UTF8Encoding();
-            WebRequest request = HttpWebRequest.Create(Data.General.GA_RequestURIs.Default.AccountFeed + eMail);
+            WebRequest request = HttpWebRequest.Create(Data.General.GA_RequestURIs.Default.AccountFeed + "default");
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = 0;
@@ -52,7 +52,14 @@ namespace Analytics.Authorization
             }
             finally 
             {
-                uAcc.Entrys = ExtractDataFromXml(xDoc);
+                if (xDoc != null)
+                {
+                    uAcc.Entrys = ExtractDataFromXml(xDoc); 
+                }
+                else
+                {
+                    NotifySubscribers(0 , "Connection failure" );
+                }
             }
           
             return uAcc;
