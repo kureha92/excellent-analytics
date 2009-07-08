@@ -32,11 +32,11 @@
     <SignManifests>true</SignManifests>
     <IsWebBootstrapper>False</IsWebBootstrapper>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>C:\Documents and Settings\fredrik.johansson\Skrivbord\Excellent Analytics\</PublishUrl>
+    <PublishUrl>C:\Users\fredrik.johansson.DROPIT\Desktop\Excellent Analytics\</PublishUrl>
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.36</ApplicationVersion>
+    <ApplicationVersion>1.0.0.37</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>false</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>

@@ -467,7 +467,9 @@ namespace UI
 
         public string ToUnifiedCultureFormat(DateTime date)
         {
-            return date.Year + "-" + date.Month + "-" + date.Date;
+            return date.Year + "-" + 
+            (date.Month < 10 ? ("0" + date.Month) : date.Month.ToString() )
+            + "-" + (date.Day < 10 ? ("0" + date.Day) : date.Day.ToString());
         }
         #endregion
    }
