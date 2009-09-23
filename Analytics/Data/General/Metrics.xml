@@ -44,4 +44,9 @@
     <Metric name="goal starts all" value="ga:goalStartsAll"/>
     <Metric name="goal value all" value="ga:goalValueAll"/>
   </Category>
+  <Category name="Events" type="M7">
+    <Metric name="total events" value="ga:totalEvents"/>
+    <Metric name="unique events" value="ga:uniqueEvents"/>
+    <Metric name="event value" value="ga:eventValue"/>
+  </Category>
 </Metrics>

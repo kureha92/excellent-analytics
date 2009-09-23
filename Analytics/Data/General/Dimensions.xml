@@ -65,4 +65,9 @@
     <Dimension name="search start page" value="ga:searchStartPage" />
     <Dimension name="search used" value="ga:searchUsed" />
   </Category>
+  <Category name="Events" type="D7">
+    <Dimension name="event category" value="ga:eventCategory" />
+    <Dimension name="event action" value="ga:eventAction" />
+    <Dimension name="event label" value="ga:eventLabel" />
+  </Category>
 </Dimensions>
