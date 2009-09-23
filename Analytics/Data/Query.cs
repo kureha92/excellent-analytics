@@ -174,7 +174,7 @@ namespace Analytics.Data
 
         public Query()
         {
-            _maxResults = 1000;
+            _maxResults = 10000;
             _startIndex = 0;
         }
 
@@ -249,6 +249,7 @@ namespace Analytics.Data
             }
         }
 
+        #region Methods
         public override string ToString()
         {
             string queryBaseUri = General.GA_RequestURIs.Default.ReportFeed;
@@ -256,8 +257,8 @@ namespace Analytics.Data
             queryBuilder.Append(queryBaseUri);
             queryBuilder.Append(Ids.Count > 0 ? "?ids=" + string.Join(",", Ids.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Dimensions.Count > 0 ? "&dimensions=" + string.Join(",", Dimensions.Values.ToArray()) : string.Empty);
-            queryBuilder.Append(Metrics.Count > 0 ? "&metrics=" + string.Join(",", Metrics.Values.ToArray()): string.Empty);
-            queryBuilder.Append(SortParams.Count > 0 ? "&sort=" + string.Join(",", SortParams.Values.ToArray()): string.Empty);
+            queryBuilder.Append(Metrics.Count > 0 ? "&metrics=" + string.Join(",", Metrics.Values.ToArray()) : string.Empty);
+            queryBuilder.Append(SortParams.Count > 0 ? "&sort=" + string.Join(",", SortParams.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Filter.ToString());
             queryBuilder.Append(!String.IsNullOrEmpty(StartDate) ? "&start-date=" + StartDate : string.Empty);
             queryBuilder.Append(!String.IsNullOrEmpty(EndDate) ? "&end-date=" + EndDate : string.Empty);
@@ -306,9 +307,9 @@ namespace Analytics.Data
                 LogicalOperator lOp;
                 switch (logicalOp)
                 {
-                    case ';':   lOp = LogicalOperator.And; break;
-                    case ',':   lOp = LogicalOperator.Or; break;
-                    default:    lOp = LogicalOperator.None; break;
+                    case ';': lOp = LogicalOperator.And; break;
+                    case ',': lOp = LogicalOperator.Or; break;
+                    default: lOp = LogicalOperator.None; break;
                 }
                 SizeKeyType sizeType;
                 return (new FilterItem(GetFriendlySizeName(size, out sizeType), size, paramOperator, expression, sizeType, lOp));
@@ -345,13 +346,13 @@ namespace Analytics.Data
         {
             if (metricOperators.Values.Contains(urlEncodedOperator))
             {
-                KeyValuePair<string,string> op = metricOperators.First(p => p.Value == urlEncodedOperator);
-                return new SizeOperator(op.Key, op.Value); 
+                KeyValuePair<string, string> op = metricOperators.First(p => p.Value == urlEncodedOperator);
+                return new SizeOperator(op.Key, op.Value);
             }
             if (dimensionOperators.Values.Contains(urlEncodedOperator))
             {
                 KeyValuePair<string, string> op = dimensionOperators.First(p => p.Value == urlEncodedOperator);
-                return new SizeOperator(op.Key, op.Value); 
+                return new SizeOperator(op.Key, op.Value);
             }
             return null;
         }
@@ -395,10 +396,11 @@ namespace Analytics.Data
         public static XDocument GetSizeCollectionAsXML(SizeKeyType feedObjectType)
         {
             XDocument xDocument = XDocument.Load(System.Xml.XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General." +
-            (feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics")  + ".xml")));
+            (feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics") + ".xml")));
             //XDocument.Load(System.AppDomain.CurrentDomain.BaseDirectory + @"\Resources\" +
             //(feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics") + ".xml");
             return xDocument;
-        }
+        } 
+        #endregion
     }
 }

@@ -27,7 +27,7 @@ namespace GA_Excel2007
         Login login;
         ExecutionProgress exProg;
         QueryBuilder qb;
-
+        Thread executeAsync;
         #endregion
 
         public GA_Ribbon()
@@ -93,13 +93,17 @@ namespace GA_Excel2007
 
         private void ExecuteQuery(Query query)
         {
-            Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
+            
             ReportManager repMan = new ReportManager();
             exProg = new ExecutionProgress(repMan);
             exProg.Show();
 
+
             Report report = repMan.GetReport(query, user.AuthToken);
-            if (currentApp.ActiveSheet != null && report != null && report.Data != null 
+
+            Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
+
+            if (currentApp.ActiveSheet != null && report != null && report.Data != null
                 && report.Data.GetLength(0) > 0 && report.Data.GetLength(1) > 0)
             {
                 Worksheet activeSheet = currentApp.ActiveSheet as Worksheet;
@@ -129,15 +133,16 @@ namespace GA_Excel2007
             }
             else
             {
-                if (report == null )
-	            {
-            		LaunchQueryBuilder(query , "Invalid query. The request was rejected");
-	            }
+                if (report == null)
+                {
+                    LaunchQueryBuilder(query, "Invalid query. The request was rejected");
+                }
                 else if (report != null && report.Data != null && report.Data.GetLength(0) < 1)
-	            {
+                {
                     LaunchQueryBuilder(query, "The request returned 0 hits");
-	            }
-            }
+                }
+            }    
+            
         }
 
         private void InitLogin()

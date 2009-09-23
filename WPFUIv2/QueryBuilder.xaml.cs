@@ -49,6 +49,13 @@ namespace UI
         SizeKeyType activeSize; 
         #endregion
 
+        private List<CheckBox> TimeSpanBoxesColl
+        {
+            get {
+                return new CheckBox[] { yearCheckBox, monthCheckBox, weekCheckBox, quarterCheckBox }.Where(p => p != null).ToList<CheckBox>();
+            }
+        }
+
         public QueryBuilder(UserAccount uAcc, Query query)
         {
             InitializeComponent();
@@ -202,8 +209,20 @@ namespace UI
             string errorMsg;
             if (ValidateForm(out errorMsg))
             {
-                this.query.StartDate = ToUnifiedCultureFormat((startDateCalendar.SelectedDate as Nullable<DateTime>).Value);
-                this.query.EndDate = ToUnifiedCultureFormat((endDateCalendar.SelectedDate as Nullable<DateTime>).Value);
+                CheckBox timeBox = TimeSpanBoxesColl.First(p => p.IsChecked == true);
+                if (timeBox == null)
+                {
+                    this.query.StartDate = ToUnifiedCultureFormat((startDateCalendar.SelectedDate as Nullable<DateTime>).Value);
+                    this.query.EndDate = ToUnifiedCultureFormat((endDateCalendar.SelectedDate as Nullable<DateTime>).Value); 
+                }
+                else
+                {
+                    this.query.StartDate = ToUnifiedCultureFormat( DateTime.Now.AddDays(double.Parse(timeBox.Tag.ToString()) * -1) );
+                    this.query.EndDate = ToUnifiedCultureFormat(DateTime.Now);
+                }
+
+                this.query.StartIndex = int.Parse(startIndexTextBox.Text);
+                this.query.MaxResults = int.Parse(maxResultsTextBox.Text);
 
                 this.query.Ids.Clear();
                 this.query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId);
@@ -276,7 +295,7 @@ namespace UI
 
         #endregion
 
-        #region Helpers
+        #region Methods
 
         private void AddFilter(SizeKeyType size)
         {
@@ -365,7 +384,10 @@ namespace UI
             hasInvokedMetSetCheck = false;
 
             Binding sites = new Binding();
-            sites.Source = CurrentUser.Entrys;
+            if (CurrentUser != null)
+            {
+                sites.Source = CurrentUser.Entrys;
+            } 
             comboBoxSites.SetBinding(ComboBox.ItemsSourceProperty, sites);
 
             if (this.query.Ids.Count > 0)
@@ -378,9 +400,11 @@ namespace UI
                 else
                 {
                     // Notification: Current user has not permissions for the target profile of the original query.
+                    MainNotify.Visibility = Visibility.Visible;
+                    MainNotify.ErrorMessage = "Your account lacks permission on the target profile";
                 }
             }
-            else
+            else if(CurrentUser != null)
             {
                 comboBoxSites.SelectedIndex = CurrentUser.Entrys.Count > 0 ? 0 : -1;
             }
@@ -393,6 +417,16 @@ namespace UI
             expandPropertyHeight.DecelerationRatio = 0.9;
             expandPropertyWidth = new DoubleAnimation(0.0, 547, new Duration(TimeSpan.FromSeconds(0.2)));
             expandPropertyWidth.DecelerationRatio = 0.9;
+
+            startIndexTextBox.Text = query.StartIndex.ToString();
+            maxResultsTextBox.Text = query.MaxResults.ToString();
+        }
+
+        void Timespan_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox sendCheck = sender as CheckBox;
+            foreach (CheckBox  itBox in TimeSpanBoxesColl)
+                itBox.IsChecked = (itBox.Name == sendCheck.Name);
         }
 
         void DimensionsView_treeDatabound()
@@ -472,5 +506,14 @@ namespace UI
             + "-" + (date.Day < 10 ? ("0" + date.Day) : date.Day.ToString());
         }
         #endregion
+
+        private void validate_int(object sender, TextChangedEventArgs e)
+        {
+            int i;
+            if (! int.TryParse((sender as TextBox).Text , out i))
+            {
+                (sender as TextBox).Text = string.Empty;
+            }
+        }
    }
 }
