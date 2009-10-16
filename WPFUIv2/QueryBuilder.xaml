@@ -16,7 +16,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="/PresentationFramework.Royale;V3.0.0.0;31bf3856ad364e35;component\themes\royale.normalcolor.xaml" />-->
+               <ResourceDictionary Source="/PresentationFramework.Royale;V3.0.0.0;31bf3856ad364e35;component\themes\royale.normalcolor.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
             <DataTemplate x:Key="listbTemplate">
@@ -102,7 +102,7 @@
             <Button Width="100" HorizontalContentAlignment="Center" Click="Expand" Content="Metrics" />
         </Expander.Header>
     </Expander>
-    <Expander Cursor="Hand" Panel.ZIndex="1"  Canvas.Left="314" Canvas.Top="259" Collapsed="FilterExpander_Collapsed"   x:Name="FilterExpander" Expanded="FilterExpander_Expanded" ExpandDirection="Down" IsExpanded="False" Height="26" Width="127">
+    <Expander Cursor="Hand" Panel.ZIndex="1"  Canvas.Left="314" Canvas.Top="259" Collapsed="FilterExpander_Collapsed"   x:Name="FilterExpander" Expanded="FilterExpander_Expanded" ExpandDirection="Down" IsExpanded="False" >
         <Canvas Cursor="Arrow" Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-295,5,0,0" Width="510" Height="263.75">
             <Label Content="Operator" Canvas.Left="175.073" Canvas.Top="44" Height="25.96" Width="57.927" />
             <ComboBox ItemTemplate="{StaticResource comboOperatorTemplate}" x:Name="comboBoxOperator" Width="134" Canvas.Left="180" Canvas.Top="67.92" Height="21" />

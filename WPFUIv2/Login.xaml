@@ -11,26 +11,26 @@
         </ResourceDictionary>
     </Window.Resources>
     <Canvas Height="203" KeyDown="Canvas_KeyDown" FocusManager.FocusedElement="{Binding ElementName=textBEmail}">
-        <Label Foreground="Black"  Content="Email:" Height="23" Width="40"
+        <Label Foreground="Black"  Content="Email:" Height="23" 
             Canvas.Left="30" Canvas.Top="98"  />
         
-        <TextBox x:Name="textBEmail"  Width="174" TabIndex="0" Height="19" 
+        <TextBox x:Name="textBEmail"  Width="174" TabIndex="0" 
             Canvas.Left="96" Canvas.Top="98" />
         
         <Label Foreground="Black"  Content="Password:" Height="23" Canvas.Left="11" 
-            Canvas.Top="123" Width="60" />
+            Canvas.Top="123"  />
         
-        <PasswordBox x:Name="textBPassword"  Width="174" PasswordChar="●" TabIndex="1" IsTabStop="True" Height="19" 
+        <PasswordBox x:Name="textBPassword"  Width="174" PasswordChar="●" TabIndex="1" IsTabStop="True" 
         Canvas.Left="96" Canvas.Top="123" />
         
-        <Button Focusable="True" Height="25" x:Name="buttonLogin"  Content="Login"  Width="50"  HorizontalAlignment="Left" Click="Button_Click" TabIndex="3"
+        <Button Focusable="True"  x:Name="buttonLogin"  Content="Login"  Width="50"  HorizontalAlignment="Left" Click="Button_Click" TabIndex="3"
             Canvas.Left="220" Canvas.Top="160"/>
         
-        <Button Height="25" x:Name="buttonCancel"  Content="Cancel"  Width="50"  HorizontalAlignment="Right" Click="buttonCancel_Click" TabIndex="4"  
+        <Button  x:Name="buttonCancel"  Content="Cancel"  Width="50"  HorizontalAlignment="Right" Click="buttonCancel_Click" TabIndex="4"  
             Canvas.Left="147" Canvas.Top="161" />
         
-        <Custom:NotifyError Visibility="Collapsed" x:Name="mainNotify" Width="258" Canvas.Left="12" Canvas.Top="46" Height="44" />
+        <Custom:NotifyError Visibility="Collapsed" x:Name="mainNotify" Canvas.Left="12" Canvas.Top="46" Height="44" />
         
-        <Label Canvas.Left="11" Canvas.Top="12" Height="28" Name="label1" Width="259" FontSize="15">Sign in to Google Analytics</Label>
+        <Label Canvas.Left="11" Canvas.Top="12"  Name="label1"  FontSize="15">Sign in to Google Analytics</Label>
     </Canvas>
 </Window>
