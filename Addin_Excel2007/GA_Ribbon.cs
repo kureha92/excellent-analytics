@@ -27,7 +27,8 @@ namespace GA_Excel2007
         Login login;
         ExecutionProgress exProg;
         QueryBuilder qb;
-        Thread executeAsync;
+        Report report;
+        ReportManager repMan;
         #endregion
 
         public GA_Ribbon()
@@ -83,7 +84,7 @@ namespace GA_Excel2007
 
         #endregion
 
-        #region Helpers
+        #region Methods
 
         private bool ActiveCellUpdatable()
         {
@@ -93,22 +94,37 @@ namespace GA_Excel2007
 
         private void ExecuteQuery(Query query)
         {
-            
-            ReportManager repMan = new ReportManager();
+            repMan = new ReportManager();
             exProg = new ExecutionProgress(repMan);
             exProg.Show();
+            report = repMan.GetReport(query, user.AuthToken);
 
-
-            Report report = repMan.GetReport(query, user.AuthToken);
-
-            Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
-
-            if (currentApp.ActiveSheet != null && report != null && report.Data != null
+            if (report != null && report.Data != null
                 && report.Data.GetLength(0) > 0 && report.Data.GetLength(1) > 0)
             {
-                Worksheet activeSheet = currentApp.ActiveSheet as Worksheet;
+                PresentResult(query, report);
+            }
+            else
+            {
+                if (report == null)
+                {
+                    LaunchQueryBuilder(query, "Invalid query. The request was rejected");
+                }
+                else if (report != null && report.Data != null && report.Data.GetLength(0) < 1)
+                {
+                    LaunchQueryBuilder(query, "The request returned 0 hits");
+                }
+            }    
+           
+        }
 
+        private static void PresentResult(Query query, Report report)
+        {
+            Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
+            Worksheet activeSheet = currentApp.ActiveSheet as Worksheet;
 
+            if (currentApp.ActiveSheet != null)
+            {
                 int activeColumn = currentApp.ActiveCell.Column;
                 int activeRow = currentApp.ActiveCell.Row;
 
@@ -129,20 +145,8 @@ namespace GA_Excel2007
 
                 Range dataRange = currentApp.get_Range(activeSheet.Cells[activeRow + infoRows + 1, activeColumn],
                 activeSheet.Cells[activeRow + infoRows + report.Data.GetLength(0), activeColumn + report.Data.GetLength(1) - 1]);
-                dataRange.Value2 = report.Data;
+                dataRange.Value2 = report.Data; 
             }
-            else
-            {
-                if (report == null)
-                {
-                    LaunchQueryBuilder(query, "Invalid query. The request was rejected");
-                }
-                else if (report != null && report.Data != null && report.Data.GetLength(0) < 1)
-                {
-                    LaunchQueryBuilder(query, "The request returned 0 hits");
-                }
-            }    
-            
         }
 
         private void InitLogin()

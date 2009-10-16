@@ -30,11 +30,11 @@ namespace UI
     public partial class QueryBuilder : Window
     {
         #region Fields
-        DoubleAnimation expandPropertyHeight;
-        DoubleAnimation expandPropertyWidth;
-        
-        Query query;
-        UserAccount CurrentUser;
+        DoubleAnimation _animatePropertyHeight;
+        DoubleAnimation _animatePropertyWidth;
+
+        Query _query;
+        UserAccount _currentUser;
 
         public delegate void QueryComplete(Query query);
         public event QueryComplete queryComplete;
@@ -49,18 +49,48 @@ namespace UI
         SizeKeyType activeSize; 
         #endregion
 
-        private List<CheckBox> TimeSpanBoxesColl
+        #region Properties
+
+        public UserAccount CurrentUser
         {
-            get {
-                return new CheckBox[] { yearCheckBox, monthCheckBox, weekCheckBox, quarterCheckBox }.Where(p => p != null).ToList<CheckBox>();
+            get { return _currentUser; }
+            set { _currentUser = value; }
+        }
+
+        private List<RadioButton> TimeSpanBoxesColl
+        {
+            get
+            {
+                return new RadioButton[] { dateSpecificCheckBox, yearCheckBox, monthCheckBox, weekCheckBox, quarterCheckBox }.Where(p => p != null).ToList<RadioButton>();
             }
         }
+
+        private DoubleAnimation AnimatePropertyHeight
+        {
+            get
+            {
+                return _animatePropertyHeight != null ? _animatePropertyHeight :
+                new DoubleAnimation(0.0, 267.0, new Duration(TimeSpan.FromSeconds(0.2))) { DecelerationRatio = 0.2 };
+            }
+            set { _animatePropertyHeight = value; }
+        }
+
+        private DoubleAnimation AnimatePropertyWidth
+        {
+            get
+            {
+                return _animatePropertyWidth != null ? _animatePropertyWidth :
+                new DoubleAnimation(0.0, 550.0, new Duration(TimeSpan.FromSeconds(0.2))) { DecelerationRatio = 0.9 };
+            }
+            set { _animatePropertyWidth = value; }
+        } 
+        #endregion
 
         public QueryBuilder(UserAccount uAcc, Query query)
         {
             InitializeComponent();
-            this.query = query != null ? query : new Query();
-            CurrentUser = uAcc;
+            this._query = query != null ? query : new Query();
+            _currentUser = uAcc;
             InitializeForm();
         }
 
@@ -77,6 +107,30 @@ namespace UI
             base.OnClosed(e);
         }
 
+        void Timespan_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton sendCheck = sender as RadioButton;
+            foreach (RadioButton itBox in TimeSpanBoxesColl)
+            {
+                if (itBox.Name == sendCheck.Name)
+                {
+                    itBox.IsChecked = true;
+                    RetractQueryStartDate(int.Parse(itBox.Tag.ToString()));
+                }
+                else
+                    itBox.IsChecked = false;
+            }
+        }
+
+        private void RetractQueryStartDate(int days)
+        {
+            if (startDateCalendar != null)
+            {
+                startDateCalendar.SelectedDate = DateTime.Now.AddDays(days * -1);
+                startDateCalendar.DisplayDate = DateTime.Now.AddDays(days * -1); 
+            }
+        }
+
         private void Expand(object sender, RoutedEventArgs e)
         {
             Button callButton = sender as Button;
@@ -91,14 +145,14 @@ namespace UI
             MetricsExpander.IsExpanded = false;
             FilterExpander.IsExpanded = false;
             DimensionsView.Visibility = Visibility.Visible;
-            DimensionsView.BeginAnimation(TreeView.WidthProperty, expandPropertyWidth);
-            DimensionsView.BeginAnimation(TreeView.HeightProperty, expandPropertyHeight); 
+            DimensionsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
+            DimensionsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight); 
         }
 
         private void DimensionsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            query.Dimensions.Clear();
-            query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
+            _query.Dimensions.Clear();
+            _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
             BindSizeList(ListType.Dim);
         }
 
@@ -108,14 +162,14 @@ namespace UI
             FilterExpander.IsExpanded = false;
 
             MetricsView.Visibility = Visibility.Visible;
-            MetricsView.BeginAnimation(TreeView.WidthProperty, expandPropertyWidth);
-            MetricsView.BeginAnimation(TreeView.HeightProperty, expandPropertyHeight);
+            MetricsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
+            MetricsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight);
         }
 
         private void MetricsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            query.Metrics.Clear();
-            query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
+            _query.Metrics.Clear();
+            _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
             BindSizeList(ListType.Met);
         }
 
@@ -129,15 +183,15 @@ namespace UI
             MetricsExpander.IsExpanded = false;
             DimensionsExpander.IsExpanded = false;
 
-            FilterCanvas.BeginAnimation(Grid.WidthProperty, expandPropertyWidth);
-            FilterCanvas.BeginAnimation(Grid.HeightProperty, expandPropertyHeight);
+            FilterCanvas.BeginAnimation(Canvas.WidthProperty, AnimatePropertyWidth);
+            FilterCanvas.BeginAnimation(Canvas.HeightProperty, AnimatePropertyHeight);
 
             BindFilterListBox();
 
             Binding dimBinding = new Binding();
-            dimBinding.Source = query.Dimensions;
+            dimBinding.Source = _query.Dimensions;
             Binding metBinding = new Binding();
-            metBinding.Source = query.Metrics;
+            metBinding.Source = _query.Metrics;
             comboBoxDimensions.SetBinding(ComboBox.ItemsSourceProperty, dimBinding);
             comboBoxMetrics.SetBinding(ComboBox.ItemsSourceProperty, metBinding);
         }
@@ -151,8 +205,8 @@ namespace UI
         {
             if (comboBoxSites.SelectedItem != null)
             {
-                this.query.Ids.Clear();
-                this.query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId); 
+                this._query.Ids.Clear();
+                this._query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId); 
             }
         }
 
@@ -199,7 +253,7 @@ namespace UI
         {
             if (filterBox.SelectedIndex != -1)
             {
-                query.Filter.RemoveAt(filterBox.SelectedIndex);
+                _query.Filter.RemoveAt(filterBox.SelectedIndex);
                 BindFilterListBox();
             }
         }
@@ -209,36 +263,36 @@ namespace UI
             string errorMsg;
             if (ValidateForm(out errorMsg))
             {
-                CheckBox timeBox = TimeSpanBoxesColl.First(p => p.IsChecked == true);
+                RadioButton timeBox = TimeSpanBoxesColl.First(p => p.IsChecked == true);
                 if (timeBox == null)
                 {
-                    this.query.StartDate = ToUnifiedCultureFormat((startDateCalendar.SelectedDate as Nullable<DateTime>).Value);
-                    this.query.EndDate = ToUnifiedCultureFormat((endDateCalendar.SelectedDate as Nullable<DateTime>).Value); 
+                    _query.StartDate = ToUnifiedCultureFormat((startDateCalendar.SelectedDate as Nullable<DateTime>).Value);
+                    _query.EndDate = ToUnifiedCultureFormat((endDateCalendar.SelectedDate as Nullable<DateTime>).Value); 
                 }
                 else
                 {
-                    this.query.StartDate = ToUnifiedCultureFormat( DateTime.Now.AddDays(double.Parse(timeBox.Tag.ToString()) * -1) );
-                    this.query.EndDate = ToUnifiedCultureFormat(DateTime.Now);
+                    _query.StartDate = ToUnifiedCultureFormat( DateTime.Now.AddDays(double.Parse(timeBox.Tag.ToString()) * -1) );
+                    _query.EndDate = ToUnifiedCultureFormat(DateTime.Now);
                 }
 
-                this.query.StartIndex = int.Parse(startIndexTextBox.Text);
-                this.query.MaxResults = int.Parse(maxResultsTextBox.Text);
+                _query.StartIndex = int.Parse(startIndexTextBox.Text);
+                _query.MaxResults = int.Parse(maxResultsTextBox.Text);
 
-                this.query.Ids.Clear();
-                this.query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId);
+                _query.Ids.Clear();
+                _query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId);
                 
                 this.Close();
-                queryComplete(this.query);
+                queryComplete(_query);
             }
         }
 
         private void ExecuteButton_MouseEnter(object sender, MouseEventArgs e)
         {
-            query.Metrics.Clear();
-            query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
+            _query.Metrics.Clear();
+            _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
 
-            query.Dimensions.Clear();
-            query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
+            _query.Dimensions.Clear();
+            _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
 
             string errorMsg;
             if (ValidateForm(out errorMsg))
@@ -273,7 +327,7 @@ namespace UI
                 filterBox.SelectedItem = (cBox.Parent as StackPanel).DataContext;
                 if (filterBox.SelectedItem != null)
                 {
-                    this.query.Filter[filterBox.SelectedIndex].LOperator =
+                    this._query.Filter[filterBox.SelectedIndex].LOperator =
                     cBox.SelectedIndex == 0 ? LogicalOperator.And : LogicalOperator.Or;
                 }
             }
@@ -281,21 +335,67 @@ namespace UI
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (!hasInvokedDimSetCheck && query.Metrics.Count > 0)
+            if (!hasInvokedDimSetCheck && _query.Metrics.Count > 0)
             {
-                SetCheckedItems(query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
+                SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
                 hasInvokedDimSetCheck = true;
             }
-            if (!hasInvokedMetSetCheck && query.Dimensions.Count > 0)
+            if (!hasInvokedMetSetCheck && _query.Dimensions.Count > 0)
             {
-                SetCheckedItems(query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
+                SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
                 hasInvokedMetSetCheck = true;
             }
         }
 
+        void DimensionsView_treeDatabound()
+        {
+            SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
+        }
         #endregion
 
         #region Methods
+
+        private void InitializeForm()
+        {
+            BindSizeList(ListType.Dim);
+            BindSizeList(ListType.Met);
+            BindSizeList(ListType.Fil);
+
+            hasInvokedDimSetCheck = false;
+            hasInvokedMetSetCheck = false;
+
+            Binding sites = new Binding();
+            if (CurrentUser != null)
+            {
+                sites.Source = CurrentUser.Entrys;
+            }
+            comboBoxSites.SetBinding(ComboBox.ItemsSourceProperty, sites);
+
+            if (this._query.Ids.Count > 0)
+            {
+                string pId = this._query.Ids.First().Value;
+                if (_currentUser.Entrys.Find(p => p.ProfileId == pId) != null)
+                {
+                    comboBoxSites.SelectedValue = _currentUser.Entrys.Find(p => p.ProfileId == pId);
+                }
+                else
+                {
+                    MainNotify.Visibility = Visibility.Visible;
+                    MainNotify.ErrorMessage = "Your account lacks permission on the target profile";
+                }
+            }
+            else if (_currentUser != null)
+            {
+                comboBoxSites.SelectedIndex = _currentUser.Entrys.Count > 0 ? 0 : -1;
+            }
+
+            SetCalendars();
+
+            activeSize = SizeKeyType.Dimension;
+
+            startIndexTextBox.Text = _query.StartIndex.ToString();
+            maxResultsTextBox.Text = _query.MaxResults.ToString();
+        }
 
         private void AddFilter(SizeKeyType size)
         {
@@ -306,9 +406,9 @@ namespace UI
                 KeyValuePair<string, string> selectedOperator = (comboBoxOperator.SelectedItem as Nullable<KeyValuePair<string, string>>).Value;
                 FilterItem fItem = new FilterItem(item.Key, item.Value,
                          new SizeOperator(selectedOperator.Key, selectedOperator.Value), textBoxExpression.Text,
-                         (SizeKeyType)size, query.Filter.Count == 0 ?
+                         (SizeKeyType)size, _query.Filter.Count == 0 ?
                          LogicalOperator.None : LogicalOperator.And);
-                query.Filter.Add(fItem);
+                _query.Filter.Add(fItem);
                 BindFilterListBox();
             }
         }
@@ -317,7 +417,7 @@ namespace UI
         {
             Filter f = new Filter();
             Binding filterBinding = new Binding();
-            foreach (FilterItem item in query.Filter)
+            foreach (FilterItem item in _query.Filter)
             {
                 f.Add(item);
             }
@@ -335,15 +435,15 @@ namespace UI
             switch (type)
             {
                 case ListType.Dim:
-                    binding.Source = query.Dimensions;
+                    binding.Source = _query.Dimensions;
                     dimensionsSelected.SetBinding(ListBox.ItemsSourceProperty, binding);
                     break;
                 case ListType.Met:
-                    binding.Source = query.Metrics;
+                    binding.Source = _query.Metrics;
                     metricsSelected.SetBinding(ListBox.ItemsSourceProperty, binding);
                     break;
                 case ListType.Fil:
-                    binding.Source = query.Filter.ToSimplifiedList();
+                    binding.Source = _query.Filter.ToSimplifiedList();
                     activeFilters.SetBinding(ListBox.ItemsSourceProperty, binding);
                     break;
                 default:
@@ -374,75 +474,15 @@ namespace UI
             return checkedSizes;
         }
 
-        private void InitializeForm()
-        {
-            BindSizeList(ListType.Dim);
-            BindSizeList(ListType.Met);
-            BindSizeList(ListType.Fil);
-
-            hasInvokedDimSetCheck = false;
-            hasInvokedMetSetCheck = false;
-
-            Binding sites = new Binding();
-            if (CurrentUser != null)
-            {
-                sites.Source = CurrentUser.Entrys;
-            } 
-            comboBoxSites.SetBinding(ComboBox.ItemsSourceProperty, sites);
-
-            if (this.query.Ids.Count > 0)
-            {
-                string pId = this.query.Ids.First().Value;
-                if (CurrentUser.Entrys.Find( p => p.ProfileId == pId) != null )
-	            {
-                    comboBoxSites.SelectedValue = CurrentUser.Entrys.Find(p => p.ProfileId == pId);
-	            }
-                else
-                {
-                    // Notification: Current user has not permissions for the target profile of the original query.
-                    MainNotify.Visibility = Visibility.Visible;
-                    MainNotify.ErrorMessage = "Your account lacks permission on the target profile";
-                }
-            }
-            else if(CurrentUser != null)
-            {
-                comboBoxSites.SelectedIndex = CurrentUser.Entrys.Count > 0 ? 0 : -1;
-            }
-            SetCalendars();
-            activeSize = SizeKeyType.Dimension;
-
-            double leftMargin = (double)DimensionsExpander.GetValue(Canvas.LeftProperty);
-
-            expandPropertyHeight = new DoubleAnimation(0.0, 264.0, new Duration(TimeSpan.FromSeconds(0.2)));
-            expandPropertyHeight.DecelerationRatio = 0.9;
-            expandPropertyWidth = new DoubleAnimation(0.0, 547, new Duration(TimeSpan.FromSeconds(0.2)));
-            expandPropertyWidth.DecelerationRatio = 0.9;
-
-            startIndexTextBox.Text = query.StartIndex.ToString();
-            maxResultsTextBox.Text = query.MaxResults.ToString();
-        }
-
-        void Timespan_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox sendCheck = sender as CheckBox;
-            foreach (CheckBox  itBox in TimeSpanBoxesColl)
-                itBox.IsChecked = (itBox.Name == sendCheck.Name);
-        }
-
-        void DimensionsView_treeDatabound()
-        {
-            SetCheckedItems(query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
-        }
-
+        
         private void SetCalendars()
         {
             DateTime startDate = DateTime.Now.AddDays(-7);
             DateTime endDate = DateTime.Now;
-
-            if (this.query != null && !String.IsNullOrEmpty(query.StartDate) && !String.IsNullOrEmpty(query.EndDate))
+            if (this._query != null && !String.IsNullOrEmpty(_query.StartDate) && !String.IsNullOrEmpty(_query.EndDate))
             {
-                DateTime.TryParse(query.StartDate, out startDate);
-                DateTime.TryParse(query.EndDate, out endDate);
+                DateTime.TryParse(_query.StartDate, out startDate);
+                DateTime.TryParse(_query.EndDate, out endDate);
             }
             startDateCalendar.SelectedDate = startDate;
             startDateCalendar.DisplayDate = startDate;
@@ -477,24 +517,19 @@ namespace UI
                 errorMsg = "The start date can not be later than the end date";
                 return false;
             }
-            if (!(query.Dimensions.Count > 0))
-            {
-                errorMsg = "Select atleast one dimension";
-                return false;
-            }
-            if (!(query.Metrics.Count > 0))
+            if (!(_query.Metrics.Count > 0))
             {
                 errorMsg = "Select atleast one metric";
                 return false;
             }
 
-            if (query.Dimensions.Count > maxSupportedDimensions)
+            if (_query.Dimensions.Count > maxSupportedDimensions)
             {
-                query.Dimensions = query.Dimensions.Take(maxSupportedDimensions).ToDictionary(k => k.Key, v => v.Value);
+                _query.Dimensions = _query.Dimensions.Take(maxSupportedDimensions).ToDictionary(k => k.Key, v => v.Value);
             }
-            if (query.Metrics.Count > maxSupportedMetrics)
+            if (_query.Metrics.Count > maxSupportedMetrics)
             {
-                query.Metrics = query.Metrics.Take(maxSupportedMetrics).ToDictionary(k => k.Key, v => v.Value);
+                _query.Metrics = _query.Metrics.Take(maxSupportedMetrics).ToDictionary(k => k.Key, v => v.Value);
             }
             return true;
         }

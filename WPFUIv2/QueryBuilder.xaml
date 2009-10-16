@@ -16,7 +16,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/PresentationFramework.Royale;V3.0.0.0;31bf3856ad364e35;component\themes\royale.normalcolor.xaml" />
+                <!--<ResourceDictionary Source="/PresentationFramework.Royale;V3.0.0.0;31bf3856ad364e35;component\themes\royale.normalcolor.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
             
             <DataTemplate x:Key="listbTemplate">
@@ -81,74 +81,73 @@
     
     <Canvas x:Name="MainCanvas" Height="566" Width="578">
         
-    <Label Content="Profile:" Canvas.Left="37" Canvas.Top="15.547" Height="28.453" Name="label6" Width="45"/>
-    <ComboBox  SelectionChanged="comboBoxSites_SelectionChanged" ItemsSource="{Binding}" Canvas.Left="88" Canvas.Top="18" Height="20" Name="comboBoxSites" Width="157" >
+    <Label Content="Profile:" Canvas.Left="14" Canvas.Top="10" Height="28.453" Name="label6" Width="45"/>
+    <ComboBox  SelectionChanged="comboBoxSites_SelectionChanged" ItemsSource="{Binding}" Canvas.Left="66" Canvas.Top="10" Height="23" Name="comboBoxSites" Width="157" >
         <ComboBox.ItemTemplate>
             <DataTemplate>
                 <ContentPresenter Content="{Binding Title}" Tag="{Binding ProfileId}" />
             </DataTemplate>                    
         </ComboBox.ItemTemplate>
     </ComboBox>
-        <Expander Canvas.Left="15" Canvas.Top="217" Panel.ZIndex="1"  Margin="0" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Expanded="DimensionsExpander_Expanded" >
-    <Custom:CustomTreeView Cursor="Arrow" Panel.ZIndex="1" Margin="0,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView"  />
+        <Expander Canvas.Left="18" Canvas.Top="259" Panel.ZIndex="1"  Margin="0" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Expanded="DimensionsExpander_Expanded" >
+            <Custom:CustomTreeView Cursor="Arrow" Panel.ZIndex="1" Margin="0,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView"  />
         <Expander.Header>
             <Button Width="100" HorizontalContentAlignment="Center" Click="Expand" Content="Dimension" />
         </Expander.Header>
     </Expander>
         
-    <Expander Panel.ZIndex="1" Padding="0" Canvas.Left="162" Canvas.Top="217"  Cursor="Hand"   ExpandDirection="Down" Collapsed="MetricsExpander_Collapsed"   x:Name="MetricsExpander" IsExpanded="False" Expanded="MetricsExpander_Expanded" Grid.IsSharedSizeScope="False" OverridesDefaultStyle="False" >
+    <Expander Panel.ZIndex="1" Padding="0" Canvas.Left="165" Canvas.Top="259"  Cursor="Hand"   ExpandDirection="Down" Collapsed="MetricsExpander_Collapsed"   x:Name="MetricsExpander" IsExpanded="False" Expanded="MetricsExpander_Expanded" Grid.IsSharedSizeScope="False" OverridesDefaultStyle="False" >
         <Custom:CustomTreeView Margin="-147,5,0,0" Cursor="Arrow"  Panel.ZIndex="1"  ItemsDataType="Metric" x:Name="MetricsView" />
-            <Expander.Header>
-                <Button Width="100" HorizontalContentAlignment="Center" Click="Expand" Content="Metrics" />
-            </Expander.Header>
-        </Expander>
-    <Expander Panel.ZIndex="1"  Canvas.Left="311" Canvas.Top="217" Collapsed="FilterExpander_Collapsed" Cursor="Hand"  x:Name="FilterExpander" Expanded="FilterExpander_Expanded" ExpandDirection="Down" IsExpanded="False" >
-        <Canvas Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-297,5,0,0" Width="539.946" Height="263.75">
-            <Label Content="Operator" Canvas.Left="176" Canvas.Top="46"  Width="52" />
-            <ComboBox ItemTemplate="{StaticResource comboOperatorTemplate}" x:Name="comboBoxOperator" Width="134" Canvas.Left="180" Canvas.Top="64.408" Height="21.109" />
-            <Label Content="Expression" Canvas.Left="332" Canvas.Top="44"  Width="62" />
+        <Expander.Header>
+            <Button Width="100" HorizontalContentAlignment="Center" Click="Expand" Content="Metrics" />
+        </Expander.Header>
+    </Expander>
+    <Expander Cursor="Hand" Panel.ZIndex="1"  Canvas.Left="314" Canvas.Top="259" Collapsed="FilterExpander_Collapsed"   x:Name="FilterExpander" Expanded="FilterExpander_Expanded" ExpandDirection="Down" IsExpanded="False" Height="26" Width="127">
+        <Canvas Cursor="Arrow" Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-295,5,0,0" Width="510" Height="263.75">
+            <Label Content="Operator" Canvas.Left="175.073" Canvas.Top="44" Height="25.96" Width="57.927" />
+            <ComboBox ItemTemplate="{StaticResource comboOperatorTemplate}" x:Name="comboBoxOperator" Width="134" Canvas.Left="180" Canvas.Top="67.92" Height="21" />
+            <Label Content="Expression" Canvas.Left="332" Canvas.Top="44"  />
             <TextBox Focusable="True" x:Name="textBoxExpression" Width="156" Canvas.Left="336" Canvas.Top="67" />    
             <Button x:Name="addFilter" Click="addFilter_Click" Canvas.Left="431" Canvas.Top="112" Content="Add" Height="26" Width="60" />
             <Button x:Name="removeFilter" Click="removeFilter_Click" Canvas.Left="335" Canvas.Top="113" Content="Remove" Height="26" Width="60" />
-            <ListBox ItemTemplate="{StaticResource filterChooserTemplate}" x:Name="filterBox" Canvas.Left="60" Canvas.Top="151" BorderBrush="Black" Width="431" Height="91" BorderThickness="1"/>
-            <ComboBox DropDownOpened="comboBoxMetrics_DropDownOpened" SelectionChanged="comboBoxMetrics_SelectionChanged" ItemTemplate="{StaticResource combSizeTemplate}" Canvas.Left="60" Canvas.Top="91.072"  x:Name="comboBoxMetrics" Width="98" Height="21.109" />
-            <ComboBox DropDownOpened="comboBoxDimensions_DropDownOpened" SelectionChanged="comboBoxDimensions_SelectionChanged" ItemTemplate="{StaticResource combSizeTemplate}" Canvas.Left="60" Canvas.Top="28.957"  x:Name="comboBoxDimensions" Width="98" Height="21.277" />
-            <Label Canvas.Left="54" Content="Dimensions" Canvas.Top="10"  Name="label1"  Width="65" />
-            <Label Canvas.Left="55" Content="Metrics" Canvas.Top="73"  Name="label4" Width="45"  />
+            <ListBox ItemTemplate="{StaticResource filterChooserTemplate}" x:Name="filterBox" Canvas.Left="60" Canvas.Top="151"  Width="431" Height="91" BorderThickness="1"/>
+            <ComboBox DropDownOpened="comboBoxMetrics_DropDownOpened" SelectionChanged="comboBoxMetrics_SelectionChanged" ItemTemplate="{StaticResource combSizeTemplate}" Canvas.Left="60" Canvas.Top="92"  x:Name="comboBoxMetrics" Width="98" Height="21" />
+            <ComboBox DropDownOpened="comboBoxDimensions_DropDownOpened" SelectionChanged="comboBoxDimensions_SelectionChanged" ItemTemplate="{StaticResource combSizeTemplate}" Canvas.Left="60" Canvas.Top="31"  x:Name="comboBoxDimensions" Width="98" Height="21" />
+            <Label Canvas.Left="54" Content="Dimensions" Canvas.Top="9"  Name="label1" Height="26" />
+            <Label Canvas.Left="55" Content="Metrics" Canvas.Top="71"  Name="label4" Height="26" />
         </Canvas>
             <Expander.Header>
                 <Button Width="100" HorizontalContentAlignment="Center" Click="Expand" Content="Filters" />
             </Expander.Header>
         </Expander>
  
-    <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="15" Canvas.Top="236.232" BorderBrush="Transparent" Height="230" x:Name="dimensionsSelected" Width="130" />
-    <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="162" Canvas.Top="237.75" BorderBrush="Transparent" Height="230" x:Name="metricsSelected" Width="130" />
-    <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="311" ItemTemplate="{StaticResource defaultString}" Canvas.Top="238.539" BorderBrush="Transparent" Height="227.693" x:Name="activeFilters" Width="249" />
+    <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="18" Canvas.Top="278" BorderBrush="Transparent" Height="211" x:Name="dimensionsSelected" Width="130" />
+    <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="165" Canvas.Top="280" BorderBrush="Transparent" Height="209" x:Name="metricsSelected" Width="130" />
+    <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="314" ItemTemplate="{StaticResource defaultString}" Canvas.Top="281" BorderBrush="Transparent" Height="208" x:Name="activeFilters" Width="249" />
     
-    <Button FontWeight="Bold" MouseEnter="ExecuteButton_MouseEnter" MouseLeave="ExecuteButton_MouseLeave" x:Name="ExecuteButton" Height="24" Click="ExecuteButton_Click" Content="Execute"  Width="60"
+    <Button FontWeight="Bold" MouseEnter="ExecuteButton_MouseEnter" MouseLeave="ExecuteButton_MouseLeave" x:Name="ExecuteButton" Height="23" Click="ExecuteButton_Click" Content="Execute"  Width="60"
     Canvas.Left="503" Canvas.Top="524"/>
-    <Button x:Name="CancelButton" Height="24" Click="CancelButton_Click" Content="Cancel" Width="60"
+    <Button x:Name="CancelButton" Height="23" Click="CancelButton_Click" Content="Cancel" Width="60"
     Canvas.Left="413" Canvas.Top="524"/>
-    <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="280" Canvas.Top="424" ErrorMessage="" Visibility="Collapsed" />
-    <TextBox Canvas.Left="88" TextChanged="validate_int" Canvas.Top="67" Height="23" Name="startIndexTextBox" Width="81">0</TextBox>
-    <Label Canvas.Left="12" Canvas.Top="62" Height="28" Name="label2" Width="70">Start index</Label>
-    <TextBox TextChanged="validate_int" Canvas.Left="88" Canvas.Top="96" Height="23" Name="maxResultsTextBox" Width="81">10000</TextBox>
-    <Label Canvas.Left="12" Canvas.Top="96" Height="28" Name="label3" Width="70">Max results</Label>
-    <Label Canvas.Left="296" Canvas.Top="14" Height="28" Name="label5" Width="120">Timespan:</Label>
-    <CheckBox Canvas.Left="302" Canvas.Top="65" Tag="7" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</CheckBox>
-    <CheckBox Canvas.Left="302" Canvas.Top="91" Tag="30" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</CheckBox>
-    <CheckBox Canvas.Left="302" Canvas.Top="142" Tag="365" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</CheckBox>
-    <CheckBox Canvas.Left="302" Canvas.Top="117" Tag="120" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</CheckBox>
-    <Expander Panel.ZIndex="1000" Padding="0" Cursor="Hand" Name="calendarExpander" Canvas.Left="430" Canvas.Top="13"  >
-        <Canvas Margin="-250,0,0,0" Background="Gray">
-            <Label Content="Start date" Canvas.Left="-2" Canvas.Top="-2" Height="26" />
-            <toolkit:Calendar x:Name="startDateCalendar" Canvas.Left="0" Canvas.Top="19" Height="168" />
-            <Label Content="End date" Canvas.Left="197" Canvas.Top="-1" Height="26" />
-            <toolkit:Calendar x:Name="endDateCalendar" Canvas.Left="200" Canvas.Top="19" Height="168" />
-        </Canvas>
-        <Expander.Header>
-            <Button Width="100" HorizontalContentAlignment="Center" Click="Expand" Content="Date specific" />
-        </Expander.Header>
-    </Expander>
+    <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="190.2" Canvas.Top="321" ErrorMessage="" Visibility="Collapsed" Height="63" Width="243.8" />
+    <TextBox Canvas.Left="309" TextChanged="validate_int" Canvas.Top="10" Height="23" Name="startIndexTextBox" Width="81">0</TextBox>
+    <Label Canvas.Left="238" Canvas.Top="10" Height="28" Name="label2" Width="70">Start index</Label>
+    <TextBox TextChanged="validate_int" Canvas.Left="482" Canvas.Top="10" Height="23" Name="maxResultsTextBox" Width="81">10000</TextBox>
+    <Label Canvas.Left="406" Canvas.Top="10" Height="28" Name="label3" Width="70">Max results</Label>
+    <Label Canvas.Left="14" Canvas.Top="42" Height="28" Name="label5" Width="120">Timespan:</Label>
+        
+    <RadioButton Height="16" Tag="0" Checked="Timespan_Checked" Name="dateSpecificCheckBox" Width="120" Canvas.Left="20" Canvas.Top="180">Date  specific</RadioButton>
+    <RadioButton Canvas.Left="20" Canvas.Top="76.974" Tag="7" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
+    <RadioButton Canvas.Left="20" Canvas.Top="102.974" Tag="30" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
+    <RadioButton Canvas.Left="20" Canvas.Top="155" Tag="365" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
+    <RadioButton Canvas.Left="20" Canvas.Top="128.974" Tag="120" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
+        
+    <Canvas Name="datePickerCanvas" Panel.ZIndex="0" Margin="-250,0,0,0" Background="Gray"  Canvas.Left="434" Canvas.Top="42" Height="0" Width="250">
+        <Label Content="Start date" Canvas.Left="-2" Canvas.Top="-2" Height="26" />
+        <toolkit:Calendar SelectionMode="SingleDate" x:Name="startDateCalendar" Canvas.Left="0" Canvas.Top="19" Height="168" />
+        <Label Content="End date" Canvas.Left="197" Canvas.Top="-1" Height="26" />
+        <toolkit:Calendar SelectionMode="SingleDate" x:Name="endDateCalendar" Canvas.Left="200" Canvas.Top="19" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" VerticalAlignment="Top" />
+    </Canvas>
+        
     </Canvas>
 </Window>

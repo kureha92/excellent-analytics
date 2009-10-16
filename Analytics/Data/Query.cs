@@ -307,8 +307,8 @@ namespace Analytics.Data
             queryBuilder.Append(Filter.ToString());
             queryBuilder.Append(!String.IsNullOrEmpty(StartDate) ? "&start-date=" + StartDate : string.Empty);
             queryBuilder.Append(!String.IsNullOrEmpty(EndDate) ? "&end-date=" + EndDate : string.Empty);
-            queryBuilder.Append("&start-index=" + StartIndex);
-            queryBuilder.Append("&max-results=" + MaxResults);
+            queryBuilder.Append(StartIndex > 0 ? "&start-index=" + StartIndex : string.Empty);
+            queryBuilder.Append( "&max-results=" + MaxResults);
             return queryBuilder.ToString();
         }
 
