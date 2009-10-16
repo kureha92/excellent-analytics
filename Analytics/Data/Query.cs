@@ -184,68 +184,113 @@ namespace Analytics.Data
         /// <param name="queryString"></param>
         public Query(string queryString) : this()
         {
+            CreateFromQueryString(queryString);
+        }
+
+        private void CreateFromQueryString(string queryString)
+        {
             foreach (string queryParam in queryString.Split(new char[] { '?', '&' }))
             {
-                if (!queryParam.Contains('='))
-                    continue;
+                AddQueryParamToQuery(queryParam);
+            }
+        }
 
-                int startIndex = queryParam.IndexOf('=');
-                startIndex += startIndex < queryParam.Length ? 1 : 0;
+        private void AddQueryParamToQuery(string queryParam)
+        {
+            if (!queryParam.Contains('='))
+                return;
 
-                switch (queryParam.Substring(0, queryParam.IndexOf('=')))
+            int startIndex = queryParam.IndexOf('=');
+            startIndex += startIndex < queryParam.Length ? 1 : 0;
+
+            switch (queryParam.Substring(0, queryParam.IndexOf('=')))
+            {
+                case "ids": AddIds(queryParam, startIndex); break;
+                case "dimensions": AddDimensions(queryParam, startIndex); break;
+                case "metrics": AddMetrics(queryParam, startIndex); break;
+                case "filters": AddFilters(queryParam, startIndex); break;
+                case "sort": AddSortParams(queryParam, startIndex); break;
+                case "start-date": AddStartDate(queryParam, startIndex); break;
+                case "end-date": AddEndDate(queryParam, startIndex); break;
+                case "start-index": AddStartIndex(queryParam, startIndex); break;
+                case "max-results": AddMaxResults(queryParam, startIndex); break;
+                default: break;
+            }
+        }
+
+        private void AddMaxResults(string queryParam, int startIndex)
+        {
+            int.TryParse(queryParam.Substring(startIndex), out _maxResults);
+        }
+
+        private void AddStartIndex(string queryParam, int startIndex)
+        {
+            int.TryParse(queryParam.Substring(startIndex), out _startIndex);
+        }
+
+        private void AddEndDate(string queryParam, int startIndex)
+        {
+            DateTime endDate;
+            this.EndDate = DateTime.TryParse(queryParam.Substring(startIndex), out endDate) ? endDate.ToShortDateString() : null;
+        }
+
+        private void AddStartDate(string queryParam, int startIndex)
+        {
+            DateTime startDate;
+            this.StartDate = DateTime.TryParse(queryParam.Substring(startIndex), out startDate) ? startDate.ToShortDateString() : null;
+        }
+
+        private void AddSortParams(string queryParam, int startIndex)
+        {
+            foreach (string sortParam in queryParam.Substring(startIndex).Split(','))
+            {
+                SortParams.Add(GetFriendlySizeName(sortParam), sortParam);
+            }
+        }
+
+        private void AddIds(string queryParam, int startIndex)
+        {
+            Ids.Add(string.Empty, queryParam.Substring(startIndex));
+        }
+
+        private void AddFilters(string filterQueryParam, int startIndex)
+        {
+            List<char> separators = SeparatorsFromFilterQueryParam(filterQueryParam);
+            char placeFiller = '»';
+            separators.Insert(0, placeFiller);
+            string[] filters = filterQueryParam.Substring(startIndex).Split(new char[] { ',', ';' });
+            for (int i = 0; i < filters.Count(); i++)
+            {
+                FilterItem fItem = GetFilterItem(filters[i], separators[i]);
+                if (fItem != null)
                 {
-                    case "ids": Ids.Add(string.Empty ,queryParam.Substring(startIndex) );
-                        break;
-                    case "dimensions":
-                        foreach (string dimension in queryParam.Substring(startIndex).Split(','))
-                        {
-                            Dimensions.Add(GetFriendlySizeName(dimension), dimension);
-                        }
-                        break;
-                    case "metrics":
-                        foreach (string metric in queryParam.Substring(startIndex).Split(','))
-                        {
-                            Metrics.Add(GetFriendlySizeName(metric), metric);
-                        }
-                        break;
-                    case "filters":
-                        List<char> separators = (from char c in queryParam.ToCharArray()
-                                                where c.Equals(',') || c.Equals(';')
-                                                select c).ToList<char>();
-
-                        char dummy = '»';
-                        separators.Insert(0, dummy);
-                        string[] filters = queryParam.Substring(startIndex).Split(new char[] { ',', ';' });
-                        for (int i = 0; i < filters.Count(); i++)
-                        {
-                            FilterItem fItem = GetFilterItem(filters[i] , separators[i]);
-                            if (fItem != null)
-                            {
-                                Filter.Add(fItem);
-                            }
-                        }
-                        break;
-                    case "sort":
-                        foreach (string sortParam in queryParam.Substring(startIndex).Split(','))
-                        {
-                            SortParams.Add(GetFriendlySizeName(sortParam), sortParam);
-                        }
-                        break;
-                    case "start-date":
-                        DateTime startDate;
-                        this.StartDate = DateTime.TryParse(queryParam.Substring(startIndex), out startDate) ? startDate.ToShortDateString() : null;
-                        break;
-                    case "end-date":
-                        DateTime endDate;
-                        this.EndDate = DateTime.TryParse(queryParam.Substring(startIndex), out endDate) ? endDate.ToShortDateString() : null;
-                        break;
-                    case "start-index": int.TryParse(queryParam.Substring(startIndex), out _startIndex);
-                        break;
-                    case "max-results": int.TryParse(queryParam.Substring(startIndex), out _maxResults);
-                        break;
-                    default:
-                        break;
+                    Filter.Add(fItem);
                 }
+            }
+        }
+
+        private static List<char> SeparatorsFromFilterQueryParam(string queryParam)
+        {
+            List<char> separators = (from char c in queryParam.ToCharArray()
+                                     where c.Equals(',') || c.Equals(';')
+                                     select c).ToList<char>();
+          
+            return separators;
+        }
+
+        private void AddMetrics(string queryParam, int startIndex)
+        {
+            foreach (string metric in queryParam.Substring(startIndex).Split(','))
+            {
+                Metrics.Add(GetFriendlySizeName(metric), metric);
+            }
+        }
+
+        private void AddDimensions(string queryParam, int startIndex)
+        {
+            foreach (string dimension in queryParam.Substring(startIndex).Split(','))
+            {
+                Dimensions.Add(GetFriendlySizeName(dimension), dimension);
             }
         }
 
@@ -262,8 +307,8 @@ namespace Analytics.Data
             queryBuilder.Append(Filter.ToString());
             queryBuilder.Append(!String.IsNullOrEmpty(StartDate) ? "&start-date=" + StartDate : string.Empty);
             queryBuilder.Append(!String.IsNullOrEmpty(EndDate) ? "&end-date=" + EndDate : string.Empty);
-            queryBuilder.Append(StartIndex != 0 ? "&start-index=" + StartIndex : string.Empty);
-            queryBuilder.Append(MaxResults != 1000 ? "&max-results=" + MaxResults : string.Empty);
+            queryBuilder.Append("&start-index=" + StartIndex);
+            queryBuilder.Append("&max-results=" + MaxResults);
             return queryBuilder.ToString();
         }
 
@@ -279,26 +324,7 @@ namespace Analytics.Data
 
         private FilterItem GetFilterItem(string filter, char logicalOp)
         {
-            SizeOperator paramOperator = null;
-            foreach (KeyValuePair<string, string> item in MetricOperators)
-            {
-                if (filter.Contains(item.Value))
-                {
-                    paramOperator = new SizeOperator(item.Key, item.Value);
-                    break;
-                }
-            }
-            if (paramOperator == null)
-            {
-                foreach (KeyValuePair<string, string> item in DimensionOperators)
-                {
-                    if (filter.Contains(item.Value))
-                    {
-                        paramOperator = new SizeOperator(item.Key, item.Value);
-                        break;
-                    }
-                }
-            }
+            SizeOperator paramOperator = GetParamOperator(filter);
             if (paramOperator != null)
             {
                 string[] filterParts = filter.Replace(paramOperator.URIEncoded, "|").Split('|');
@@ -314,6 +340,17 @@ namespace Analytics.Data
                 SizeKeyType sizeType;
                 return (new FilterItem(GetFriendlySizeName(size, out sizeType), size, paramOperator, expression, sizeType, lOp));
             }
+            return null;
+        }
+
+        private SizeOperator GetParamOperator(string filter)
+        {
+            foreach (KeyValuePair<string, string> item in MetricOperators)
+                if (filter.Contains(item.Value))
+                    return new SizeOperator(item.Key, item.Value);
+            foreach (KeyValuePair<string, string> item in DimensionOperators)
+                if (filter.Contains(item.Value))
+                        return new SizeOperator(item.Key, item.Value);
             return null;
         }
 
