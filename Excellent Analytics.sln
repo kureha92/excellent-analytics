@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Addin_Excel2007", "Addin_Ex
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "WPFUIv2\UI.csproj", "{DF756E88-B3BE-486C-8820-8FE81C175180}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D187DA83-207E-4D9C-8D4F-E04C13630DB7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A793B218-6693-465F-98C3-5752260850BC}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Documents and Settings\fredrik.johansson\Skrivbord\MIT License.txt = ..\..\Documents and Settings\fredrik.johansson\Skrivbord\MIT License.txt
+		..\..\Users\fredrik.johansson.DROPIT\Desktop\License.txt = ..\..\Users\fredrik.johansson.DROPIT\Desktop\License.txt
 	EndProjectSection
 EndProject
 Global
