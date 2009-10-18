@@ -79,7 +79,7 @@
     
     </Window.Resources>
     
-    <Canvas x:Name="MainCanvas" Height="566" Width="578">
+    <Canvas x:Name="MainCanvas" Height="596" Width="578">
         
     <Label Content="Profile:" Canvas.Left="14" Canvas.Top="10" Height="28.453" Name="label6" Width="45"/>
     <ComboBox  SelectionChanged="comboBoxSites_SelectionChanged" ItemsSource="{Binding}" Canvas.Left="66" Canvas.Top="10" Height="23" Name="comboBoxSites" Width="157" >
@@ -126,18 +126,16 @@
     <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="314" ItemTemplate="{StaticResource defaultString}" Canvas.Top="281" BorderBrush="Transparent" Height="208" x:Name="activeFilters" Width="249" />
     
     <Button FontWeight="Bold" MouseEnter="ExecuteButton_MouseEnter" MouseLeave="ExecuteButton_MouseLeave" x:Name="ExecuteButton" Height="23" Click="ExecuteButton_Click" Content="Execute"  Width="60"
-    Canvas.Left="503" Canvas.Top="524"/>
+    Canvas.Left="503" Canvas.Top="561"/>
     <Button x:Name="CancelButton" Height="23" Click="CancelButton_Click" Content="Cancel" Width="60"
-    Canvas.Left="413" Canvas.Top="524"/>
+    Canvas.Left="413" Canvas.Top="561"/>
     <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="190.2" Canvas.Top="321" ErrorMessage="" Visibility="Collapsed" Height="63" Width="243.8" />
     <TextBox Canvas.Left="309" TextChanged="validate_int" Canvas.Top="10" Height="23" Name="startIndexTextBox" Width="81">0</TextBox>
     <Label Canvas.Left="238" Canvas.Top="10" Height="28" Name="label2" Width="70">Start index</Label>
     <TextBox TextChanged="validate_int" Canvas.Left="482" Canvas.Top="10" Height="23" Name="maxResultsTextBox" Width="81">10000</TextBox>
     <Label Canvas.Left="406" Canvas.Top="10" Height="28" Name="label3" Width="70">Max results</Label>
     <Label Canvas.Left="14" Canvas.Top="42" Height="28" Name="label5" Width="120">Timespan:</Label>
-        
-    <RadioButton Height="16" Tag="0" Checked="Timespan_Checked" Name="dateSpecificCheckBox" Width="120" Canvas.Left="20" Canvas.Top="180">Date  specific</RadioButton>
-    <RadioButton Canvas.Left="20" Canvas.Top="76.974" Tag="7" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
+        <RadioButton Canvas.Left="20" Canvas.Top="76.974" Tag="7" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
     <RadioButton Canvas.Left="20" Canvas.Top="102.974" Tag="30" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
     <RadioButton Canvas.Left="20" Canvas.Top="155" Tag="365" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
     <RadioButton Canvas.Left="20" Canvas.Top="128.974" Tag="120" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>

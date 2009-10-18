@@ -57,11 +57,13 @@ namespace UI
             set { _currentUser = value; }
         }
 
+        
+
         private List<RadioButton> TimeSpanBoxesColl
         {
             get
             {
-                return new RadioButton[] { dateSpecificCheckBox, yearCheckBox, monthCheckBox, weekCheckBox, quarterCheckBox }.Where(p => p != null).ToList<RadioButton>();
+                return new RadioButton[] { yearCheckBox, monthCheckBox, weekCheckBox, quarterCheckBox }.Where(p => p != null).ToList<RadioButton>();
             }
         }
 
@@ -263,27 +265,22 @@ namespace UI
             string errorMsg;
             if (ValidateForm(out errorMsg))
             {
-                RadioButton timeBox = TimeSpanBoxesColl.First(p => p.IsChecked == true);
-                if (timeBox == null)
-                {
-                    _query.StartDate = ToUnifiedCultureFormat((startDateCalendar.SelectedDate as Nullable<DateTime>).Value);
-                    _query.EndDate = ToUnifiedCultureFormat((endDateCalendar.SelectedDate as Nullable<DateTime>).Value); 
-                }
-                else
-                {
-                    _query.StartDate = ToUnifiedCultureFormat( DateTime.Now.AddDays(double.Parse(timeBox.Tag.ToString()) * -1) );
-                    _query.EndDate = ToUnifiedCultureFormat(DateTime.Now);
-                }
-
-                _query.StartIndex = int.Parse(startIndexTextBox.Text);
-                _query.MaxResults = int.Parse(maxResultsTextBox.Text);
-
-                _query.Ids.Clear();
-                _query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId);
-                
+                CompleteQuery();
                 this.Close();
                 queryComplete(_query);
             }
+        }
+
+        private void CompleteQuery()
+        {
+            _query.StartDate = ToUnifiedCultureFormat((startDateCalendar.SelectedDate as Nullable<DateTime>).Value);
+            _query.EndDate = ToUnifiedCultureFormat((endDateCalendar.SelectedDate as Nullable<DateTime>).Value);
+
+            _query.StartIndex = int.Parse(startIndexTextBox.Text);
+            _query.MaxResults = int.Parse(maxResultsTextBox.Text);
+
+            _query.Ids.Clear();
+            _query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId);
         }
 
         private void ExecuteButton_MouseEnter(object sender, MouseEventArgs e)
