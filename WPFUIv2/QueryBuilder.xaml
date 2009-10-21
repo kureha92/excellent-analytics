@@ -103,7 +103,7 @@
         </Expander.Header>
     </Expander>
     <Expander Cursor="Hand" Panel.ZIndex="1"  Canvas.Left="314" Canvas.Top="259" Collapsed="FilterExpander_Collapsed"   x:Name="FilterExpander" Expanded="FilterExpander_Expanded" ExpandDirection="Down" IsExpanded="False" >
-        <Canvas Cursor="Arrow" Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-295,5,0,0" Width="510" Height="263.75">
+        <Canvas Cursor="Arrow" Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-296,5,0,0" Width="510" Height="263.75">
             <Label Content="Operator" Canvas.Left="175.073" Canvas.Top="44" Height="25.96" Width="57.927" />
             <ComboBox ItemTemplate="{StaticResource comboOperatorTemplate}" x:Name="comboBoxOperator" Width="134" Canvas.Left="180" Canvas.Top="67.92" Height="21" />
             <Label Content="Expression" Canvas.Left="332" Canvas.Top="44"  />
@@ -135,10 +135,11 @@
     <TextBox TextChanged="validate_int" Canvas.Left="482" Canvas.Top="10" Height="23" Name="maxResultsTextBox" Width="81">10000</TextBox>
     <Label Canvas.Left="406" Canvas.Top="10" Height="28" Name="label3" Width="70">Max results</Label>
     <Label Canvas.Left="14" Canvas.Top="42" Height="28" Name="label5" Width="120">Timespan:</Label>
-        <RadioButton Canvas.Left="20" Canvas.Top="76.974" Tag="7" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
-    <RadioButton Canvas.Left="20" Canvas.Top="102.974" Tag="30" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
-    <RadioButton Canvas.Left="20" Canvas.Top="155" Tag="365" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
-    <RadioButton Canvas.Left="20" Canvas.Top="128.974" Tag="120" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
+        
+    <RadioButton Visibility="Hidden" Canvas.Left="20" Canvas.Top="76.974" Tag="7" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
+    <RadioButton Visibility="Hidden" Canvas.Left="20" Canvas.Top="102.974" Tag="30" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
+    <RadioButton Visibility="Hidden" Canvas.Left="20" Canvas.Top="155" Tag="365" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
+    <RadioButton Visibility="Hidden" Canvas.Left="20" Canvas.Top="128.974" Tag="120" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
         
     <Canvas Name="datePickerCanvas" Panel.ZIndex="0" Margin="-250,0,0,0" Background="Gray"  Canvas.Left="434" Canvas.Top="42" Height="0" Width="250">
         <Label Content="Start date" Canvas.Left="-2" Canvas.Top="-2" Height="26" />

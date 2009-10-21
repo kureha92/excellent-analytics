@@ -72,7 +72,7 @@ namespace UI
             get
             {
                 return _animatePropertyHeight != null ? _animatePropertyHeight :
-                new DoubleAnimation(0.0, 267.0, new Duration(TimeSpan.FromSeconds(0.2))) { DecelerationRatio = 0.2 };
+                new DoubleAnimation(0.0, 259.0, new Duration(TimeSpan.FromSeconds(0.2))) { DecelerationRatio = 0.2 };
             }
             set { _animatePropertyHeight = value; }
         }
@@ -82,7 +82,7 @@ namespace UI
             get
             {
                 return _animatePropertyWidth != null ? _animatePropertyWidth :
-                new DoubleAnimation(0.0, 550.0, new Duration(TimeSpan.FromSeconds(0.2))) { DecelerationRatio = 0.9 };
+                new DoubleAnimation(0.0, 543.0, new Duration(TimeSpan.FromSeconds(0.2))) { DecelerationRatio = 0.9 };
             }
             set { _animatePropertyWidth = value; }
         } 
