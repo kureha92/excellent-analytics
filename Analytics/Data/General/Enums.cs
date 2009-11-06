@@ -7,4 +7,5 @@ namespace Analytics.Data.Enums
 {
     public enum SizeKeyType { Dimension, Metric , Unknown };
     public enum LogicalOperator  { And , Or, None  };
+    public enum TimePeriod { Week, Month, Quarter, Year, Unspecified };
 }

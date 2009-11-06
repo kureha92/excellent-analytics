@@ -76,5 +76,10 @@ namespace Analytics.Data
             _UAId = UAId;
             _siteURI = siteURI;
         }
+
+        public bool ValidateResult()
+        {
+            return this.Data != null && this.Data.GetLength(0) > 0 && this.Data.GetLength(1) > 0;
+        }
     }
 }

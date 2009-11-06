@@ -34,7 +34,7 @@ namespace UI
         DoubleAnimation _animatePropertyWidth;
 
         Query _query;
-        UserAccount _currentUser;
+        UserAccount _currentUserAccount;
 
         public delegate void QueryComplete(Query query);
         public event QueryComplete queryComplete;
@@ -53,8 +53,8 @@ namespace UI
 
         public UserAccount CurrentUser
         {
-            get { return _currentUser; }
-            set { _currentUser = value; }
+            get { return _currentUserAccount; }
+            set { _currentUserAccount = value; }
         }
 
         
@@ -88,20 +88,14 @@ namespace UI
         } 
         #endregion
 
-        public QueryBuilder(UserAccount uAcc, Query query)
+        public QueryBuilder(UserAccount userAccount, Query query)
         {
             InitializeComponent();
             this._query = query != null ? query : new Query();
-            _currentUser = uAcc;
+            _currentUserAccount = userAccount;
             InitializeForm();
         }
-
-        public QueryBuilder(UserAccount uAcc, Query query , string errorMsg) : this(uAcc, query)
-        {
-            MainNotify.Visibility = Visibility.Visible;
-            MainNotify.ErrorMessage = errorMsg;
-        }
-
+       
         #region Events
 
         protected override void OnClosed(EventArgs e)
@@ -117,7 +111,7 @@ namespace UI
                 if (itBox.Name == sendCheck.Name)
                 {
                     itBox.IsChecked = true;
-                    RetractQueryStartDate(int.Parse(itBox.Tag.ToString()));
+                    //RetractQueryStartDate(int.Parse(itBox.Tag.ToString()));
                 }
                 else
                     itBox.IsChecked = false;
@@ -246,9 +240,7 @@ namespace UI
         private void addFilter_Click(object sender, RoutedEventArgs e)
         {
             if (comboBoxOperator.SelectedIndex != -1 && !String.IsNullOrEmpty(textBoxExpression.Text))
-            {
                 AddFilter(activeSize);
-            }
         }
 
         private void removeFilter_Click(object sender, RoutedEventArgs e)
@@ -273,8 +265,10 @@ namespace UI
 
         private void CompleteQuery()
         {
-            _query.StartDate = ToUnifiedCultureFormat((startDateCalendar.SelectedDate as Nullable<DateTime>).Value);
-            _query.EndDate = ToUnifiedCultureFormat((endDateCalendar.SelectedDate as Nullable<DateTime>).Value);
+            _query.TimePeriod = (TimePeriod)Enum.Parse(typeof(TimePeriod), TimeSpanBoxesColl.Where(p => (bool)p.IsChecked).First().Tag.ToString());
+
+            _query.StartDate = (DateTime)startDateCalendar.SelectedDate;
+            _query.EndDate = (DateTime)endDateCalendar.SelectedDate;
 
             _query.StartIndex = int.Parse(startIndexTextBox.Text);
             _query.MaxResults = int.Parse(maxResultsTextBox.Text);
@@ -360,20 +354,16 @@ namespace UI
 
             hasInvokedDimSetCheck = false;
             hasInvokedMetSetCheck = false;
-
-            Binding sites = new Binding();
+            
             if (CurrentUser != null)
-            {
-                sites.Source = CurrentUser.Entrys;
-            }
-            comboBoxSites.SetBinding(ComboBox.ItemsSourceProperty, sites);
+                DataBindSitesDropDown();
 
             if (this._query.Ids.Count > 0)
             {
                 string pId = this._query.Ids.First().Value;
-                if (_currentUser.Entrys.Find(p => p.ProfileId == pId) != null)
+                if (_currentUserAccount.Entrys.Find(p => p.ProfileId == pId) != null)
                 {
-                    comboBoxSites.SelectedValue = _currentUser.Entrys.Find(p => p.ProfileId == pId);
+                    comboBoxSites.SelectedValue = _currentUserAccount.Entrys.Find(p => p.ProfileId == pId);
                 }
                 else
                 {
@@ -381,9 +371,9 @@ namespace UI
                     MainNotify.ErrorMessage = "Your account lacks permission on the target profile";
                 }
             }
-            else if (_currentUser != null)
+            else if (_currentUserAccount != null)
             {
-                comboBoxSites.SelectedIndex = _currentUser.Entrys.Count > 0 ? 0 : -1;
+                comboBoxSites.SelectedIndex = _currentUserAccount.Entrys.Count > 0 ? 0 : -1;
             }
 
             SetCalendars();
@@ -392,6 +382,13 @@ namespace UI
 
             startIndexTextBox.Text = _query.StartIndex.ToString();
             maxResultsTextBox.Text = _query.MaxResults.ToString();
+        }
+
+        private void DataBindSitesDropDown()
+        {
+            Binding sites = new Binding();
+            sites.Source = CurrentUser.Entrys;
+            comboBoxSites.SetBinding(ComboBox.ItemsSourceProperty, sites);
         }
 
         private void AddFilter(SizeKeyType size)
@@ -415,13 +412,9 @@ namespace UI
             Filter f = new Filter();
             Binding filterBinding = new Binding();
             foreach (FilterItem item in _query.Filter)
-            {
                 f.Add(item);
-            }
             if (f.Count == 1)
-            {
                 f[0].LOperator = LogicalOperator.None;
-            }
             filterBinding.Source = f;
             filterBox.SetBinding(ListBox.ItemsSourceProperty, filterBinding);
         }
@@ -459,15 +452,10 @@ namespace UI
         {
             Dictionary<string, string> checkedSizes = new Dictionary<string, string>();
             foreach (SizeViewModel item in (customTreeItems).Children)
-            {
                 foreach (SizeViewModel subItem in item.Children)
-                {
                     if (subItem.IsChecked == true)
-                    {
                         checkedSizes.Add(subItem.Name, subItem.Value);
-                    }
-                }
-            }
+
             return checkedSizes;
         }
 
@@ -476,10 +464,10 @@ namespace UI
         {
             DateTime startDate = DateTime.Now.AddDays(-7);
             DateTime endDate = DateTime.Now;
-            if (this._query != null && !String.IsNullOrEmpty(_query.StartDate) && !String.IsNullOrEmpty(_query.EndDate))
+            if (this._query != null && _query.StartDate != null && _query.EndDate != null)
             {
-                DateTime.TryParse(_query.StartDate, out startDate);
-                DateTime.TryParse(_query.EndDate, out endDate);
+                startDate = _query.StartDate;
+                endDate = _query.EndDate;
             }
             startDateCalendar.SelectedDate = startDate;
             startDateCalendar.DisplayDate = startDate;
@@ -490,15 +478,9 @@ namespace UI
         private void SetCheckedItems(Dictionary<string, string> sizeColl, SizeViewModel customTreeItems)
         {
             foreach (SizeViewModel category in customTreeItems.Children)
-            {
                 foreach (SizeViewModel size in category.Children)
-                {
                     if (sizeColl.Keys.Contains(size.Name))
-                    {
                         size.IsChecked = true;
-                    }
-                }
-            }
         }
 
         private bool ValidateForm(out string errorMsg)
@@ -531,12 +513,7 @@ namespace UI
             return true;
         }
 
-        public string ToUnifiedCultureFormat(DateTime date)
-        {
-            return date.Year + "-" + 
-            (date.Month < 10 ? ("0" + date.Month) : date.Month.ToString() )
-            + "-" + (date.Day < 10 ? ("0" + date.Day) : date.Day.ToString());
-        }
+       
         #endregion
 
         private void validate_int(object sender, TextChangedEventArgs e)

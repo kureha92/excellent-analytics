@@ -18,18 +18,31 @@ using System.Windows.Forms.Integration;
 using System.Windows;
 using Microsoft.Office.Tools;
 
+
 namespace GA_Excel2007
 {
     public partial class GA_Ribbon : OfficeRibbon
     {
         #region fields
-        UserAccount user;
-        Login login;
-        ExecutionProgress exProg;
-        QueryBuilder qb;
-        Report report;
-        ReportManager repMan;
+        private const string queryInfoIdentifier = "queryInfo[";
+
+        UserAccount _user;
+        Login _login;
+        ExecutionProgress _executionProgressWindow;
+        QueryBuilder _queryBuilderWindow;
+        Report _currentReport;
+        ReportManager _reportManager;
         #endregion
+
+        public Range ActiveCell
+        {
+            get
+            {
+                return GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell;
+            }
+        }
+
+
 
         public GA_Ribbon()
         {
@@ -52,10 +65,10 @@ namespace GA_Excel2007
 
         private void buttonQuery_Click(object sender, RibbonControlEventArgs e)
         {
-            LaunchQueryBuilder(new Query() , null);
+            LaunchQueryBuilder(new Query());
         }
 
-        void qb_queryComplete(Query query)
+        void queryComplete(Query query)
         {
             ExecuteQuery(query);
         }
@@ -65,21 +78,24 @@ namespace GA_Excel2007
             InitLogin();
         }
 
-        void aRequest_logOut()
+        void User_Logout()
         {
-            user = null;
+            _user = null;
         }
 
-        void aRequest_authSuccessful(string authToken, string email)
+        void User_Successful_Login(string authToken, string email)
         {
             AccountManager accMan = new AccountManager();
-            user = accMan.GetAccountData(email, authToken);
-            LaunchQueryBuilder(new Query() , null);
+            _user = accMan.GetAccountData(email, authToken);
+            LaunchQueryBuilder(new Query());
         }
 
         private void buttonUpdate_Click(object sender, RibbonControlEventArgs e)
         {
-            LaunchQueryBuilder(new Query(GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell.Value2.ToString().Split('\n')[1]) , null);
+            Query query = new Query(GetQueryExcelParamValueFromActiveCell("queryString"));
+            query.TimePeriod = (Analytics.Data.Enums.TimePeriod)Enum.Parse(typeof(Analytics.Data.Enums.TimePeriod), 
+                                                                            GetQueryExcelParamValueFromActiveCell("timePeriod"));
+            LaunchQueryBuilder(query);
         }
 
         #endregion
@@ -88,34 +104,65 @@ namespace GA_Excel2007
 
         private bool ActiveCellUpdatable()
         {
-            string activeValue = GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell.Value2.ToString();
+            Range activeCell = GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell;
+            string activeValue = activeCell.Value2.ToString();
             return activeValue != null ? activeValue.Contains("\n") && activeValue.Split('\n')[1].StartsWith("https") : false;       
         }
 
         private void ExecuteQuery(Query query)
         {
-            repMan = new ReportManager();
-            exProg = new ExecutionProgress(repMan);
-            exProg.Show();
-            report = repMan.GetReport(query, user.AuthToken);
+            _reportManager = new ReportManager();
+            _executionProgressWindow = new ExecutionProgress(_reportManager);
+            _executionProgressWindow.Show();
+            _currentReport = _reportManager.GetReport(query, _user.AuthToken);
 
-            if (report != null && report.Data != null
-                && report.Data.GetLength(0) > 0 && report.Data.GetLength(1) > 0)
+            if (_currentReport != null && _currentReport.ValidateResult())
             {
-                PresentResult(query, report);
+                if (ActiveCellHasQueryResult)
+                    ClearPreviousQueryResult();
+                PresentResult(query, _currentReport);
             }
-            else
+        }
+
+        private bool ActiveCellHasQueryResult
+        {
+            get
+            { 
+                return GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell != null && 
+                GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell.Value2 != null &&
+                GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell.Value2.ToString().Contains(queryInfoIdentifier); 
+            }
+        }
+
+        private void ClearPreviousQueryResult()
+        {
+            int rows;
+            int columns;
+            if (int.TryParse(GetQueryExcelParamValueFromActiveCell("rows"), out rows) &&
+                int.TryParse(GetQueryExcelParamValueFromActiveCell("columns"), out columns))
             {
-                if (report == null)
-                {
-                    LaunchQueryBuilder(query, "Invalid query. The request was rejected");
-                }
-                else if (report != null && report.Data != null && report.Data.GetLength(0) < 1)
-                {
-                    LaunchQueryBuilder(query, "The request returned 0 hits");
-                }
-            }    
-           
+                Range activeCell = GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell;
+                Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
+                Worksheet activeSheet = currentApp.ActiveSheet as Worksheet;
+
+                Range rangeToClear = currentApp.get_Range(activeSheet.Cells[activeCell.Row, activeCell.Column],
+                                                          activeSheet.Cells[activeCell.Row + 1 + rows, columns]);
+                rangeToClear.Clear();
+            } 
+        }
+
+        private string GetQueryExcelParamValueFromActiveCell(string name)
+        {
+            string activeValue = ActiveCell.Value2.ToString();
+            if (activeValue.Contains(queryInfoIdentifier))
+            {
+                string paramString = activeValue.Substring(activeValue.IndexOf(queryInfoIdentifier));
+                paramString = paramString.Replace(queryInfoIdentifier, string.Empty).Replace("[", string.Empty).Replace("]", string.Empty);
+                string[] paramArray = paramString.Split(';');
+                string rowsParam = paramArray.Where(p => p.StartsWith("rows")).First().ToString();
+                return rowsParam.Substring(rowsParam.IndexOf('=') + 1).Trim();
+            }
+            return string.Empty;
         }
 
         private static void PresentResult(Query query, Report report)
@@ -128,7 +175,10 @@ namespace GA_Excel2007
                 int activeColumn = currentApp.ActiveCell.Column;
                 int activeRow = currentApp.ActiveCell.Row;
 
-                object[] queryInfoBox = new object[] { report.SiteURI + " [ " + query.StartDate + " -> " + query.EndDate + " ]" + "\n" + query.ToString() };
+                object[] queryInfoBox = new object[] { report.SiteURI + " [ " + query.StartDate.ToShortDateString() + " -> " + query.EndDate.ToShortDateString() + " ]\n"
+                + string.Format( "{0}queryString={1};rows={2};columns={3};timePeriod={4}]",
+                                queryInfoIdentifier, query.ToString(), report.Hits, query.GetDimensionsAndMetricsCount() , query.TimePeriod.ToString()) };
+                
                 int infoRows = queryInfoBox.GetLength(0);
 
                 Range queryInfoRange = currentApp.get_Range(activeSheet.Cells[activeRow, activeColumn],
@@ -151,19 +201,19 @@ namespace GA_Excel2007
 
         private void InitLogin()
         {
-            this.login = new Login(user);
-            login.authSuccessful += new Login.AuthSuccessful(aRequest_authSuccessful);
-            login.logOut += new Login.Logout(aRequest_logOut);
-            login.ShowDialog();
+            this._login = new Login(_user);
+            _login.authSuccessful += new Login.AuthSuccessful(User_Successful_Login);
+            _login.logOut += new Login.Logout(User_Logout);
+            _login.ShowDialog();
         }
 
-        private void LaunchQueryBuilder(Query query , string Errormsg)
+        private void LaunchQueryBuilder(Query query)
         {
-            if (user != null && !String.IsNullOrEmpty(user.AuthToken))
+            if (_user != null && !string.IsNullOrEmpty(_user.AuthToken))
             {
-                qb = String.IsNullOrEmpty(Errormsg) ? new QueryBuilder(user, query) : new QueryBuilder(user, query , Errormsg);
-                qb.queryComplete += new QueryBuilder.QueryComplete(qb_queryComplete);
-                qb.ShowDialog();
+                _queryBuilderWindow = new QueryBuilder(_user, query);
+                _queryBuilderWindow.queryComplete += new QueryBuilder.QueryComplete(queryComplete);
+                _queryBuilderWindow.ShowDialog();
             }
             else
             {

@@ -20,8 +20,10 @@ namespace Analytics.Data
         private Filter _filter;
         private enum DataType {Dimension , Metric , Unknown};
 
-        private string _startDate;
-        private string _endDate;
+        private DateTime _startDate;
+        private DateTime _endDate;
+
+        private TimePeriod _timePeriod;
 
         private int _maxResults;
         private int _startIndex;
@@ -99,16 +101,22 @@ namespace Analytics.Data
             set { _filter = value; }
         }
 
-        public string StartDate
+        public DateTime StartDate
         {
             get { return _startDate; }
             set { _startDate = value; }
         }
 
-        public string EndDate
+        public DateTime EndDate
         {
             get { return _endDate; }
             set { _endDate = value; }
+        }
+
+        public TimePeriod TimePeriod
+        {
+            get { return _timePeriod; }
+            set { _timePeriod = value; }
         }
 
         public int MaxResults
@@ -189,17 +197,12 @@ namespace Analytics.Data
 
         private void CreateFromQueryString(string queryString)
         {
-            foreach (string queryParam in queryString.Split(new char[] { '?', '&' }))
-            {
+            foreach (string queryParam in queryString.Split(new char[] { '?', '&' }).Where(s => s.Contains('=')))
                 AddQueryParamToQuery(queryParam);
-            }
         }
 
         private void AddQueryParamToQuery(string queryParam)
         {
-            if (!queryParam.Contains('='))
-                return;
-
             int startIndex = queryParam.IndexOf('=');
             startIndex += startIndex < queryParam.Length ? 1 : 0;
 
@@ -231,21 +234,21 @@ namespace Analytics.Data
         private void AddEndDate(string queryParam, int startIndex)
         {
             DateTime endDate;
-            this.EndDate = DateTime.TryParse(queryParam.Substring(startIndex), out endDate) ? endDate.ToShortDateString() : null;
+            if (DateTime.TryParse(queryParam.Substring(startIndex), out endDate))
+                EndDate = endDate;
         }
 
         private void AddStartDate(string queryParam, int startIndex)
         {
             DateTime startDate;
-            this.StartDate = DateTime.TryParse(queryParam.Substring(startIndex), out startDate) ? startDate.ToShortDateString() : null;
+            if (DateTime.TryParse(queryParam.Substring(startIndex), out startDate))
+                StartDate = startDate;
         }
 
         private void AddSortParams(string queryParam, int startIndex)
         {
             foreach (string sortParam in queryParam.Substring(startIndex).Split(','))
-            {
                 SortParams.Add(GetFriendlySizeName(sortParam), sortParam);
-            }
         }
 
         private void AddIds(string queryParam, int startIndex)
@@ -263,9 +266,7 @@ namespace Analytics.Data
             {
                 FilterItem fItem = GetFilterItem(filters[i], separators[i]);
                 if (fItem != null)
-                {
                     Filter.Add(fItem);
-                }
             }
         }
 
@@ -274,42 +275,63 @@ namespace Analytics.Data
             List<char> separators = (from char c in queryParam.ToCharArray()
                                      where c.Equals(',') || c.Equals(';')
                                      select c).ToList<char>();
-          
             return separators;
         }
 
         private void AddMetrics(string queryParam, int startIndex)
         {
             foreach (string metric in queryParam.Substring(startIndex).Split(','))
-            {
                 Metrics.Add(GetFriendlySizeName(metric), metric);
-            }
         }
 
         private void AddDimensions(string queryParam, int startIndex)
         {
             foreach (string dimension in queryParam.Substring(startIndex).Split(','))
-            {
                 Dimensions.Add(GetFriendlySizeName(dimension), dimension);
-            }
         }
 
         #region Methods
+
         public override string ToString()
         {
-            string queryBaseUri = General.GA_RequestURIs.Default.ReportFeed;
             StringBuilder queryBuilder = new StringBuilder();
-            queryBuilder.Append(queryBaseUri);
+            queryBuilder.Append(General.GA_RequestURIs.Default.ReportFeed);
             queryBuilder.Append(Ids.Count > 0 ? "?ids=" + string.Join(",", Ids.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Dimensions.Count > 0 ? "&dimensions=" + string.Join(",", Dimensions.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Metrics.Count > 0 ? "&metrics=" + string.Join(",", Metrics.Values.ToArray()) : string.Empty);
             queryBuilder.Append(SortParams.Count > 0 ? "&sort=" + string.Join(",", SortParams.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Filter.ToString());
-            queryBuilder.Append(!String.IsNullOrEmpty(StartDate) ? "&start-date=" + StartDate : string.Empty);
-            queryBuilder.Append(!String.IsNullOrEmpty(EndDate) ? "&end-date=" + EndDate : string.Empty);
+            queryBuilder.Append(GetQueryTimeSpan());
             queryBuilder.Append(StartIndex > 0 ? "&start-index=" + StartIndex : string.Empty);
             queryBuilder.Append( "&max-results=" + MaxResults);
             return queryBuilder.ToString();
+        }
+
+        private string GetQueryTimeSpan()
+        {
+            string paramContainer = "&start-date={0}&end-date={1}";
+            switch (TimePeriod)
+            {
+                case TimePeriod.Week:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(DateTime.Now.AddDays(-7)), ToUnifiedCultureFormat(DateTime.Now));
+                case TimePeriod.Month:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(DateTime.Now.AddMonths(-1)), ToUnifiedCultureFormat(DateTime.Now));
+                case TimePeriod.Quarter:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(DateTime.Now.AddMonths(-4)), ToUnifiedCultureFormat(DateTime.Now));
+                case TimePeriod.Year:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(DateTime.Now.AddYears(-1)), ToUnifiedCultureFormat(DateTime.Now));
+                case TimePeriod.Unspecified:
+                    return string.Format(paramContainer, StartDate, EndDate);
+                default:
+                    throw new Exception("Date interval missing or incomplete");
+            }  
+        }
+
+        private string ToUnifiedCultureFormat(DateTime date)
+        {
+            return date.Year + "-" +
+            (date.Month < 10 ? ("0" + date.Month) : date.Month.ToString())
+            + "-" + (date.Day < 10 ? ("0" + date.Day) : date.Day.ToString());
         }
 
         public int GetDimensionsAndMetricsCount()
@@ -400,9 +422,7 @@ namespace Analytics.Data
             XDocument xDocument = XDocument.Load(System.Xml.XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General." +
             (feedObjectType == SizeKeyType.Dimension ? "Dimension" : "Metric") + "FilterOperators.xml")));
             foreach (XElement element in xDocument.Root.Elements("Operator"))
-            {
                 operators.Add(element.Attribute("description").Value, element.Attribute("urlEncoded").Value);
-            }
             return operators;
         }
 
@@ -421,12 +441,8 @@ namespace Analytics.Data
             XDocument xDocument = XDocument.Load(System.Xml.XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General." +
             (feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics") + ".xml")));
             foreach (XElement element in xDocument.Root.Elements("Category"))
-            {
                 foreach (XElement subElement in element.Elements(feedObjectType == SizeKeyType.Dimension ? "Dimension" : "Metric"))
-                {
                     sizes.Add(subElement.Attribute("name").Value, subElement.Attribute("value").Value);
-                }
-            }
             return sizes;
         }
 

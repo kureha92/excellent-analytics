@@ -67,11 +67,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>GA_RequestURIs.settings</DependentUpon>
     </Compile>
-    <Compile Include="Data\General\GA_NameSpaces.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>GA_NameSpaces.settings</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -80,10 +75,6 @@
     <None Include="Data\General\GA_RequestURIs.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>GA_RequestURIs.Designer.cs</LastGenOutput>
-    </None>
-    <None Include="Data\General\GA_NameSpaces.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>GA_NameSpaces.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
