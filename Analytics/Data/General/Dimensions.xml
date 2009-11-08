@@ -30,6 +30,8 @@
     <Dimension name="screen resolution" value="ga:screenResolution" />
     <Dimension name="subcontinent" value="ga:subContinent" />
     <Dimension name="user defined value" value="ga:userDefinedValue" />
+    <Dimension name="visit count" value="ga:visitCount" />
+    <Dimension name="visit length" value="ga:visitLength" />
     <Dimension name="visitor type" value="ga:visitorType" />
   </Category>
   <Category name="Campaign" type="D2">
@@ -48,6 +50,7 @@
     <Dimension name="landing page path" value="ga:landingPagePath" />
     <Dimension name="page path" value="ga:pagePath" />
     <Dimension name="page title" value="ga:pageTitle" />
+    <Dimension name="second page path" value="ga:secondPagePath" />
   </Category>
   <Category name="Ecommerce" type="D4">
     <Dimension name="affiliation" value="ga:affiliation" />
@@ -56,6 +59,7 @@
     <Dimension name="product name" value="ga:productName" />
     <Dimension name="product sku" value="ga:productSku" />
     <Dimension name="transaction id" value="ga:transactionId" />
+    <Dimension name="visits to transaction" value="ga:visitsToTransaction" />
   </Category>
   <Category name="Internal Search" type="D5">
     <Dimension name="search category" value="ga:searchCategory" />
@@ -64,6 +68,10 @@
     <Dimension name="search keyword refinement" value="ga:searchKeywordRefinement" />
     <Dimension name="search start page" value="ga:searchStartPage" />
     <Dimension name="search used" value="ga:searchUsed" />
+  </Category>
+  <Category name="Events" type="D6">
+    <Dimension name="next page path" value="ga:nextPagePath" />
+    <Dimension name="previous page path" value="ga:previousPagePath" />
   </Category>
   <Category name="Events" type="D7">
     <Dimension name="event category" value="ga:eventCategory" />

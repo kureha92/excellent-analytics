@@ -136,16 +136,17 @@
     <Label Canvas.Left="406" Canvas.Top="10" Height="28" Name="label3" Width="70">Max results</Label>
     <Label Canvas.Left="14" Canvas.Top="42" Height="28" Name="label5" Width="120">Timespan:</Label>
         
-    <RadioButton  Canvas.Left="20" Canvas.Top="76.974" Tag="Week" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
-    <RadioButton  Canvas.Left="20" Canvas.Top="102.974" Tag="Month" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
-    <RadioButton  Canvas.Left="20" Canvas.Top="155" Tag="Year" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
-    <RadioButton  Canvas.Left="20" Canvas.Top="128.974" Tag="Quarter" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
+    <RadioButton  Canvas.Left="20" Canvas.Top="70" Tag="Week" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
+    <RadioButton  Canvas.Left="20" Canvas.Top="95" Tag="Month" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
+    <RadioButton  Canvas.Left="20" Canvas.Top="120" Tag="Year" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
+    <RadioButton  Canvas.Left="20" Canvas.Top="145" Tag="Quarter" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
+    <RadioButton  Canvas.Left="20" Canvas.Top="170" Tag="Unspecified" Height="16" Checked="Timespan_Checked" Name="unspecifiedCheckBox" Width="120">Date specific</RadioButton>
         
-    <Canvas Name="datePickerCanvas" Panel.ZIndex="0" Margin="-250,0,0,0" Background="Gray"  Canvas.Left="434" Canvas.Top="42" Height="0" Width="250">
+    <Canvas  Name="datePickerCanvas" Panel.ZIndex="0" Margin="-250,0,0,0" Background="Gray"  Canvas.Left="434" Canvas.Top="42" Height="0" Width="250">
         <Label Content="Start date" Canvas.Left="-2" Canvas.Top="-2" Height="26" />
-        <toolkit:Calendar SelectionMode="SingleDate" x:Name="startDateCalendar" Canvas.Left="0" Canvas.Top="19" Height="168" />
+        <toolkit:Calendar Visibility="Hidden" SelectionMode="SingleDate" x:Name="startDateCalendar" Canvas.Left="0" Canvas.Top="19" Height="168" />
         <Label Content="End date" Canvas.Left="197" Canvas.Top="-1" Height="26" />
-        <toolkit:Calendar SelectionMode="SingleDate" x:Name="endDateCalendar" Canvas.Left="200" Canvas.Top="19" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" VerticalAlignment="Top" />
+        <toolkit:Calendar Visibility="Hidden" SelectionMode="SingleDate" x:Name="endDateCalendar" Canvas.Left="200" Canvas.Top="19" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" VerticalAlignment="Top" />
     </Canvas>
         
     </Canvas>

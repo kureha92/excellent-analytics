@@ -42,8 +42,6 @@ namespace GA_Excel2007
             }
         }
 
-
-
         public GA_Ribbon()
         {
             InitializeComponent();
@@ -104,9 +102,7 @@ namespace GA_Excel2007
 
         private bool ActiveCellUpdatable()
         {
-            Range activeCell = GA_Excel2007.Globals.ThisAddIn.Application.ActiveCell;
-            string activeValue = activeCell.Value2.ToString();
-            return activeValue != null ? activeValue.Contains("\n") && activeValue.Split('\n')[1].StartsWith("https") : false;       
+            return !string.IsNullOrEmpty(GetQueryExcelParamValueFromActiveCell("queryString"));
         }
 
         private void ExecuteQuery(Query query)
@@ -145,8 +141,8 @@ namespace GA_Excel2007
                 Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
                 Worksheet activeSheet = currentApp.ActiveSheet as Worksheet;
 
-                Range rangeToClear = currentApp.get_Range(activeSheet.Cells[activeCell.Row, activeCell.Column],
-                                                          activeSheet.Cells[activeCell.Row + 1 + rows, columns]);
+                Range rangeToClear = currentApp.get_Range(activeSheet.Cells[activeCell.Row + 1, activeCell.Column],
+                                                          activeSheet.Cells[activeCell.Row + rows, columns]);
                 rangeToClear.Clear();
             } 
         }
@@ -159,7 +155,7 @@ namespace GA_Excel2007
                 string paramString = activeValue.Substring(activeValue.IndexOf(queryInfoIdentifier));
                 paramString = paramString.Replace(queryInfoIdentifier, string.Empty).Replace("[", string.Empty).Replace("]", string.Empty);
                 string[] paramArray = paramString.Split(';');
-                string rowsParam = paramArray.Where(p => p.StartsWith("rows")).First().ToString();
+                string rowsParam = paramArray.Where(p => p.StartsWith(name)).First().ToString();
                 return rowsParam.Substring(rowsParam.IndexOf('=') + 1).Trim();
             }
             return string.Empty;
@@ -175,18 +171,16 @@ namespace GA_Excel2007
                 int activeColumn = currentApp.ActiveCell.Column;
                 int activeRow = currentApp.ActiveCell.Row;
 
-                object[] queryInfoBox = new object[] { report.SiteURI + " [ " + query.StartDate.ToShortDateString() + " -> " + query.EndDate.ToShortDateString() + " ]\n"
-                + string.Format( "{0}queryString={1};rows={2};columns={3};timePeriod={4}]",
-                                queryInfoIdentifier, query.ToString(), report.Hits, query.GetDimensionsAndMetricsCount() , query.TimePeriod.ToString()) };
-                
-                int infoRows = queryInfoBox.GetLength(0);
+                object[] queryInformation = GetQueryInformation(query, report);
 
-                Range queryInfoRange = currentApp.get_Range(activeSheet.Cells[activeRow, activeColumn],
+                Range queryInformationRange = currentApp.get_Range(activeSheet.Cells[activeRow, activeColumn],
                 activeSheet.Cells[activeRow, activeColumn + report.Data.GetLength(1) - 1]);
-                queryInfoRange.Font.Italic = true;
-                queryInfoRange.MergeCells = true;
-                queryInfoRange.Borders.Weight = XlBorderWeight.xlThin;
-                queryInfoRange.Value2 = queryInfoBox;
+                queryInformationRange.Font.Italic = true;
+                queryInformationRange.MergeCells = true;
+                queryInformationRange.Borders.Weight = XlBorderWeight.xlThin;
+                queryInformationRange.Value2 = queryInformation;
+
+                int infoRows = queryInformation.GetLength(0);
 
                 Range headerRange = currentApp.get_Range(activeSheet.Cells[activeRow + infoRows, activeColumn],
                 activeSheet.Cells[activeRow + infoRows, activeColumn + report.Headers.GetLength(1) - 1]);
@@ -197,6 +191,14 @@ namespace GA_Excel2007
                 activeSheet.Cells[activeRow + infoRows + report.Data.GetLength(0), activeColumn + report.Data.GetLength(1) - 1]);
                 dataRange.Value2 = report.Data; 
             }
+        }
+
+        private static object[] GetQueryInformation(Query query, Report report)
+        {
+            object[] queryInformation = new object[] { report.SiteURI + " [ " + query.StartDate.ToShortDateString() + " -> " + query.EndDate.ToShortDateString() + " ]\n"
+                + string.Format( "{0}queryString={1};rows={2};columns={3};timePeriod={4}]",
+                                queryInfoIdentifier, query.ToString(), report.Hits, query.GetDimensionsAndMetricsCount() , query.TimePeriod.ToString()) };
+            return queryInformation;
         }
 
         private void InitLogin()

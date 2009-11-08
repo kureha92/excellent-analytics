@@ -57,13 +57,11 @@ namespace UI
             set { _currentUserAccount = value; }
         }
 
-        
-
         private List<RadioButton> TimeSpanBoxesColl
         {
             get
             {
-                return new RadioButton[] { yearCheckBox, monthCheckBox, weekCheckBox, quarterCheckBox }.Where(p => p != null).ToList<RadioButton>();
+                return new RadioButton[] { yearCheckBox, monthCheckBox, weekCheckBox, quarterCheckBox, unspecifiedCheckBox }.Where(p => p != null).ToList<RadioButton>();
             }
         }
 
@@ -111,7 +109,16 @@ namespace UI
                 if (itBox.Name == sendCheck.Name)
                 {
                     itBox.IsChecked = true;
-                    //RetractQueryStartDate(int.Parse(itBox.Tag.ToString()));
+                    if (unspecifiedCheckBox != null && itBox.Name == unspecifiedCheckBox.Name)
+                    {
+                        startDateCalendar.Visibility = Visibility.Visible;
+                        endDateCalendar.Visibility = Visibility.Visible;
+                    }
+                    else if (startDateCalendar != null && endDateCalendar != null)
+                    {
+                        startDateCalendar.Visibility = Visibility.Hidden;
+                        endDateCalendar.Visibility = Visibility.Hidden;
+                    }
                 }
                 else
                     itBox.IsChecked = false;
@@ -254,8 +261,7 @@ namespace UI
 
         private void ExecuteButton_Click(object sender, RoutedEventArgs e)
         {
-            string errorMsg;
-            if (ValidateForm(out errorMsg))
+            if (ValidateForm())
             {
                 CompleteQuery();
                 this.Close();
@@ -285,18 +291,12 @@ namespace UI
             _query.Dimensions.Clear();
             _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
 
-            string errorMsg;
-            if (ValidateForm(out errorMsg))
+            if (ValidateForm())
             {
                 MainNotify.Visibility = Visibility.Collapsed;
                 MainNotify.ErrorMessage = string.Empty;
             }
-            else
-            {
-                MainNotify.Visibility = Visibility.Visible;
-                MainNotify.ErrorMessage = errorMsg;
-            }
-        }
+         }
 
         private void ExecuteButton_MouseLeave(object sender, MouseEventArgs e)
         {
@@ -362,19 +362,12 @@ namespace UI
             {
                 string pId = this._query.Ids.First().Value;
                 if (_currentUserAccount.Entrys.Find(p => p.ProfileId == pId) != null)
-                {
                     comboBoxSites.SelectedValue = _currentUserAccount.Entrys.Find(p => p.ProfileId == pId);
-                }
                 else
-                {
-                    MainNotify.Visibility = Visibility.Visible;
-                    MainNotify.ErrorMessage = "Your account lacks permission on the target profile";
-                }
+                    Notify("Your account lacks permission on the target profile");
             }
             else if (_currentUserAccount != null)
-            {
                 comboBoxSites.SelectedIndex = _currentUserAccount.Entrys.Count > 0 ? 0 : -1;
-            }
 
             SetCalendars();
 
@@ -382,6 +375,12 @@ namespace UI
 
             startIndexTextBox.Text = _query.StartIndex.ToString();
             maxResultsTextBox.Text = _query.MaxResults.ToString();
+        }
+
+        private void Notify(string message)
+        {
+            MainNotify.Visibility = Visibility.Visible;
+            MainNotify.ErrorMessage = message;
         }
 
         private void DataBindSitesDropDown()
@@ -483,22 +482,21 @@ namespace UI
                         size.IsChecked = true;
         }
 
-        private bool ValidateForm(out string errorMsg)
+        private bool ValidateForm()
         {
-            errorMsg = string.Empty;
             if (comboBoxSites.SelectedItem == null)
             {
-                errorMsg = "No profile is selected";
+                Notify("No profile is selected");
                 return false;
             }
             if (startDateCalendar.SelectedDate > endDateCalendar.SelectedDate)
             {
-                errorMsg = "The start date can not be later than the end date";
+                Notify("The start date can not be later than the end date");
                 return false;
             }
             if (!(_query.Metrics.Count > 0))
             {
-                errorMsg = "Select atleast one metric";
+                Notify("Select atleast one metric");
                 return false;
             }
 

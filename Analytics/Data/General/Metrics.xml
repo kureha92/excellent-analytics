@@ -30,7 +30,6 @@
     <Metric name="trasnsaction tax" value="ga:transactionTax"/>
     <Metric name="unique purchases" value="ga:uniquePurchases"/>
   </Category>
-
   <Category name="Internal Search" type="M5">
     <Metric name="search depth" value="ga:searchDepth"/>
     <Metric name="search duration" value="ga:searchDuration"/>
@@ -43,6 +42,18 @@
     <Metric name="goal completions all" value="ga:goalCompletionsAll"/>
     <Metric name="goal starts all" value="ga:goalStartsAll"/>
     <Metric name="goal value all" value="ga:goalValueAll"/>
+    <Metric name="goal1 completions" value="ga:goal1Completions"/>
+    <Metric name="goal1 starts" value="ga:goal1Starts"/>
+    <Metric name="goal1 value " value="ga:goal1Value"/>
+    <Metric name="goal2 completions" value="ga:goal2Completions"/>
+    <Metric name="goal2 starts" value="ga:goal2Starts"/>
+    <Metric name="goal2 value " value="ga:goal2Value"/>
+    <Metric name="goal3 completions" value="ga:goal3Completions"/>
+    <Metric name="goal3 starts" value="ga:goal3Starts"/>
+    <Metric name="goal3 value " value="ga:goal3Value"/>
+    <Metric name="goal4 completions" value="ga:goal4Completions"/>
+    <Metric name="goal4 starts" value="ga:goal4Starts"/>
+    <Metric name="goal4 value " value="ga:goal4Value"/>
   </Category>
   <Category name="Events" type="M7">
     <Metric name="total events" value="ga:totalEvents"/>
