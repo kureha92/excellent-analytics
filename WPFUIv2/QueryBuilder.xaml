@@ -81,8 +81,8 @@
     
     <Canvas x:Name="MainCanvas" Height="596" Width="578">
         
-    <Label Content="Profile:" Canvas.Left="14" Canvas.Top="10" Height="28.453" Name="label6" Width="45"/>
-    <ComboBox  SelectionChanged="comboBoxSites_SelectionChanged" ItemsSource="{Binding}" Canvas.Left="66" Canvas.Top="10" Height="23" Name="comboBoxSites" Width="157" >
+    <Label Content="Profile:" Canvas.Left="353" Canvas.Top="13" Height="28" Name="label6" Width="45"/>
+    <ComboBox  SelectionChanged="comboBoxSites_SelectionChanged" ItemsSource="{Binding}" Canvas.Left="406" Canvas.Top="13" Height="23" Name="comboBoxSites" Width="157" >
         <ComboBox.ItemTemplate>
             <DataTemplate>
                 <ContentPresenter Content="{Binding Title}" Tag="{Binding ProfileId}" />
@@ -130,24 +130,26 @@
     <Button x:Name="CancelButton" Height="23" Click="CancelButton_Click" Content="Cancel" Width="60"
     Canvas.Left="413" Canvas.Top="561"/>
     <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="190.2" Canvas.Top="321" ErrorMessage="" Visibility="Collapsed" Height="63" Width="243.8" />
-    <TextBox Canvas.Left="309" TextChanged="validate_int" Canvas.Top="10" Height="23" Name="startIndexTextBox" Width="81">0</TextBox>
-    <Label Canvas.Left="238" Canvas.Top="10" Height="28" Name="label2" Width="70">Start index</Label>
-    <TextBox TextChanged="validate_int" Canvas.Left="482" Canvas.Top="10" Height="23" Name="maxResultsTextBox" Width="81">10000</TextBox>
-    <Label Canvas.Left="406" Canvas.Top="10" Height="28" Name="label3" Width="70">Max results</Label>
-    <Label Canvas.Left="14" Canvas.Top="42" Height="28" Name="label5" Width="120">Timespan:</Label>
-        
-    <RadioButton  Canvas.Left="20" Canvas.Top="70" Tag="Week" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
-    <RadioButton  Canvas.Left="20" Canvas.Top="95" Tag="Month" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
-    <RadioButton  Canvas.Left="20" Canvas.Top="120" Tag="Year" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
-    <RadioButton  Canvas.Left="20" Canvas.Top="145" Tag="Quarter" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
-    <RadioButton  Canvas.Left="20" Canvas.Top="170" Tag="Unspecified" Height="16" Checked="Timespan_Checked" Name="unspecifiedCheckBox" Width="120">Date specific</RadioButton>
-        
-    <Canvas  Name="datePickerCanvas" Panel.ZIndex="0" Margin="-250,0,0,0" Background="Gray"  Canvas.Left="434" Canvas.Top="42" Height="0" Width="250">
-        <Label Content="Start date" Canvas.Left="-2" Canvas.Top="-2" Height="26" />
-        <toolkit:Calendar Visibility="Hidden" SelectionMode="SingleDate" x:Name="startDateCalendar" Canvas.Left="0" Canvas.Top="19" Height="168" />
-        <Label Content="End date" Canvas.Left="197" Canvas.Top="-1" Height="26" />
-        <toolkit:Calendar Visibility="Hidden" SelectionMode="SingleDate" x:Name="endDateCalendar" Canvas.Left="200" Canvas.Top="19" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" VerticalAlignment="Top" />
-    </Canvas>
-        
+    <TextBox Canvas.Left="482" TextChanged="validate_int" Canvas.Top="60" Height="23" Name="startIndexTextBox" Width="81">0</TextBox>
+    <Label Canvas.Left="394" Canvas.Top="60" Height="28" Name="label2" Width="70">Start index</Label>
+    <TextBox TextChanged="validate_int" Canvas.Left="482" Canvas.Top="103.92" Height="23" Name="maxResultsTextBox" Width="81">10000</TextBox>
+    <Label Canvas.Left="394" Canvas.Top="101.92" Height="28" Name="label3" Width="70">Max results</Label>
+        <TabControl Canvas.Left="11" Canvas.Top="18.961" Height="223" Name="tabControl1" Width="377">
+            <TabItem Header="Tab1" Name="tabItem1">
+                <Canvas Width="442" Height="202">
+                    <toolkit:Calendar SelectionMode="SingleDate" x:Name="startDateCalendar" Margin="2,6.387,89,-21.347" Height="168" Canvas.Top="11" />
+                    <toolkit:Calendar  SelectionMode="SingleDate" x:Name="endDateCalendar" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" HorizontalAlignment="Right" Margin="0,6.387,-111,-21.313" Width="179" Height="168" Canvas.Left="187" Canvas.Top="11" />
+                </Canvas>
+            </TabItem>
+            <TabItem Header="Tab2">
+                <Canvas>
+                    <RadioButton  Canvas.Left="20" Canvas.Top="32" Tag="Week" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
+                    <RadioButton  Canvas.Left="20" Canvas.Top="57" Tag="Month" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
+                    <RadioButton  Canvas.Left="20" Canvas.Top="82" Tag="Year" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
+                    <RadioButton  Canvas.Left="20" Canvas.Top="107" Tag="Quarter" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
+                    <RadioButton  Canvas.Left="20" Canvas.Top="132" Tag="Unspecified" Height="16" Checked="Timespan_Checked" Name="unspecifiedCheckBox" Width="120">Date specific</RadioButton>
+                </Canvas>
+            </TabItem>
+        </TabControl>
     </Canvas>
 </Window>

@@ -105,24 +105,7 @@ namespace UI
         {
             RadioButton sendCheck = sender as RadioButton;
             foreach (RadioButton itBox in TimeSpanBoxesColl)
-            {
-                if (itBox.Name == sendCheck.Name)
-                {
-                    itBox.IsChecked = true;
-                    if (unspecifiedCheckBox != null && itBox.Name == unspecifiedCheckBox.Name)
-                    {
-                        startDateCalendar.Visibility = Visibility.Visible;
-                        endDateCalendar.Visibility = Visibility.Visible;
-                    }
-                    else if (startDateCalendar != null && endDateCalendar != null)
-                    {
-                        startDateCalendar.Visibility = Visibility.Hidden;
-                        endDateCalendar.Visibility = Visibility.Hidden;
-                    }
-                }
-                else
-                    itBox.IsChecked = false;
-            }
+                itBox.IsChecked = itBox.Name == sendCheck.Name;
         }
 
         private void RetractQueryStartDate(int days)
@@ -518,9 +501,7 @@ namespace UI
         {
             int i;
             if (! int.TryParse((sender as TextBox).Text , out i))
-            {
                 (sender as TextBox).Text = string.Empty;
-            }
         }
    }
 }

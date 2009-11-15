@@ -41,9 +41,7 @@ namespace Analytics.Data
             get 
             {
                 if (_dimensions == null)
-                {
                     _dimensions = new Dictionary<string, string>();
-                }
                 return _dimensions; 
             }
             set { _dimensions = value; }
@@ -54,9 +52,7 @@ namespace Analytics.Data
             get 
             {
                 if (_metrics == null)
-                {
                     _metrics = new Dictionary<string, string>();
-                }
                 return _metrics; 
             }
             set { _metrics = value; }
@@ -67,9 +63,7 @@ namespace Analytics.Data
             get 
             {
                 if (_ids == null)
-                {
                     _ids = new Dictionary<string, string>();
-                }
                 return _ids; 
             }
             set { _ids = value; }
@@ -80,9 +74,7 @@ namespace Analytics.Data
             get 
             {
                 if (_sortParams == null)
-                {
                     _sortParams = new Dictionary<string, string>();
-                }
                 return _sortParams; 
             }
             set { _sortParams = value; }
@@ -93,9 +85,7 @@ namespace Analytics.Data
             get
             {
                 if (_filter == null)
-                {
                     _filter = new Filter();
-                }
                 return _filter;
             }
             set { _filter = value; }
@@ -195,6 +185,8 @@ namespace Analytics.Data
             CreateFromQueryString(queryString);
         }
 
+        #region Methods
+
         private void CreateFromQueryString(string queryString)
         {
             foreach (string queryParam in queryString.Split(new char[] { '?', '&' }).Where(s => s.Contains('=')))
@@ -270,7 +262,7 @@ namespace Analytics.Data
             }
         }
 
-        private static List<char> SeparatorsFromFilterQueryParam(string queryParam)
+        private List<char> SeparatorsFromFilterQueryParam(string queryParam)
         {
             List<char> separators = (from char c in queryParam.ToCharArray()
                                      where c.Equals(',') || c.Equals(';')
@@ -290,7 +282,7 @@ namespace Analytics.Data
                 Dimensions.Add(GetFriendlySizeName(dimension), dimension);
         }
 
-        #region Methods
+        
 
         public override string ToString()
         {
@@ -450,8 +442,6 @@ namespace Analytics.Data
         {
             XDocument xDocument = XDocument.Load(System.Xml.XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General." +
             (feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics") + ".xml")));
-            //XDocument.Load(System.AppDomain.CurrentDomain.BaseDirectory + @"\Resources\" +
-            //(feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics") + ".xml");
             return xDocument;
         } 
         #endregion
