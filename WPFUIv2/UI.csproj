@@ -95,14 +95,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\CustomTreeView.xaml.cs">
+    <Compile Include="Controls\CustomTreeView\CustomTreeView.xaml.cs">
       <DependentUpon>CustomTreeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\NotifyError.xaml.cs">
+    <Compile Include="Controls\NotifyError\NotifyError.xaml.cs">
       <DependentUpon>NotifyError.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SizeViewModel.cs" />
-    <Compile Include="Controls\VirtualToggleButton.cs" />
+    <Compile Include="Controls\CustomTreeView\SizeViewModel.cs" />
+    <Compile Include="Controls\CustomTreeView\VirtualToggleButton.cs" />
     <Compile Include="ExecutionProgress.xaml.cs">
       <DependentUpon>ExecutionProgress.xaml</DependentUpon>
     </Compile>
@@ -144,11 +144,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\CustomTreeView.xaml">
+    <Page Include="Controls\CustomTreeView\CustomTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\NotifyError.xaml">
+    <Page Include="Controls\NotifyError\NotifyError.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -207,7 +207,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Controls\notification.png">
+    <Resource Include="Controls\NotifyError\notification.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

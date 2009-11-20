@@ -187,6 +187,22 @@ namespace Analytics.Data
 
         #region Methods
 
+        public IEnumerable<KeyValuePair<string, string>>GetMetricsAndDimensions
+        {
+            get{
+                return Metrics.Concat(Dimensions);
+            }
+        }
+
+        public List<string> GetFriendlyMetricsAndDimensions 
+        {
+            get{
+                return (from p in GetMetricsAndDimensions
+                        select GetFriendlySizeName(p.Value)).ToList<string>();
+            }
+        }
+
+
         private void CreateFromQueryString(string queryString)
         {
             foreach (string queryParam in queryString.Split(new char[] { '?', '&' }).Where(s => s.Contains('=')))

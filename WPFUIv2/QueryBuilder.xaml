@@ -14,11 +14,12 @@
     >
     
     <Window.Resources>
-        <ResourceDictionary>
+            <ResourceDictionary>
+                
             <ResourceDictionary.MergedDictionaries>
                <ResourceDictionary Source="pack://application:,,,/PresentationFramework.Royale;V3.0.0.0;31bf3856ad364e35;component\themes\royale.normalcolor.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <DataTemplate x:Key="listbTemplate">
                 <TextBlock Margin="0,5,0,0" Text="{Binding Key}" />
             </DataTemplate>
@@ -134,14 +135,16 @@
     <Label Canvas.Left="394" Canvas.Top="60" Height="28" Name="label2" Width="70">Start index</Label>
     <TextBox TextChanged="validate_int" Canvas.Left="482" Canvas.Top="103.92" Height="23" Name="maxResultsTextBox" Width="81">10000</TextBox>
     <Label Canvas.Left="394" Canvas.Top="101.92" Height="28" Name="label3" Width="70">Max results</Label>
-        <TabControl Canvas.Left="11" Canvas.Top="18.961" Height="223" Name="tabControl1" Width="377">
-            <TabItem Header="Tab1" Name="tabItem1">
+        <TabControl Canvas.Left="11" Canvas.Top="18.961" Height="223" Name="timeSpantabControl" Width="377">
+            <TabItem Header="Date specific" Name="calendarTab">
                 <Canvas Width="442" Height="202">
                     <toolkit:Calendar SelectionMode="SingleDate" x:Name="startDateCalendar" Margin="2,6.387,89,-21.347" Height="168" Canvas.Top="11" />
                     <toolkit:Calendar  SelectionMode="SingleDate" x:Name="endDateCalendar" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" HorizontalAlignment="Right" Margin="0,6.387,-111,-21.313" Width="179" Height="168" Canvas.Left="187" Canvas.Top="11" />
+                    <Label Canvas.Left="-2" Canvas.Top="0" Height="28" Name="label5" Width="120">Start date</Label>
+                    <Label Canvas.Left="181" Canvas.Top="0" Name="label7" Width="112" Height="26">End date</Label>
                 </Canvas>
             </TabItem>
-            <TabItem Header="Tab2">
+            <TabItem Selector.IsSelected="True" Header="Time span" Name="timeSpanTab">
                 <Canvas>
                     <RadioButton  Canvas.Left="20" Canvas.Top="32" Tag="Week" Height="16" Checked="Timespan_Checked" Name="weekCheckBox" Width="120" IsChecked="True">Last week</RadioButton>
                     <RadioButton  Canvas.Left="20" Canvas.Top="57" Tag="Month" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
@@ -151,5 +154,13 @@
                 </Canvas>
             </TabItem>
         </TabControl>
+        <Label Canvas.Left="394" Canvas.Top="146.921" Height="28" Name="label8" >Sort by</Label>
+        <ComboBox Canvas.Left="450" Canvas.Top="146.921" Height="23" ItemsSource="{Binding}" Name="sortBycomboBox" Width="113">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <ContentPresenter Content="{Binding Key}" Tag="{Binding alue}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
     </Canvas>
 </Window>

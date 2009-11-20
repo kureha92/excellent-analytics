@@ -124,6 +124,8 @@ namespace UI
             bool isExpanded = targetExpander.IsExpanded;
             VisualStateManager.GoToState(callButton, isExpanded ? "Normal"  : "Pressed", true);
             targetExpander.IsExpanded = !isExpanded;
+            if (!isExpanded)
+                DataBindSortByDropDown();
         }
 
         private void DimensionsExpander_Expanded(object sender, RoutedEventArgs e)
@@ -140,6 +142,7 @@ namespace UI
             _query.Dimensions.Clear();
             _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
             BindSizeList(ListType.Dim);
+            DataBindSortByDropDown();
         }
 
         private void MetricsExpander_Expanded(object sender, RoutedEventArgs e)
@@ -150,6 +153,7 @@ namespace UI
             MetricsView.Visibility = Visibility.Visible;
             MetricsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
             MetricsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight);
+            
         }
 
         private void MetricsExpander_Collapsed(object sender, RoutedEventArgs e)
@@ -157,6 +161,7 @@ namespace UI
             _query.Metrics.Clear();
             _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
             BindSizeList(ListType.Met);
+            DataBindSortByDropDown();
         }
 
         private void CancelBorder_MouseDown(object sender, MouseButtonEventArgs e)
@@ -262,6 +267,10 @@ namespace UI
             _query.StartIndex = int.Parse(startIndexTextBox.Text);
             _query.MaxResults = int.Parse(maxResultsTextBox.Text);
 
+            if(sortBycomboBox.SelectedIndex != -1)
+                _query.SortParams.Add(((KeyValuePair<string, string>)sortBycomboBox.SelectedItem).Key
+                    , ((KeyValuePair<string, string>)sortBycomboBox.SelectedItem).Value);
+
             _query.Ids.Clear();
             _query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId);
         }
@@ -337,7 +346,13 @@ namespace UI
 
             hasInvokedDimSetCheck = false;
             hasInvokedMetSetCheck = false;
-            
+
+            if (_query.SortParams != null && _query.SortParams.Count > 0)
+                sortBycomboBox.SelectedValue = _query.SortParams.First().Value;
+
+            if (_query.GetMetricsAndDimensions.Count() > 0)
+                DataBindSortByDropDown();
+
             if (CurrentUser != null)
                 DataBindSitesDropDown();
 
@@ -358,6 +373,16 @@ namespace UI
 
             startIndexTextBox.Text = _query.StartIndex.ToString();
             maxResultsTextBox.Text = _query.MaxResults.ToString();
+
+            
+        }
+
+        private void DataBindSortByDropDown()
+        {
+            Binding sites = new Binding();
+            sites.Source = _query.GetMetricsAndDimensions;
+            sortBycomboBox.SetBinding(ComboBox.ItemsSourceProperty, sites);
+            sortBycomboBox.SelectedIndex = _query.GetDimensionsAndMetricsCount() > 0 ? 0 : -1;
         }
 
         private void Notify(string message)
@@ -446,7 +471,7 @@ namespace UI
         {
             DateTime startDate = DateTime.Now.AddDays(-7);
             DateTime endDate = DateTime.Now;
-            if (this._query != null && _query.StartDate != null && _query.EndDate != null)
+            if (this._query != null && _query.StartDate.Year != 1 && _query.EndDate.Year != 1)
             {
                 startDate = _query.StartDate;
                 endDate = _query.EndDate;
