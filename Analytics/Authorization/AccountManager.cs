@@ -28,6 +28,7 @@ namespace Analytics.Authorization
             UserAccount uAcc = new UserAccount(authToken , eMail);
             UTF8Encoding encoding = new UTF8Encoding();
             WebRequest request = HttpWebRequest.Create(Data.General.GA_RequestURIs.Default.AccountFeed + "default");
+            request.Proxy = ProxyHelper.GetProxy();
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = 0;
@@ -123,6 +124,7 @@ namespace Analytics.Authorization
         {
             string uri = "https://www.google.com/accounts/ClientLogin";
             WebRequest request = HttpWebRequest.Create(uri);
+            request.Proxy = ProxyHelper.GetProxy();
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded";
             UTF8Encoding encoding = new UTF8Encoding();
@@ -162,6 +164,10 @@ namespace Analytics.Authorization
             }
             catch (WebException ex)
             {
+                if ((ex.Response as HttpWebResponse).StatusCode == HttpStatusCode.ProxyAuthenticationRequired) 
+                {
+                    errorCode = HttpStatusCode.ProxyAuthenticationRequired;    
+                }
                 if (ex.Status == WebExceptionStatus.NameResolutionFailure)
                 {
                     errorCode = HttpStatusCode.NotFound;
