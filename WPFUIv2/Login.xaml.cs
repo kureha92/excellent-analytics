@@ -24,11 +24,11 @@ namespace UI
     {
         public delegate void AuthSuccessful(string authToken, string email);
         public event AuthSuccessful authSuccessful;
-
+        ProxySettings _settings;
         public delegate void Logout();
         public event Logout logOut;
-
         UserAccount activeUser;
+        
 
         public Login(UserAccount uAcc)
         {
@@ -53,7 +53,7 @@ namespace UI
             Authenticate();
         }
 
-        private void Authenticate()
+        internal void Authenticate()
         {
             if (this.activeUser == null)
             {
@@ -69,8 +69,12 @@ namespace UI
                     this.Close();
                     authSuccessful(authToken, email);
                 }
-                else
-                {
+                else if (status == HttpStatusCode.ProxyAuthenticationRequired) {
+                    this._settings = new ProxySettings();
+                    this._settings._loginReferenceForm = this;
+                    _settings.ShowDialog();
+                }
+                else {
                     mainNotify.Visibility = Visibility.Visible;
                     mainNotify.ErrorMessage = status == HttpStatusCode.Forbidden ? "Invalid password / username" :
                     status == HttpStatusCode.NotFound ? "A connection could not be established" : "Error: " + status.ToString();
