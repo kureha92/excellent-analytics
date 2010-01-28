@@ -27,8 +27,8 @@ namespace Analytics.Data
             NotifySubscribers(10 , "Requesting report" , null);
             int dimensionsAndMetrics = query.GetDimensionsAndMetricsCount();
             string uri = query.ToString();
-            
             WebRequest request = HttpWebRequest.Create(uri);
+            request.Proxy = ProxyHelper.GetProxy();
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
             UTF8Encoding encoding = new UTF8Encoding();
