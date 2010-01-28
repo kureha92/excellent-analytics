@@ -122,6 +122,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ProxySettings.xaml.cs">
+      <DependentUpon>ProxySettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="QueryBuilder.xaml.cs">
       <DependentUpon>QueryBuilder.xaml</DependentUpon>
     </Compile>
@@ -159,6 +162,10 @@
     <Page Include="Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProxySettings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="QueryBuilder.xaml">
       <SubType>Designer</SubType>
