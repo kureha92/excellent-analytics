@@ -6,6 +6,7 @@ using System.Net;
 using System.IO;
 using System.Xml.Linq;
 using System.Xml;
+using Analytics.Data;
 
 namespace Analytics.Authorization
 {
@@ -27,7 +28,7 @@ namespace Analytics.Authorization
         {
             UserAccount uAcc = new UserAccount(authToken , eMail);
             UTF8Encoding encoding = new UTF8Encoding();
-            WebRequest request = HttpWebRequest.Create(Data.General.GA_RequestURIs.Default.AccountFeed + "default");
+            WebRequest request = HttpWebRequest.Create(Data.General.GA_RequestURIs.Default.AccountFeed + "default?v=2");
             request.Proxy = ProxyHelper.GetProxy();
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
@@ -82,12 +83,29 @@ namespace Analytics.Authorization
             XName title = atom + "title";
             XName link = atom + "link";
             XName updated = atom + "updated";
+            XName segmentElementName = dxp + "segment";
 
             XName entryElementName = atom + "entry";
             XName propertyElementName = dxp + "property";
 
-            IEnumerable<XElement> entryElements = xDoc.Root.Elements(entryElementName);
 
+            //Fetch all segments for profileId
+            
+
+/*
+            IEnumerable<XElement> segmentElements = xDoc.Root.Elements(segmentElementName);
+            SegmentModel segment = new SegmentModel();
+            foreach (XElement segmentElement in segmentElements)
+            {
+//                IEnumerable<XAttribute> elementAttributes = segmentElement.Attributes(segmentElementName);
+                if (segmentElement.FirstAttribute.Value.Equals("gaid::-3"))
+                {
+                    segment.ReturningVisitors = segmentElement.FirstAttribute.NextAttribute.Value;
+                     string test = (segmentElement.FirstNode as XElement).Value;
+                }
+            }
+            */
+            IEnumerable<XElement> entryElements = xDoc.Root.Elements(entryElementName);
             foreach (XElement entryEmelent in entryElements)
             {
                 Entry entry = new Entry();
