@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Xml.Linq;
 using Analytics.Data.Enums;
+using System.Windows.Media;
+using System.Windows;
 
 namespace UI.Controls
 {
@@ -10,6 +12,7 @@ namespace UI.Controls
         #region Fields
 
         bool? _isChecked = false;
+        bool? _isEnabled = true;
         SizeViewModel _parent;
         int maxSelections;
 
@@ -28,7 +31,6 @@ namespace UI.Controls
         private static List<SizeViewModel> LoadXML(SizeKeyType feedObjectType)
         {
             SizeViewModel sizes = new SizeViewModel(feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics");
-            
             XDocument xDocument = Analytics.Data.Query.GetSizeCollectionAsXML(feedObjectType);
             foreach (XElement element in xDocument.Root.Elements("Category"))
             {
@@ -38,9 +40,14 @@ namespace UI.Controls
                 {
                     string paramValue = subElement.Attribute("value").Value;
                     SizeViewModel size = new SizeViewModel(subElement.Attribute("name").Value , paramValue);
+                 /*   if (size.Name.Contains("hour"))
+                    {
+                        size.IsChecked = true;
+                    }*/
                     category.Children.Add(size);
                 }
                 category.IsInitiallyExpanded = false;
+                
                 sizes.Children.Add(category);
             }
             sizes.IsInitiallyExpanded = true;
@@ -54,7 +61,7 @@ namespace UI.Controls
             this.Children = new List<SizeViewModel>();
         }
 
-        SizeViewModel(string name , string value)
+        SizeViewModel(string name, string value)
         {
             this.Value = value;
             this.Name = name;
@@ -70,6 +77,8 @@ namespace UI.Controls
             }
         }
 
+        
+
         #region Properties
 
         public List<SizeViewModel> Children { get; private set; }
@@ -81,6 +90,8 @@ namespace UI.Controls
         public string Name { get; private set; }
 
         public string Value { get; private set; }
+
+        public string Category { get; private set; }
 
         public int MaxSelections
         {
@@ -119,12 +130,15 @@ namespace UI.Controls
             this.OnPropertyChanged("IsChecked");
         }
 
+
+
         void VerifyCheckState()
         {
             bool? state = null;
             for (int i = 0; i < this.Children.Count; ++i)
             {
                 bool? current = this.Children[i].IsChecked;
+
                 if (i == 0)
                 {
                     state = current;
@@ -139,6 +153,52 @@ namespace UI.Controls
         }
 
         #endregion // IsChecked
+
+        #region IsEnabled
+
+        public bool? IsEnabled
+        {
+            get { return _isEnabled; }
+            set { this.SetIsEnabled(value, true, true); }
+        }
+
+        void SetIsEnabled(bool? value, bool updateChildren, bool updateParent)
+        {
+            if (value == _isEnabled)
+                return;
+
+            _isEnabled = value;
+
+            if (updateChildren && _isEnabled.HasValue)
+                this.Children.ForEach(c => c.SetIsEnabled(_isEnabled, true, false));
+
+            if (updateParent && _parent != null)
+                _parent.VerifyEnableState();
+
+            this.OnPropertyChanged("IsEnabled");
+        }
+
+        void VerifyEnableState()
+        {
+            bool? state = null;
+            for (int i = 0; i < this.Children.Count; ++i)
+            {
+                bool? current = this.Children[i].IsEnabled;
+
+                if (i == 0)
+                {
+                    state = current;
+                }
+                else if (state != current)
+                {
+                    state = null;
+                    break;
+                }
+            }
+            this.SetIsEnabled(state, false, true);
+        }
+
+        #endregion //IsEnabled
 
         #endregion // Properties
 

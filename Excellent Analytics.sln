@@ -1,16 +1,16 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A793B218-6693-465F-98C3-5752260850BC}"
+	ProjectSection(SolutionItems) = preProject
+		..\Users\fredrik.johansson.DROPIT\Desktop\License.txt = ..\Users\fredrik.johansson.DROPIT\Desktop\License.txt
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analytics", "Analytics\Analytics.csproj", "{C14A2844-C1EF-406E-A83A-7F058567BFA8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Addin_Excel2007", "Addin_Excel2007\Addin_Excel2007.csproj", "{CA49FD05-7063-4676-95E2-08A77B2646B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "WPFUIv2\UI.csproj", "{DF756E88-B3BE-486C-8820-8FE81C175180}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A793B218-6693-465F-98C3-5752260850BC}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\Users\fredrik.johansson.DROPIT\Desktop\License.txt = ..\..\Users\fredrik.johansson.DROPIT\Desktop\License.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,5 +36,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal

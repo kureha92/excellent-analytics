@@ -49,12 +49,28 @@ namespace Analytics.Data
             {
                 switch (item.LOperator)
                 {
-                    case LogicalOperator.And: logicOp = " And "; break;
-                    case LogicalOperator.Or: logicOp = " Or "; break;
+                    case LogicalOperator.And: logicOp = " And " + "\n"; break;
+                    case LogicalOperator.Or: logicOp = " Or " + "\n"; break;
                     case LogicalOperator.None: break;
                     default: break;
                 }
-                items.Add(logicOp + item.Key + " " + item.Operator.Description + " " + item.Expression);
+                items.Add(logicOp + item.Key);
+            }
+            return items;
+        }
+
+        public List<List<string>> ToElementList()
+        {
+            
+            List<List<string>> items = new List<List<string>>();
+            foreach (FilterItem item in this)
+            {
+                List<string> elements = new List<string>();
+                elements.Add(item.Key);
+                elements.Add(item.Operator.Description);
+                elements.Add(item.Expression);
+                elements.Add(item.LOperator.ToString());
+                items.Add(elements);
             }
             return items;
         }

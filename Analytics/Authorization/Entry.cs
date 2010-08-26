@@ -15,6 +15,7 @@ namespace Analytics.Authorization
         private string _accountLink;
         private string _accountId;
 
+
         public string AccountId
         {
             get { return _accountId; }

@@ -37,6 +37,7 @@ namespace UI
         {
             if (progress == 100 || !String.IsNullOrEmpty(errorMsg))
             {
+
                 this.Close();
             }
         }

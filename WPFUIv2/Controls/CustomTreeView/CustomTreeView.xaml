@@ -7,48 +7,30 @@
     Loaded="UserControl_Loaded"
              >
     <UserControl.Resources>
-    <ResourceDictionary>
-        <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
-            <Setter Property="IsExpanded" Value="{Binding IsInitiallyExpanded, Mode=OneTime}" />
-            <Setter Property="IsSelected" Value="{Binding IsInitiallySelected, Mode=OneTime}" />
-            <Setter Property="KeyboardNavigation.AcceptsReturn" Value="True" />
-            <Setter Property="dw:VirtualToggleButton.IsVirtualToggleButton" Value="True" />
-            <Setter Property="dw:VirtualToggleButton.IsChecked" Value="{Binding IsChecked}" />
-        </Style>
+        <ResourceDictionary>
+            <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
+                <Setter Property="IsExpanded" Value="{Binding IsInitiallyExpanded, Mode=OneTime}" />
+                <Setter Property="IsSelected" Value="{Binding IsInitiallySelected, Mode=OneTime}" />
+                <Setter Property="KeyboardNavigation.AcceptsReturn" Value="True" />
+                <Setter Property="dw:VirtualToggleButton.IsVirtualToggleButton" Value="True" />
+                <Setter Property="dw:VirtualToggleButton.IsChecked" Value="{Binding IsChecked}" />
+                <Setter Property="dw:VirtualToggleButton.IsEnabled" Value="{Binding IsEnabled}" />
+            </Style>
 
-        <HierarchicalDataTemplate 
-        x:Key="CheckBoxItemTemplate"
-        ItemsSource="{Binding Children, Mode=OneTime}"
-        >
-            <StackPanel Orientation="Horizontal">
-                <CheckBox
-                    Focusable="False" 
-                    IsChecked="{Binding IsChecked}" 
-                    VerticalAlignment="Center"
-                    />
-                <ContentPresenter 
-                    Content="{Binding Name, Mode=OneTime}" 
-                    Margin="2,0"
-                    />
-            </StackPanel>
-        </HierarchicalDataTemplate>
-        
-        <ObjectDataProvider x:Key="dimProvider" 
-          MethodName="CreateDimensions"
-          ObjectType="{x:Type local:SizeViewModel}" />
-        <ObjectDataProvider x:Key="metProvider" 
-          MethodName="CreateMetrics"
-          ObjectType="{x:Type local:SizeViewModel}" />
-        
+            <HierarchicalDataTemplate x:Key="CheckBoxItemTemplate" ItemsSource="{Binding Children, Mode=OneTime}">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox Focusable="False" IsChecked="{Binding IsChecked}" IsEnabled="{Binding IsEnabled}" VerticalAlignment="Center"/>
+                    <ContentPresenter Content="{Binding Name, Mode=OneTime}" Margin="2,0"/>
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
+            <ObjectDataProvider x:Key="dimProvider" MethodName="CreateDimensions" ObjectType="{x:Type local:SizeViewModel}" />
+            <ObjectDataProvider x:Key="metProvider" MethodName="CreateMetrics" ObjectType="{x:Type local:SizeViewModel}" />
+
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <TreeView Panel.ZIndex="1"
-      x:Name="tree" 
-      ItemContainerStyle="{StaticResource TreeViewItemStyle}"
-      ItemsSource="{Binding Mode=OneTime}"
-      ItemTemplate="{StaticResource CheckBoxItemTemplate}"
-               
-    />
+
+    <TreeView Panel.ZIndex="1" x:Name="tree" ItemContainerStyle="{StaticResource TreeViewItemStyle}" ItemsSource="{Binding Mode=OneTime}" ItemTemplate="{StaticResource CheckBoxItemTemplate}"/>
+
     
 </UserControl>

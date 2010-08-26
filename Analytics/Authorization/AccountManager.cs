@@ -7,6 +7,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Xml;
 using Analytics.Data;
+using Analytics.Data.General;
 
 namespace Analytics.Authorization
 {
@@ -56,7 +57,8 @@ namespace Analytics.Authorization
             {
                 if (xDoc != null)
                 {
-                    uAcc.Entrys = ExtractDataFromXml(xDoc); 
+                    uAcc.Entrys = ExtractDataFromXml(xDoc);
+                    uAcc.Segments = ExtractSegmentDataFromXml(xDoc);
                 }
                 else
                 {
@@ -67,9 +69,54 @@ namespace Analytics.Authorization
             return uAcc;
         }
 
+        private List<UserSegment> ExtractSegmentDataFromXml(XDocument xDoc)
+        {
+            List<UserSegment> segments = new List<UserSegment>();
+            List<UserSegment> customerSegments = new List<UserSegment>();
+
+            XNamespace dxp = "http://schemas.google.com/analytics/2009";
+
+            XName segmentElementName = dxp + "segment";
+
+            IEnumerable<XElement> segmentElements = xDoc.Root.Elements(segmentElementName);
+            UserSegment noSegment = new UserSegment();
+            noSegment.SegmentName = "";
+            noSegment.SegmentId = "";
+            segments.Add(noSegment);
+
+            foreach (XElement segmentElement in segmentElements)
+            {
+                UserSegment segment = new UserSegment();
+                segment.SegmentId = segmentElement.FirstAttribute.Value;
+                segment.SegmentName = segmentElement.FirstAttribute.NextAttribute.Value;                
+
+                if (!segmentElement.FirstAttribute.Value.Contains("-"))
+                {
+                    customerSegments.Add(segment);
+                }
+                else 
+                {
+                    segments.Add(segment);
+                }
+            }
+
+            UserSegment defCustSeparator = new UserSegment();
+            defCustSeparator.SegmentName = "____________________________";
+            defCustSeparator.SegmentId = "";
+            segments.Add(defCustSeparator);
+            List<UserSegment> allSegments = new List<UserSegment>();
+            foreach (UserSegment segment in customerSegments)
+            {
+                segments.Add(segment);
+            }
+
+            return segments;
+        }
+        
         private List<Entry> ExtractDataFromXml(XDocument xDoc)
         {
             List<Entry> entrys = new List<Entry>();
+            
             XNamespace dxp = "http://schemas.google.com/analytics/2009";
             XNamespace atom = "http://www.w3.org/2005/Atom";
 
@@ -77,34 +124,16 @@ namespace Analytics.Authorization
             string profileID = "ga:profileId";
             string accountName = "ga:accountName";
             string accountId = "ga:accountId";
-
             string name = "name";
             string value = "value";
+            
             XName title = atom + "title";
             XName link = atom + "link";
             XName updated = atom + "updated";
-            XName segmentElementName = dxp + "segment";
-
+            
             XName entryElementName = atom + "entry";
             XName propertyElementName = dxp + "property";
-
-
-            //Fetch all segments for profileId
             
-
-/*
-            IEnumerable<XElement> segmentElements = xDoc.Root.Elements(segmentElementName);
-            SegmentModel segment = new SegmentModel();
-            foreach (XElement segmentElement in segmentElements)
-            {
-//                IEnumerable<XAttribute> elementAttributes = segmentElement.Attributes(segmentElementName);
-                if (segmentElement.FirstAttribute.Value.Equals("gaid::-3"))
-                {
-                    segment.ReturningVisitors = segmentElement.FirstAttribute.NextAttribute.Value;
-                     string test = (segmentElement.FirstNode as XElement).Value;
-                }
-            }
-            */
             IEnumerable<XElement> entryElements = xDoc.Root.Elements(entryElementName);
             foreach (XElement entryEmelent in entryElements)
             {

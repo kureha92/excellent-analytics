@@ -12,6 +12,7 @@ namespace Analytics.Authorization
         private List<Entry> _entrys;
         private DateTime _tokenExpiration;
         private DateTime creationTime;
+        private List<UserSegment> _segments;
 
         #region Properties
         public string EMail
@@ -37,6 +38,19 @@ namespace Analytics.Authorization
                 return _entrys;
             }
             set { _entrys = value; }
+        }
+
+        public List<UserSegment> Segments
+        {
+            get
+            {
+                if (_segments == null)
+                {
+                    _segments = new List<UserSegment>();
+                }
+                return _segments;
+            }
+            set { _segments = value; }
         }
 
         public DateTime TokenExpiration

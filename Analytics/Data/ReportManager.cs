@@ -6,6 +6,7 @@ using System.Net;
 using System.Xml.Linq;
 using System.IO;
 using System.Collections;
+using System.Windows.Forms;
 
 namespace Analytics.Data
 {
@@ -13,7 +14,15 @@ namespace Analytics.Data
     {
         public delegate void ExecutionProgress(int progress, string progressMessage, string errorMsg);
         public event ExecutionProgress executionProgress;
-
+        int totalHitResult;
+        int upperLimitBound;
+        string authenticationToken;
+        XDocument xDoc = null;
+        HttpWebResponse response = null;
+        WebRequest request;
+        int rowPosition;
+        object[,] data;
+        
         private void NotifySubscribers(int progress, string progressMessage, string errorMsg)
         {
             if (executionProgress != null)
@@ -24,45 +33,79 @@ namespace Analytics.Data
 
         public Report GetReport(Query query, string authToken)
         {
+            authenticationToken = authToken;
             NotifySubscribers(10 , "Requesting report" , null);
+            Report report = new Report();
+            object[,] data = new object[1000000 , 100];
+            int originalStartIndex = query.StartIndex;
+
+            CreateRequest(query);
+            RequestData(request);
+
             int dimensionsAndMetrics = query.GetDimensionsAndMetricsCount();
+
+            if (xDoc != null)
+            {
+                NotifySubscribers(50, "Extract data", null);
+                report.Data = ExtractDataFromXml(xDoc, dimensionsAndMetrics);
+                report.Query = query.ToString();
+                report.SiteURI = query.Ids.Keys.First();
+            }
+            report.Headers = SetHeaders(query);
+
+            // Checks if paging is neccessary.
+            while (totalHitResult > upperLimitBound && upperLimitBound > 10000)
+            {
+                query.StartIndex = query.StartIndex + 10000;
+                query.MaxResults = upperLimitBound = query.MaxResults + 10000;
+                CreateRequest(query);
+                RequestData(request);
+                NotifySubscribers(50, "Extract data", null);
+                report.Data = ExtractDataFromXml(xDoc, dimensionsAndMetrics);
+            }
+            query.StartIndex = originalStartIndex;
+            return report;
+        }
+
+        /*@author Daniel Sandberg
+         * The method constructs the request.
+         */
+        private void CreateRequest(Query query)
+        {
             string uri = query.ToString();
-            WebRequest request = HttpWebRequest.Create(uri);
+            request = HttpWebRequest.Create(uri);
             request.Proxy = ProxyHelper.GetProxy();
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
             UTF8Encoding encoding = new UTF8Encoding();
-            request.Headers.Add("Authorization: GoogleLogin auth=" + authToken);
+            request.Headers.Add("Authorization: GoogleLogin auth=" + authenticationToken);
+            request.Headers.Add("GData-Version: 2");
             request.ContentLength = 0;
-            Report report = new Report();
-            XDocument xDoc = null;
-            HttpWebResponse response = null;
-            
+        }
+
+        /*@author Daniel Sandberg
+         * This method executes the call to Google Analytics.
+         * Google Analytics return an XML document, which we saves into the global parameter xDoc.
+         */
+        private void RequestData(WebRequest request)
+        {
             try
             {
                 using (response = (HttpWebResponse)request.GetResponse())
                 {
                     if (response != null && response.StatusCode == HttpStatusCode.OK)
                     {
-                        NotifySubscribers(20, "Geting response" , null);
+                        NotifySubscribers(20, "Geting response", null);
                         xDoc = XDocument.Load(new StreamReader(response.GetResponseStream()));
-                        NotifySubscribers(30, "Request complete" , null);
+                        NotifySubscribers(30, "Request complete", null);
                     }
                 }
             }
             catch (Exception)
             {
-                NotifySubscribers(50, "Request failed" , HttpStatusCode.BadRequest.ToString() );
+                NotifySubscribers(50, "Request failed", HttpStatusCode.BadRequest.ToString());
+                MessageBox.Show("Request failed. Probably because of invalid input.", "Bad request");
             }
-            if (xDoc != null)
-            {
-                NotifySubscribers(50, "Extract data" , null);
-                report.Data = ExtractDataFromXml(xDoc, dimensionsAndMetrics);
-                report.Query = query.ToString();
-                report.SiteURI = query.Ids.Keys.First();
-            }
-            report.Headers = SetHeaders(query);
-            return report;
         }
 
         private object[,] SetHeaders(Query query)
@@ -82,30 +125,49 @@ namespace Analytics.Data
             return headers;
         }
 
+
+        /*@ co-author Daniel Sandberg
+         * Retrieves XML elements and saves them into an object array. 
+         * Each object contains a text value and two integers. The integers specify which cell the certain object belongs to.
+         */
         private object[,] ExtractDataFromXml(XDocument xDoc, int dimensionsAndMetrics)
         {
             XNamespace dxp = "http://schemas.google.com/analytics/2009";
             XNamespace atom = "http://www.w3.org/2005/Atom";
+            XNamespace opensearch = "http://a9.com/-/spec/opensearch/1.1/";
             XName dimensionElementName = dxp + "dimension";
             XName metricElementName = dxp + "metric";
+            XName segmentElementName = dxp + "segment";
             XName entryElementName = atom + "entry";
+            XName totalResult = opensearch + "totalResults";
+            XName paging = opensearch + "itemsPerPage";
             string value = "value";
+
+            List<XElement> segmentElements = xDoc.Root.Elements(segmentElementName).ToList<XElement>();
+            totalHitResult = Int32.Parse(xDoc.Root.Element(totalResult).Value);
+            upperLimitBound = Int32.Parse(xDoc.Root.Element(paging).Value);
+            
             List<XElement> entryElements = xDoc.Root.Elements(entryElementName).ToList<XElement>();
-            object[,] data = new object[entryElements.Count() > 0 ? entryElements.Count() : 1  , dimensionsAndMetrics];
+            if (rowPosition < 1)
+            {
+                data = new object[entryElements.Count() > 0 ? totalHitResult + 2 : 1  , dimensionsAndMetrics];
+            }
+            
 
             for (int rowIndex = 0; rowIndex < entryElements.Count(); rowIndex++)
             {
                 int columnIndex = 0;
                 foreach (XElement dimEle in entryElements[rowIndex].Elements(dimensionElementName))
                 {
-                    data[rowIndex, columnIndex] = dimEle.Attribute(value).Value;
+                    data[rowPosition, columnIndex] = dimEle.Attribute(value).Value;
                     columnIndex++;
                 }
                 foreach (XElement metEle in entryElements[rowIndex].Elements(metricElementName))
                 {
-                    data[rowIndex, columnIndex] = metEle.Attribute(value).Value;
+                    data[rowPosition, columnIndex] = metEle.Attribute(value).Value;
                     columnIndex++;
                 }
+                rowPosition++;
             }
             NotifySubscribers(100, "Report complete" , null);
             return data;

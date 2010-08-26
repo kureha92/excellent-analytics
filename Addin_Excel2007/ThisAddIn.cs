@@ -8,6 +8,7 @@ using Office = Microsoft.Office.Core;
 using Microsoft.Office.Tools.Excel;
 using Microsoft.Office.Tools.Excel.Extensions;
 
+
 namespace GA_Excel2007
 {
     public partial class ThisAddIn

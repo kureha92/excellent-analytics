@@ -64,6 +64,61 @@ namespace UI.Controls
 
         #endregion
 
+        #region IsEnabled
+
+        /// <summary>
+        /// IsChecked Attached Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty IsEnabledProperty =
+            DependencyProperty.RegisterAttached("IsEnabled", typeof(Nullable<bool>), typeof(VirtualToggleButton),
+                new FrameworkPropertyMetadata((Nullable<bool>)false,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Journal,
+                    new PropertyChangedCallback(OnIsEnabledChanged)));
+
+        /// <summary>
+        /// Gets the IsChecked property.  This dependency property 
+        /// indicates whether the toggle button is checked.
+        /// </summary>
+        public static Nullable<bool> GetIsEnabled(DependencyObject d)
+        {
+            return (Nullable<bool>)d.GetValue(IsEnabledProperty);
+        }
+
+        /// <summary>
+        /// Sets the IsChecked property.  This dependency property 
+        /// indicates whether the toggle button is checked.
+        /// </summary>
+        public static void SetIsEnabled(DependencyObject d, Nullable<bool> value)
+        {
+            d.SetValue(IsEnabledProperty, value);
+        }
+
+        /// <summary>
+        /// Handles changes to the IsChecked property.
+        /// </summary>
+        private static void OnIsEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            UIElement pseudobutton = d as UIElement;
+            if (pseudobutton != null)
+            {
+                Nullable<bool> newValue = (Nullable<bool>)e.NewValue;
+                if (newValue == true)
+                {
+                    RaiseCheckedEvent(pseudobutton);
+                }
+                else if (newValue == false)
+                {
+                    RaiseUncheckedEvent(pseudobutton);
+                }
+                else
+                {
+                    RaiseIndeterminateEvent(pseudobutton);
+                }
+            }
+        }
+
+        #endregion
+
         #region IsThreeState
 
         /// <summary>
@@ -170,6 +225,7 @@ namespace UI.Controls
 
         #endregion
 
+
         #region Unchecked
 
         /// <summary>
@@ -214,6 +270,7 @@ namespace UI.Controls
         {
             e.Handled = true;
             UpdateIsChecked(sender as DependencyObject);
+            UpdateIsEnabled(sender as DependencyObject);
         }
 
         private static void OnKeyDown(object sender, KeyEventArgs e)
@@ -226,12 +283,14 @@ namespace UI.Controls
                     if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt) return;
 
                     UpdateIsChecked(sender as DependencyObject);
+                    UpdateIsEnabled(sender as DependencyObject);
                     e.Handled = true;
 
                 }
                 else if (e.Key == Key.Enter && (bool)(sender as DependencyObject).GetValue(KeyboardNavigation.AcceptsReturnProperty))
                 {
                     UpdateIsChecked(sender as DependencyObject);
+                    UpdateIsEnabled(sender as DependencyObject);
                     e.Handled = true;
                 }
             }
@@ -247,6 +306,19 @@ namespace UI.Controls
             else
             {
                 SetIsChecked(d, isChecked.HasValue);
+            }
+        }
+
+        private static void UpdateIsEnabled(DependencyObject d)
+        {
+            Nullable<bool> isEnabled = GetIsEnabled(d);
+            if (isEnabled == true)
+            {
+                SetIsEnabled(d, GetIsThreeState(d) ? (Nullable<bool>)null : (Nullable<bool>)false);
+            }
+            else
+            {
+                SetIsEnabled(d, isEnabled.HasValue);
             }
         }
 

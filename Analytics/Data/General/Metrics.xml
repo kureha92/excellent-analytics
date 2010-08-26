@@ -54,6 +54,54 @@
     <Metric name="goal4 completions" value="ga:goal4Completions"/>
     <Metric name="goal4 starts" value="ga:goal4Starts"/>
     <Metric name="goal4 value " value="ga:goal4Value"/>
+    <Metric name="goal5 completions" value="ga:goal5Completions"/>
+    <Metric name="goal5 starts" value="ga:goal5Starts"/>
+    <Metric name="goal5 value " value="ga:goal5Value"/>
+    <Metric name="goal6 completions" value="ga:goal6Completions"/>
+    <Metric name="goal6 starts" value="ga:goal6Starts"/>
+    <Metric name="goal6 value " value="ga:goal6Value"/>
+    <Metric name="goal7 completions" value="ga:goal7Completions"/>
+    <Metric name="goal7 starts" value="ga:goal7Starts"/>
+    <Metric name="goal7 value " value="ga:goal7Value"/>
+    <Metric name="goal8 completions" value="ga:goal8Completions"/>
+    <Metric name="goal8 starts" value="ga:goal8Starts"/>
+    <Metric name="goal8 value " value="ga:goal8Value"/>
+    <Metric name="goal9 completions" value="ga:goal9Completions"/>
+    <Metric name="goal9 starts" value="ga:goal9Starts"/>
+    <Metric name="goal9 value " value="ga:goal9Value"/>
+    <Metric name="goal10 completions" value="ga:goal10Completions"/>
+    <Metric name="goal10 starts" value="ga:goal10Starts"/>
+    <Metric name="goal10 value " value="ga:goal10Value"/>
+    <Metric name="goal11 completions" value="ga:goal11Completions"/>
+    <Metric name="goal11 starts" value="ga:goal11Starts"/>
+    <Metric name="goal11 value " value="ga:goal11Value"/>
+    <Metric name="goal12 completions" value="ga:goal12Completions"/>
+    <Metric name="goal12 starts" value="ga:goal12Starts"/>
+    <Metric name="goal12 value " value="ga:goal12Value"/>
+    <Metric name="goal13 completions" value="ga:goal13Completions"/>
+    <Metric name="goal13 starts" value="ga:goal13Starts"/>
+    <Metric name="goal13 value " value="ga:goal13Value"/>
+    <Metric name="goal14 completions" value="ga:goal14Completions"/>
+    <Metric name="goal14 starts" value="ga:goal14Starts"/>
+    <Metric name="goal14 value " value="ga:goal14Value"/>
+    <Metric name="goal15 completions" value="ga:goal15Completions"/>
+    <Metric name="goal15 starts" value="ga:goal15Starts"/>
+    <Metric name="goal15 value " value="ga:goal15Value"/>
+    <Metric name="goal16 completions" value="ga:goal16Completions"/>
+    <Metric name="goal16 starts" value="ga:goal16Starts"/>
+    <Metric name="goal16 value " value="ga:goal16Value"/>
+    <Metric name="goal17 completions" value="ga:goal17Completions"/>
+    <Metric name="goal17 starts" value="ga:goal17Starts"/>
+    <Metric name="goal17 value " value="ga:goal17Value"/>
+    <Metric name="goal18 completions" value="ga:goal18Completions"/>
+    <Metric name="goal18 starts" value="ga:goal18Starts"/>
+    <Metric name="goal18 value " value="ga:goal18Value"/>
+    <Metric name="goal19 completions" value="ga:goal19Completions"/>
+    <Metric name="goal19 starts" value="ga:goal19Starts"/>
+    <Metric name="goal19 value " value="ga:goal19Value"/>
+    <Metric name="goal20 completions" value="ga:goal20Completions"/>
+    <Metric name="goal20 starts" value="ga:goal20Starts"/>
+    <Metric name="goal20 value " value="ga:goal20Value"/>    
   </Category>
   <Category name="Events" type="M7">
     <Metric name="total events" value="ga:totalEvents"/>

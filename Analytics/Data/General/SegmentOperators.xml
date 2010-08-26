@@ -1,0 +1,12 @@
+﻿<Operators>
+  <Operator operator="==" description="Exact match" urlEncoded="%3A%3A" />
+  <Operator operator="!=" description="Does not match" urlEncoded="!%3D" />
+  <Operator operator="=~" description="Contains a match for the regular expression" urlEncoded="%3D~" />
+  <Operator operator="!~" description="Does not match regular expression" urlEncoded="!~" />
+  <Operator operator="=@" description="Contains substring" urlEncoded="%3D@" />
+  <Operator operator="!@" description="Does not contain substring" urlEncoded="!@" />
+  <Operator description="Greater than" urlEncoded="%3E" />
+  <Operator description="Lesser than" urlEncoded="%3C" />
+  <Operator description="Greater than or equal to" urlEncoded="%3E%3D" />
+  <Operator description="Less than or equal to" urlEncoded="%3C%3D" />  
+</Operators>

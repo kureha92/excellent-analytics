@@ -15,13 +15,23 @@ namespace Analytics.Data
         #region Fields
         private Dictionary<string, string> _dimensions;
         private Dictionary<string, string> _metrics;
+        private Dictionary<string, string> _segments;
         private Dictionary<string, string> _ids;
+        private Dictionary<string, string> _accountId;
         private Dictionary<string, string> _sortParams;
+        private Dictionary<string, string> _listSortOrder;
         private Filter _filter;
+        private Sort _sort;
         private enum DataType {Dimension , Metric , Unknown};
 
         private DateTime _startDate;
         private DateTime _endDate;
+
+        private bool _selectDates = false;
+
+        private DateTime _radioButton;
+
+        private TimePeriodHelper _timeHelper;
 
         private TimePeriod _timePeriod;
 
@@ -30,9 +40,12 @@ namespace Analytics.Data
 
         private Dictionary<string, string> metricsDefinitions;
         private Dictionary<string, string> dimensionDefinitions;
+        private Dictionary<string, string> filtersDefinitions;
 
         private Dictionary<string, string> metricOperators;
         private Dictionary<string, string> dimensionOperators;
+        private Dictionary<string, string> segmentOperators;
+
         #endregion
 
         #region Properties
@@ -57,6 +70,17 @@ namespace Analytics.Data
             }
             set { _metrics = value; }
         }
+        
+        public Dictionary<string, string> ListSortOrder
+        {
+            get
+            {
+                if (_listSortOrder == null)
+                    _listSortOrder = new Dictionary<string, string>();
+                return _listSortOrder;
+            }
+            set { _listSortOrder = value; }
+        }
 
         public Dictionary<string, string> Ids
         {
@@ -67,6 +91,28 @@ namespace Analytics.Data
                 return _ids; 
             }
             set { _ids = value; }
+        }
+
+        public Dictionary<string, string> AccountId
+        {
+            get
+            {
+                if (_accountId == null)
+                    _accountId = new Dictionary<string, string>();
+                return _accountId;
+            }
+            set { _accountId = value; }
+        }
+
+        public Dictionary<string, string> Segments
+        {
+            get
+            {
+                if(_segments == null)
+                    _segments = new Dictionary<string, string>();
+                return _segments;
+            }
+            set { _segments = value; }
         }
 
         public Dictionary<string, string> SortParams
@@ -91,6 +137,17 @@ namespace Analytics.Data
             set { _filter = value; }
         }
 
+        public Sort Sort
+        {
+            get
+            {
+                if (_sort == null)
+                    _sort = new Sort();
+                return _sort;
+            }
+            set { _sort = value; }
+        }
+
         public DateTime StartDate
         {
             get { return _startDate; }
@@ -101,6 +158,18 @@ namespace Analytics.Data
         {
             get { return _endDate; }
             set { _endDate = value; }
+        }
+
+        public bool SelectDates
+        {
+            get { return _selectDates; }
+            set { _selectDates = value; }
+        }
+        
+        public DateTime RadioButton
+        {
+            get { return _radioButton; }
+            set { _radioButton = value; }
         }
 
         public TimePeriod TimePeriod
@@ -121,7 +190,6 @@ namespace Analytics.Data
             set { _startIndex = value; }
         }
 
-        
         #endregion
 
         #region Private properties
@@ -135,7 +203,7 @@ namespace Analytics.Data
             }
             set { metricsDefinitions = value; }
         }
-        
+
         private Dictionary<string, string> DimensionDefinitions
         {
             get
@@ -168,6 +236,19 @@ namespace Analytics.Data
             }
             set { metricOperators = value; }
         }
+
+        private Dictionary<string, string> SegmentOperators
+        {
+            get
+            {
+                if (segmentOperators == null)
+                    segmentOperators = GetOperatorCollection(SizeKeyType.Segment);
+                return segmentOperators;
+            }
+            set { segmentOperators = value; }
+        }
+
+
         #endregion
 
         public Query()
@@ -209,6 +290,7 @@ namespace Analytics.Data
                 AddQueryParamToQuery(queryParam);
         }
 
+        // Builds the query that will be sent to Gooogle Analytics.
         private void AddQueryParamToQuery(string queryParam)
         {
             int startIndex = queryParam.IndexOf('=');
@@ -219,6 +301,7 @@ namespace Analytics.Data
                 case "ids": AddIds(queryParam, startIndex); break;
                 case "dimensions": AddDimensions(queryParam, startIndex); break;
                 case "metrics": AddMetrics(queryParam, startIndex); break;
+                case "segment": AddSegments(queryParam, startIndex); break;
                 case "filters": AddFilters(queryParam, startIndex); break;
                 case "sort": AddSortParams(queryParam, startIndex); break;
                 case "start-date": AddStartDate(queryParam, startIndex); break;
@@ -253,15 +336,47 @@ namespace Analytics.Data
                 StartDate = startDate;
         }
 
-        private void AddSortParams(string queryParam, int startIndex)
+        private void AddSortParams(string sortQueryParam, int startIndex)
         {
-            foreach (string sortParam in queryParam.Substring(startIndex).Split(','))
-                SortParams.Add(GetFriendlySizeName(sortParam), sortParam);
+            List<char> separators = SeparatorsFromFilterQueryParam(sortQueryParam);
+            char placeFiller = '»';
+            separators.Insert(0, placeFiller);
+
+//            int index1 = sortQueryParam.IndexOf('-');
+//            if (index1 != -1)
+//            {
+//                sortQueryParam = sortQueryParam.Remove(index1, 1); 
+//            }
+            
+            string[] sortings = sortQueryParam.Substring(startIndex).Split(new char[] { ',', ';' });
+
+            for (int i = 0; i < sortings.Count(); i++)
+            {
+                SortItem sItem;
+
+                if (sortings[i].Contains("-"))
+                {
+                    sItem = new SortItem(sortings[i], "-" + sortings[i].Substring(4));
+                }
+                else 
+                {
+                    sItem = new SortItem(sortings[i], sortings[i].Substring(3));
+                }
+
+                Sort.Add(sItem);
+                SortParams.Add(sItem.Key, sItem.Value);
+            }
         }
+
 
         private void AddIds(string queryParam, int startIndex)
         {
             Ids.Add(string.Empty, queryParam.Substring(startIndex));
+        }
+
+        private void AddSegments(string queryParam, int startIndex)
+        {
+            Segments.Add(string.Empty, queryParam.Substring(startIndex));
         }
 
         private void AddFilters(string filterQueryParam, int startIndex)
@@ -283,6 +398,7 @@ namespace Analytics.Data
             List<char> separators = (from char c in queryParam.ToCharArray()
                                      where c.Equals(',') || c.Equals(';')
                                      select c).ToList<char>();
+
             return separators;
         }
 
@@ -291,7 +407,7 @@ namespace Analytics.Data
             foreach (string metric in queryParam.Substring(startIndex).Split(','))
                 Metrics.Add(GetFriendlySizeName(metric), metric);
         }
-
+        
         private void AddDimensions(string queryParam, int startIndex)
         {
             foreach (string dimension in queryParam.Substring(startIndex).Split(','))
@@ -299,7 +415,7 @@ namespace Analytics.Data
         }
 
         
-
+        // Transforms query to a string.
         public override string ToString()
         {
             StringBuilder queryBuilder = new StringBuilder();
@@ -307,32 +423,59 @@ namespace Analytics.Data
             queryBuilder.Append(Ids.Count > 0 ? "?ids=" + string.Join(",", Ids.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Dimensions.Count > 0 ? "&dimensions=" + string.Join(",", Dimensions.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Metrics.Count > 0 ? "&metrics=" + string.Join(",", Metrics.Values.ToArray()) : string.Empty);
-            queryBuilder.Append(SortParams.Count > 0 ? "&sort=" + string.Join(",", SortParams.Values.ToArray()) : string.Empty);
+            queryBuilder.Append(Segments.Count > 0 ? "&segment=" + string.Join(",", Segments.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Filter.ToString());
-            queryBuilder.Append(GetQueryTimeSpan());
+            queryBuilder.Append(Sort.ToString());
+            if (_selectDates.Equals(false))
+            {
+                queryBuilder.Append(GetQueryTimeSpan());
+                TimeRange();
+            }
+            else
+            { 
+                string paramContainer = "&start-date={0}&end-date={1}";
+                queryBuilder.Append(string.Format(paramContainer, ToUnifiedCultureFormat(StartDate), ToUnifiedCultureFormat(EndDate)));
+            }
             queryBuilder.Append(StartIndex > 0 ? "&start-index=" + StartIndex : string.Empty);
             queryBuilder.Append( "&max-results=" + MaxResults);
             return queryBuilder.ToString();
         }
 
+        private void TimeRange()
+        {
+            StartDate = _timeHelper.StartDate;
+            EndDate = _timeHelper.EndDate;
+        }
+
+        // If a time span is selected in the Time period tab then the switch/case statement below will handle that value.
+        // Each case calls the TimePeriodHelper class to set the start and end dates.
         private string GetQueryTimeSpan()
         {
             string paramContainer = "&start-date={0}&end-date={1}";
+            _timeHelper = new TimePeriodHelper();
+            bool startQuarterDate = true;
+
             switch (TimePeriod)
             {
+                case TimePeriod.Today:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.startToday()), ToUnifiedCultureFormat(_timeHelper.endToday()));
+                case TimePeriod.Yesterday:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.startYesterDay()), ToUnifiedCultureFormat(_timeHelper.endYesterDay()));
                 case TimePeriod.Week:
-                    return string.Format(paramContainer, ToUnifiedCultureFormat(DateTime.Now.AddDays(-7)), ToUnifiedCultureFormat(DateTime.Now));
-                case TimePeriod.Month:
-                    return string.Format(paramContainer, ToUnifiedCultureFormat(DateTime.Now.AddMonths(-1)), ToUnifiedCultureFormat(DateTime.Now));
-                case TimePeriod.Quarter:
-                    return string.Format(paramContainer, ToUnifiedCultureFormat(DateTime.Now.AddMonths(-4)), ToUnifiedCultureFormat(DateTime.Now));
-                case TimePeriod.Year:
-                    return string.Format(paramContainer, ToUnifiedCultureFormat(DateTime.Now.AddYears(-1)), ToUnifiedCultureFormat(DateTime.Now));
-                case TimePeriod.Unspecified:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.startWeekDay()), ToUnifiedCultureFormat(_timeHelper.endWeekDay()));
+                case TimePeriod.WeekAnglo:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.startWeekDayAnglo()), ToUnifiedCultureFormat(_timeHelper.endWeekDayAnglo()));
+                case TimePeriod.LastMonth:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.monthStart()), ToUnifiedCultureFormat(_timeHelper.monthEnd()));
+                case TimePeriod.LastQuarter:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.LastQuarter(startQuarterDate)), ToUnifiedCultureFormat(_timeHelper.LastQuarter(startQuarterDate = false)));
+                case TimePeriod.LastYear:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.startLastYear()), ToUnifiedCultureFormat(_timeHelper.endLastYear()));
+                case TimePeriod.PeriodNotSpecified:
                     return string.Format(paramContainer, StartDate, EndDate);
                 default:
                     throw new Exception("Date interval missing or incomplete");
-            }  
+            }
         }
 
         private string ToUnifiedCultureFormat(DateTime date)
@@ -347,6 +490,7 @@ namespace Analytics.Data
             return Dimensions.Count + Metrics.Count;
         }
 
+        
         public static Query FromString(string queryString)
         {
             return new Query(queryString);
@@ -370,6 +514,14 @@ namespace Analytics.Data
                 SizeKeyType sizeType;
                 return (new FilterItem(GetFriendlySizeName(size, out sizeType), size, paramOperator, expression, sizeType, lOp));
             }
+            return null;
+        }
+
+        private SizeOperator GetSegmentParamOperator (string segment)            
+        {
+            foreach (KeyValuePair<string, string> item in SegmentOperators)
+                if (segment.Contains(item.Value))
+                    return new SizeOperator(item.Key, item.Value);
             return null;
         }
 
@@ -428,10 +580,20 @@ namespace Analytics.Data
         {
             Dictionary<string, string> operators = new Dictionary<string, string>();
             XDocument xDocument = XDocument.Load(System.Xml.XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General." +
-            (feedObjectType == SizeKeyType.Dimension ? "Dimension" : "Metric") + "FilterOperators.xml")));
+            FeedSizeKeyType(feedObjectType))));
             foreach (XElement element in xDocument.Root.Elements("Operator"))
                 operators.Add(element.Attribute("description").Value, element.Attribute("urlEncoded").Value);
             return operators;
+        }
+
+        private static string FeedSizeKeyType (SizeKeyType feedObjectType)
+        {
+            if (SizeKeyType.Dimension == feedObjectType)
+                return "DimensionFilterOperators.xml";
+            else if (SizeKeyType.Metric == feedObjectType)
+                return "MetricFilterOperators.xml";
+            else
+                return "SegmentOperators.xml";
         }
 
         private SizeKeyType GetFilterDataTypeFromSize(string urlEncoded)
@@ -461,5 +623,6 @@ namespace Analytics.Data
             return xDocument;
         } 
         #endregion
+
     }
 }

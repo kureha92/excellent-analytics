@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Analytics.Data.Enums
 {
-    public enum SizeKeyType { Dimension, Metric , Unknown };
+    public enum SizeKeyType { Dimension, Metric , Unknown, Segment};
+    public enum SegmentType { Default, Custom};
     public enum LogicalOperator  { And , Or, None  };
-    public enum TimePeriod { Week, Month, Quarter, Year, Unspecified };
+    public enum TimePeriod { Today, Yesterday, Week, WeekAnglo, LastMonth, LastQuarter, LastYear, SelectDates, PeriodNotSpecified };
 }
