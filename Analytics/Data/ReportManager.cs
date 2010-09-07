@@ -36,7 +36,6 @@ namespace Analytics.Data
             authenticationToken = authToken;
             NotifySubscribers(10 , "Requesting report" , null);
             Report report = new Report();
-            object[,] data = new object[1000000 , 100];
             int originalStartIndex = query.StartIndex;
 
             CreateRequest(query);
@@ -62,6 +61,8 @@ namespace Analytics.Data
                 RequestData(request);
                 NotifySubscribers(50, "Extract data", null);
                 report.Data = ExtractDataFromXml(xDoc, dimensionsAndMetrics);
+                if (upperLimitBound <= query.MaxResults)
+                    break;
             }
             query.StartIndex = originalStartIndex;
             return report;
@@ -85,7 +86,7 @@ namespace Analytics.Data
 
         /*@author Daniel Sandberg
          * This method executes the call to Google Analytics.
-         * Google Analytics return an XML document, which we saves into the global parameter xDoc.
+         * Google Analytics return an XML document, which is saved into the global parameter xDoc.
          */
         private void RequestData(WebRequest request)
         {
@@ -160,12 +161,14 @@ namespace Analytics.Data
                 foreach (XElement dimEle in entryElements[rowIndex].Elements(dimensionElementName))
                 {
                     data[rowPosition, columnIndex] = dimEle.Attribute(value).Value;
-                    columnIndex++;
+//                    if (data.Length != rowPosition)
+                        columnIndex++;
                 }
                 foreach (XElement metEle in entryElements[rowIndex].Elements(metricElementName))
                 {
                     data[rowPosition, columnIndex] = metEle.Attribute(value).Value;
-                    columnIndex++;
+//                    if (data.Length != rowPosition)
+                        columnIndex++;
                 }
                 rowPosition++;
             }

@@ -62,6 +62,5 @@ namespace UI.Controls
             SizeViewModel root = this.tree.Items[0] as SizeViewModel;
             root.IsChecked = false;
         }
-        
     }
 }

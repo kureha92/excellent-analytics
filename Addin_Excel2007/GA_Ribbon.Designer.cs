@@ -36,6 +36,8 @@
             this.buttonQuery = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator2 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.buttonUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.separator3 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
+            this.buttonUpdateWorkSheet = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.tab1.SuspendLayout();
             this.GoogleAnalytics.SuspendLayout();
             this.SuspendLayout();
@@ -53,6 +55,8 @@
             this.GoogleAnalytics.Items.Add(this.buttonQuery);
             this.GoogleAnalytics.Items.Add(this.separator2);
             this.GoogleAnalytics.Items.Add(this.buttonUpdate);
+            this.GoogleAnalytics.Items.Add(this.separator3);
+            this.GoogleAnalytics.Items.Add(this.buttonUpdateWorkSheet);
             this.GoogleAnalytics.Label = "Excellent Analytics";
             this.GoogleAnalytics.Name = "GoogleAnalytics";
             // 
@@ -92,6 +96,19 @@
             this.buttonUpdate.ShowImage = true;
             this.buttonUpdate.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.buttonUpdate_Click);
             // 
+            // separator3
+            // 
+            this.separator3.Name = "separator3";
+            // 
+            // buttonUpdateWorkSheet
+            // 
+            this.buttonUpdateWorkSheet.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.buttonUpdateWorkSheet.Enabled = false;
+            this.buttonUpdateWorkSheet.Label = "Update  WorkSheet";
+            this.buttonUpdateWorkSheet.Name = "buttonUpdateWorkSheet";
+            this.buttonUpdateWorkSheet.ShowImage = true;
+            this.buttonUpdateWorkSheet.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.buttonUpdateWorkSheet_Click);
+            // 
             // GA_Ribbon
             // 
             this.Name = "GA_Ribbon";
@@ -115,8 +132,10 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonQuery;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonAccount;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonUpdate;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonUpdateWorkSheet;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator1;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator2;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator3;
     }
 
     partial class ThisRibbonCollection : Microsoft.Office.Tools.Ribbon.RibbonReadOnlyCollection

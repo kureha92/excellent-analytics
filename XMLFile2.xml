@@ -1,0 +1,160 @@
+﻿- <feed xmlns="http://www.w3.org/2005/Atom" xmlns:dxp="http://schemas.google.com/analytics/2009" xmlns:ga="http://schemas.google.com/ga/2009" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:gd="http://schemas.google.com/g/2005" gd:etag="W/"CkMCSXw4fyp7I2A9WxFQFEU.="""" gd:kind="analytics#accounts">
+  <id>http://www.google.com/analytics/feeds/accounts/danneibromma@gmail.com</id>
+  <updated>2010-05-10T01:34:28.237-07:00</updated>
+  <title>Profile list for danneibromma@gmail.com</title>
+  <link rel="self" type="application/atom+xml" href="https://www.google.com/analytics/feeds/accounts/default?v=2" />
+  - <author>
+    <name>Google Analytics</name>
+  </author>
+  <generator version="1.0">Google Analytics</generator>
+  <openSearch:totalResults>2</openSearch:totalResults>
+  <openSearch:startIndex>1</openSearch:startIndex>
+  <openSearch:itemsPerPage>2</openSearch:itemsPerPage>
+  - <dxp:segment id="gaid::-1" name="All Visits">
+    <dxp:definition />
+  </dxp:segment>
+  - <dxp:segment id="gaid::-2" name="New Visitors">
+    <dxp:definition>ga:visitorType==New Visitor</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-3" name="Returning Visitors">
+    <dxp:definition>ga:visitorType==Returning Visitor</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-4" name="Paid Search Traffic">
+    <dxp:definition>ga:medium==cpa,ga:medium==cpc,ga:medium==cpm,ga:medium==cpp,ga:medium==cpv,ga:medium==ppc</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-5" name="Non-paid Search Traffic">
+    <dxp:definition>ga:medium==organic</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-6" name="Search Traffic">
+    <dxp:definition>ga:medium==cpa,ga:medium==cpc,ga:medium==cpm,ga:medium==cpp,ga:medium==cpv,ga:medium==organic,ga:medium==ppc</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-7" name="Direct Traffic">
+    <dxp:definition>ga:medium==(none)</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-8" name="Referral Traffic">
+    <dxp:definition>ga:medium==referral</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-9" name="Visits with Conversions">
+    <dxp:definition>ga:goalCompletionsAll>0</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-10" name="Visits with Transactions">
+    <dxp:definition>ga:transactions>0</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-11" name="Mobile Traffic">
+    <dxp:definition>ga:isMobile==Yes</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::-12" name="Non-bounce Visits">
+    <dxp:definition>ga:bounces==0</dxp:definition>
+  </dxp:segment>
+  - <dxp:segment id="gaid::932225807" name="besök med about-sidor">
+    <dxp:definition>ga:pagePath=@about</dxp:definition>
+  </dxp:segment>
+  - <entry gd:etag="W/"CkMCSXw4fyp7I2A9WxFQFEU.="""" gd:kind="analytics#account">
+    <id>http://www.google.com/analytics/feeds/accounts/ga:13630368</id>
+    <updated>2010-05-10T01:34:28.237-07:00</updated>
+    <title>www.markred.se</title>
+    <link rel="alternate" type="text/html" href="http://www.google.com/analytics" />
+    <ga:customVariable index="2" name="Adaptlogic" scope="visit" />
+    <ga:customVariable index="1" name="Offline" scope="visitor" />
+    - <ga:goal active="true" name="Visad kontaktsida" number="1" value="0.0">
+      <ga:destination caseSensitive="false" expression="/kontakt/" matchType="head" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Gått till blogg" number="2" value="0.0">
+      <ga:destination caseSensitive="false" expression="/page/1/" matchType="head" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="RSS-prenumeration" number="3" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*feed.*" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Gått till Excellent Analytics" number="4" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*outgoing/excellentanalytics.*" matchType="regex" step1Required="false" />
+    </ga:goal>
+    <dxp:property name="ga:accountId" value="6740768" />
+    <dxp:property name="ga:accountName" value="Mark Red" />
+    <dxp:property name="ga:profileId" value="13630368" />
+    <dxp:property name="ga:webPropertyId" value="UA-6740768-1" />
+    <dxp:property name="ga:currency" value="USD" />
+    <dxp:property name="ga:timezone" value="Europe/Stockholm" />
+    <dxp:tableId>ga:13630368</dxp:tableId>
+  </entry>
+  - <entry gd:etag="W/"CU4BRn45eSp7I2A9WxFQEU8.="""" gd:kind="analytics#account">
+    <id>http://www.google.com/analytics/feeds/accounts/ga:18392402</id>
+    <updated>2010-05-05T22:32:37.021-07:00</updated>
+    <title>excellentanalytics.com</title>
+    <link rel="alternate" type="text/html" href="http://www.google.com/analytics" />
+    <ga:customVariable index="2" name="Sharer" scope="visitor" />
+    <ga:customVariable index="1" name="secnameslot1plevel" scope="hit" />
+    <ga:customVariable index="1" name="usergroup" scope="visitor" />
+    <ga:customVariable index="2" name="vnameslot2slevel" scope="visit" />
+    <ga:customVariable index="3" name="vnameslot3vlevel" scope="visitor" />
+    <ga:customVariable index="4" name="vnameslot4slevel" scope="visit" />
+    <ga:customVariable index="2" name="vnameslot5slevel" scope="visit" />
+    <ga:customVariable index="5" name="vnameslot5slevel-new" scope="visit" />
+    - <ga:goal active="true" name="Downloaded" number="1" value="10.899999618530273">
+      <ga:destination caseSensitive="false" expression="excellent-analytics\.googlecode\.com/files/Excellent" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Mark Red Exposure" number="2" value="1.5">
+      <ga:destination caseSensitive="false" expression="http://excellentanalytics.com/about/" matchType="head" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Subscribe to RSS in reader" number="3" value="2.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/feed$" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Viewed installation information" number="4" value="1.0">
+      <ga:destination caseSensitive="false" expression="http://excellentanalytics.com/how-to/" matchType="head" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Follow on Twitter" number="5" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/twitterfollow" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Subscribe to RSS by e-mail" number="6" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/emailfeed" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Go to Facebook Page" number="7" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/facebookpage" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Go to LinkedIn Group" number="8" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/linkedingroup" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Spread on Facebook" number="9" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/spreadfacebook$" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Spread on LinkedIn" number="10" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/spreadlinkedin$" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Spread on Twitter" number="11" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/spreadtwitter$" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Spread on del.icio.us" number="12" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/spreaddelicious$" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Suggestions in UserVoice" number="13" value="0.0">
+      <ga:destination caseSensitive="false" expression=".*/outgoing/suggestions$" matchType="regex" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="More than 4 pages viewed (test goal)" number="14" value="0.0">
+      <ga:engagement comparison=">" thresholdValue="4" type="pagesVisited" />
+    </ga:goal>
+    - <ga:goal active="true" name="Clicked download button" number="15" value="1.0">
+      <ga:destination caseSensitive="false" expression="/outgoing/ordereddownloadlink" matchType="head" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="More time spent on site than the timeout (test goal)" number="16" value="0.0">
+      <ga:engagement comparison=">" thresholdValue="1801" type="timeOnSite" />
+    </ga:goal>
+    - <ga:goal active="true" name="Visited download page" number="17" value="2.0">
+      <ga:destination caseSensitive="false" expression="/about/google-analytics-data-in-excel/sdjsaua82/" matchType="head" step1Required="false" />
+    </ga:goal>
+    - <ga:goal active="true" name="Test goal number 18" number="18" value="0.0">
+      <ga:engagement comparison=">" thresholdValue="1" type="pagesVisited" />
+    </ga:goal>
+    - <ga:goal active="true" name="Test goal number 19" number="19" value="0.0">
+      <ga:engagement comparison=">" thresholdValue="2" type="pagesVisited" />
+    </ga:goal>
+    - <ga:goal active="true" name="Test goal number 20" number="20" value="0.0">
+      <ga:engagement comparison=">" thresholdValue="4" type="timeOnSite" />
+    </ga:goal>
+    <dxp:property name="ga:accountId" value="6740768" />
+    <dxp:property name="ga:accountName" value="Mark Red" />
+    <dxp:property name="ga:profileId" value="18392402" />
+    <dxp:property name="ga:webPropertyId" value="UA-6740768-4" />
+    <dxp:property name="ga:currency" value="USD" />
+    <dxp:property name="ga:timezone" value="Europe/Stockholm" />
+    <dxp:tableId>ga:18392402</dxp:tableId>
+  </entry>
+</feed>

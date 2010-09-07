@@ -50,8 +50,6 @@ namespace UI
         public event QueryComplete queryComplete;
 
         public enum ListType { Dim, Met, Fil, Sort};
-        bool hasInvokedDimSetCheck;
-        bool hasInvokedMetSetCheck;
 
         private const int maxSupportedDimensions = 7;
         private const int maxSupportedMetrics = 10;
@@ -59,6 +57,7 @@ namespace UI
         private bool queryNotCompleted = false;
         private string descending = "Descending";
         private string ascending = "Ascending";
+        bool inValidParameters = false;
 
         SizeKeyType activeSize; 
         #endregion
@@ -103,14 +102,23 @@ namespace UI
 
         public QueryBuilder(UserAccount userAccount, Query query)
         {
-           
+            double pixelHeight = System.Windows.SystemParameters.PrimaryScreenHeight;
+            if (pixelHeight < 800)
+            {
+
+                SnapsToDevicePixels = true;
+
+            }
+
             InitializeComponent();
+            if (pixelHeight > 800)
+            SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+
             this._query = query != null ? query : new Query();
             _currentUserAccount = userAccount;
             InitializeForm();
             SetTimePeriod(query);
         }
-
 
 
         #region Events
@@ -155,33 +163,29 @@ namespace UI
 
         private void DimensionsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            bool inValidCombo = false;
-            
-            inValidCombo = ValidationHandler();
-            if (inValidCombo)
+
+            inValidParameters = ValidationHandler();
+            _query.Dimensions.Clear();
+            _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
+            BindSizeList(ListType.Dim);
+            DataBindSortByDropDown();
+            BindSortListBox();
+            BindSizeList(ListType.Sort);
+
+            // Verifies that erased parameters are not used in a filter.
+            filterCheck();
+            textBoxExpression.Clear();
+            BindFilterListBox();
+
+            if (inValidParameters)
             {
-                InvalidCombinations invalidCombinations = new InvalidCombinations();
-                invalidCombinations.Show();
                 DimensionsExpander.IsExpanded = true;
             }
             else
             {
-                _query.Dimensions.Clear();
-                
                 // The maximum number of dimensions is seven.
                 if (!NumberOfDimensions())
                 {
-                    _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
-                    BindSizeList(ListType.Dim);
-                    DataBindSortByDropDown();
-                    BindSortListBox();
-                    BindSizeList(ListType.Sort);
-
-                    filterCheck();
-                    textBoxExpression.Clear();
-
-                    BindFilterListBox();
-
                     MainNotify.Visibility = Visibility.Collapsed;
                     MainNotify.ErrorMessage = string.Empty;
                 }
@@ -210,12 +214,9 @@ namespace UI
 
         private void MetricsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            bool inValidCombo = false;
-            inValidCombo = ValidationHandler();
-            if (inValidCombo)
+            inValidParameters = ValidationHandler();
+            if (inValidParameters)
             {
-                InvalidCombinations invalidCombinations = new InvalidCombinations();
-                invalidCombinations.Show();
                 MetricsExpander.IsExpanded = true;
             }
             _query.Metrics.Clear();
@@ -228,6 +229,7 @@ namespace UI
                 BindSortListBox();
                 BindSizeList(ListType.Sort);
 
+                // Verifies that an erased parameter is not used in a filter.
                 filterCheck();
                 textBoxExpression.Clear();
                 BindFilterListBox();
@@ -420,17 +422,18 @@ namespace UI
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (!hasInvokedDimSetCheck && _query.Metrics.Count > 0)
+            if (_query.Metrics.Count > 0)
             {
                 SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
-                hasInvokedDimSetCheck = true;
             }
-            if (!hasInvokedMetSetCheck && _query.Dimensions.Count > 0)
+            if (_query.Dimensions.Count > 0)
             {
                 SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
-                hasInvokedMetSetCheck = true;
             }
         }
+
+
+
 
         void DimensionsView_treeDatabound()
         {
@@ -511,6 +514,36 @@ namespace UI
             BindSizeList(ListType.Sort);
         }
 
+        private void DimensionsExpander_MouseMove(object sender, MouseEventArgs e)
+        {
+            _query.Dimensions.Clear();
+            _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
+            if (ValidationHandler())
+            {
+                InvalidCombination invalidCombo = new InvalidCombination();
+                invalidCombo.Show();
+            }
+            if (_query.Dimensions.Count > 0)
+            {
+                SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
+            }
+        }
+
+        private void MetricsExpander_MouseMove(object sender, MouseEventArgs e)
+        {
+            _query.Metrics.Clear();
+            _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
+            if (ValidationHandler())
+            {
+                InvalidCombination invalidCombo = new InvalidCombination();
+                invalidCombo.Show();
+            }
+            if (_query.Metrics.Count > 0)
+            {
+                SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -521,9 +554,6 @@ namespace UI
             BindSizeList(ListType.Met);
             BindSizeList(ListType.Fil);
             BindSizeList(ListType.Sort);
-
-            hasInvokedDimSetCheck = false;
-            hasInvokedMetSetCheck = false;
 
             if (_query.SortParams != null && _query.SortParams.Count > 0)
             {
@@ -544,6 +574,8 @@ namespace UI
                 DataBindSegmentsDropDown();
             }
 
+            this._query.AccountId.OrderBy(x => x);
+
             // Setting the first account in the list
             if (this._query.AccountId.Count > 0)
             {
@@ -563,7 +595,6 @@ namespace UI
                 string pId = this._query.Ids.First().Value;
                 if (_currentUserAccount.Entrys.Find(p => p.ProfileId == pId) != null)
                 {
-                    comboBoxSites.SelectedValue = _currentUserAccount.Entrys.Find(p => p.ProfileId == pId);
                     foreach (Entry entry in _currentUserAccount.Entrys)
                     {
                         if (entry.ProfileId == pId) 
@@ -571,6 +602,7 @@ namespace UI
                             comboBoxAccount.SelectedValue = _currentUserAccount.Entrys.Find(p => p.AccountId == entry.AccountId); ;        
                         }
                     }
+                    comboBoxSites.SelectedValue = _currentUserAccount.Entrys.Find(p => p.ProfileId == pId);
                     
                 }
                 else
@@ -735,7 +767,6 @@ namespace UI
                 {
                     if (subItem.IsChecked == true)
                     {
-
                         checkedSizes.Add(subItem.Name, subItem.Value);
                     }
                 }
@@ -772,6 +803,12 @@ namespace UI
         // It is not possible to execute a question when the validation rules are not followed.
         private bool ValidateForm()
         {
+            if (inValidParameters)
+            {
+                Notify("Your combination of metrics and dimensions is not valid. Valid combinations are described in Google's documentation: http://code.google.com/intl/sv/apis/analytics/docs/gdata/gdataReferenceValidCombos.html#explore2Pair");
+                return false;
+            }
+
             if (NumberOfDimensions())
             {
                 Notify("You have exceeded the maximum limit of dimensions selected. Maximum is seven.");
@@ -947,6 +984,11 @@ namespace UI
                 _query.SelectDates = true;
             }
 
+            // If the user have not entered a interval of hits to view, then set them static here before calling GA.
+//            if (startIndexTextBox.Text.Equals(""))
+//                startIndexTextBox.Text = "0";
+            if (maxResultsTextBox.Text.Equals("0"))
+                maxResultsTextBox.Text = "10000";
 
             _query.StartIndex = int.Parse(startIndexTextBox.Text);
             _query.MaxResults = int.Parse(maxResultsTextBox.Text);
@@ -984,15 +1026,14 @@ namespace UI
             }
         }
 
-        private bool ValidationHandler()
+        public bool ValidationHandler()
         {
-            SizeViewModel dimCategories = DimensionsView.tree.Items[0] as SizeViewModel;
+            SizeViewModel dimCategories =  DimensionsView.tree.Items[0] as SizeViewModel;
             SizeViewModel metCategories = MetricsView.tree.Items[0] as SizeViewModel;
             DimensionBasedValidation inValidMetrics = new DimensionBasedValidation();
             MetricBasedValidation inValidDimensions = new MetricBasedValidation();
             List<string> prohibitedParameter = new List<string>();
             List<string> prohibitedHelper = new List<string>();
-            List<string> multiCombo = new List<string>();
             bool inValidCombo = false;
 
             // All previous invalidated metrics and dimensions are set to valid.
@@ -1000,6 +1041,8 @@ namespace UI
             EnableAllDimenions(dimCategories);
             prohibitedParameter.Clear();
             prohibitedHelper.Clear();
+            _query.Metrics.Clear();
+            _query.Dimensions.Clear();
 
 
             /*
@@ -1010,12 +1053,9 @@ namespace UI
             {
                 foreach (SizeViewModel dimension in dimensions.Children)
                 {
-                    if (dimension.IsChecked == true)
+                    if (dimension.IsChecked.Equals(true))
                     {
-                        // The dimension might be a part in a combinational validation rule. Therefore they will be added to a verification list.
-                        multiCombo.Add(dimension.Name);
-
-                        // These two rows of code gathers invalid dimensions and metrics based on selected check boxes in the GUI.
+                        // This row of code gathers invalid dimensions and metrics based on selected dimensions in the GUI.
                         prohibitedHelper = inValidMetrics.prohibitedMetrics(dimension.Name);
                         foreach (string prohibitedMet in prohibitedHelper)
                         {
@@ -1023,6 +1063,8 @@ namespace UI
                         }
 
                         prohibitedHelper.Clear();
+
+                        // This row of code gathers invalid dimensions and metrics based on selected metrics in the GUI.
                         prohibitedHelper = inValidDimensions.prohibitedDimension(dimension.Name);
                         foreach (string prohibitedDim in prohibitedHelper)
                         {
@@ -1041,9 +1083,6 @@ namespace UI
                 {
                     if (metric.IsChecked == true)
                     {
-                        // The dimension might be a part in a combinational validation rule. Therefore they will be added to a verification list.
-                        multiCombo.Add(metric.Name);
-
                         prohibitedHelper = inValidMetrics.prohibitedMetrics(metric.Name);
                         foreach (string prohibitedMet in prohibitedHelper)
                         {
@@ -1062,7 +1101,7 @@ namespace UI
 
             /* It is time to check for invalid multi-combinations.
              */
-            InvalidMultiCombinations multiComboInvalids = new InvalidMultiCombinations();
+//            InvalidMultiCombinations multiComboInvalids = new InvalidMultiCombinations();
 
             List<string> metDimList = new List<string>();
             //            metDimList = multiComboInvalids.MultiCombo(multiCombo);
@@ -1074,8 +1113,10 @@ namespace UI
             }
 
             // The dimension window will not close when an invalid combination is selected.
+            bool dimensionInvalidationCheck = false;
             foreach (SizeViewModel dimensions in dimCategories.Children)
             {
+                Dictionary<string, string> dimList = new Dictionary<string, string>();
                 foreach (SizeViewModel dimension in dimensions.Children)
                 {
                     foreach (string prohibited in prohibitedParameter)
@@ -1084,20 +1125,30 @@ namespace UI
                         {
                             inValidCombo = true;
                             dimension.IsChecked = false;
-                            dimension.IsEnabled = false;
+                            dimension.IsEnabled = true;
+                            dimensionInvalidationCheck = true;
+
                         }
                         else if (dimension.Name.Equals(prohibited))
                         {
                             dimension.IsEnabled = false;
                         }
                     }
-                }
 
+                    if (dimension.IsChecked == true)
+                        dimList.Add(dimension.Name, dimension.Value);
+                }
+                if (dimensionInvalidationCheck)
+                {
+                    _query.Dimensions = dimList;
+                    BindSizeList(ListType.Dim);                
+                }
             }
 
-            // The metric window will not close when an invalid combination is selected.
+            bool metricInvalidationCheck = false;
             foreach (SizeViewModel metrics in metCategories.Children)
             {
+                Dictionary<string, string> metList = new Dictionary<string,string>();
                 foreach (SizeViewModel metric in metrics.Children)
                 {
                     foreach (string prohibited in prohibitedParameter)
@@ -1105,16 +1156,26 @@ namespace UI
                         if (metric.Name.Equals(prohibited) && metric.IsChecked == true)
                         {
                             inValidCombo = true;
-                            metric.IsChecked = true;
+                            metric.IsChecked = false;
                             metric.IsEnabled = true;
+                            metricInvalidationCheck = true;
                         }
                         else if (metric.Name.Equals(prohibited))
                         {
                             metric.IsEnabled = false;
                         }
                     }
+                    if (metric.IsChecked == true)
+                        metList.Add(metric.Name, metric.Value);
                 }
+                if (metricInvalidationCheck)
+                {
+                    _query.Metrics = metList;
+                    BindSizeList(ListType.Met);                
+                }
+
             }
+
             return inValidCombo;
         }
 
@@ -1157,7 +1218,6 @@ namespace UI
 
                 timeSpanTab.IsSelected = true;
             }
-
         }
 
         private void setCalendarToDefault()
@@ -1169,6 +1229,10 @@ namespace UI
         }
 
         #endregion
+
+
+
+
 
 
     }

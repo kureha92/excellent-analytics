@@ -38,6 +38,9 @@ namespace Analytics.Data
         private int _maxResults;
         private int _startIndex;
 
+        private int _row;
+        private int _column;
+
         private Dictionary<string, string> metricsDefinitions;
         private Dictionary<string, string> dimensionDefinitions;
         private Dictionary<string, string> filtersDefinitions;
@@ -49,6 +52,25 @@ namespace Analytics.Data
         #endregion
 
         #region Properties
+
+        public int Column
+        {
+            get
+            {
+                return _column;
+            }
+            set { _column = value; }
+        }        
+
+        public int Row
+        {
+            get
+            {
+                return _row;
+            }
+            set { _row = value; }
+        }
+
         public Dictionary<string, string> Dimensions
         {
             get 
@@ -253,8 +275,7 @@ namespace Analytics.Data
 
         public Query()
         {
-            _maxResults = 10000;
-            _startIndex = 0;
+
         }
 
         /// <summary>

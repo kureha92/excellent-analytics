@@ -128,6 +128,7 @@ namespace UI.Controls
                 _parent.VerifyCheckState();
 
             this.OnPropertyChanged("IsChecked");
+            
         }
 
 
@@ -148,6 +149,7 @@ namespace UI.Controls
                     state = null;
                     break;
                 }
+
             }
             this.SetIsChecked(state, false, true);
         }

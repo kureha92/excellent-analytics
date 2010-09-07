@@ -9,26 +9,26 @@ using System.Windows.Forms;
 
 namespace WPFUIv2
 {
-    public partial class InvalidCombinations : Form
+    public partial class InvalidCombination : Form
     {
-        public InvalidCombinations()
+        public InvalidCombination()
         {
             InitializeComponent();
         }
 
-        private void label1_Click_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             // Change the color of the link text by setting LinkVisited 
             // to true.
             linkLabel1.LinkVisited = true;
             //Call the Process.Start method to open the default browser 
             //with a URL:
-            System.Diagnostics.Process.Start("http://code.google.com/intl/sv/apis/analytics/docs/gdata/gdataReferenceValidCombos.html");
-        }
-
-        private void OK_Click(object sender, EventArgs e)
-        {
-            Close();
+            System.Diagnostics.Process.Start("http://code.google.com/intl/sv/apis/analytics/docs/gdata/gdataReferenceValidCombos.html#explore2Pair");
         }
     }
 }

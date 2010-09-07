@@ -50,7 +50,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -59,18 +58,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -103,18 +99,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AboutExcellentAnalytics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutExcellentAnalytics.Designer.cs">
+      <DependentUpon>AboutExcellentAnalytics.cs</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="InvalidCombination.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InvalidCombination.Designer.cs">
-      <DependentUpon>InvalidCombination.cs</DependentUpon>
-    </Compile>
-    <Compile Include="WorkSheetUpdate.xaml.cs">
-      <DependentUpon>WorkSheetUpdate.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -128,12 +121,6 @@
     <Compile Include="Controls\CustomTreeView\VirtualToggleButton.cs" />
     <Compile Include="ExecutionProgress.xaml.cs">
       <DependentUpon>ExecutionProgress.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="About.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="About.Designer.cs">
-      <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
@@ -157,12 +144,8 @@
     <Compile Include="QueryBuilder.xaml.cs">
       <DependentUpon>QueryBuilder.xaml</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="About.resx">
-      <DependentUpon>About.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InvalidCombination.resx">
-      <DependentUpon>InvalidCombination.cs</DependentUpon>
+    <EmbeddedResource Include="AboutExcellentAnalytics.resx">
+      <DependentUpon>AboutExcellentAnalytics.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -176,6 +159,12 @@
     </None>
     <None Include="WPFUIv2_TemporaryKey.pfx" />
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Analytics\Analytics.csproj">
+      <Project>{C14A2844-C1EF-406E-A83A-7F058567BFA8}</Project>
+      <Name>Analytics</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\CustomTreeView\CustomTreeView.xaml">
@@ -219,10 +208,6 @@
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="WorkSheetUpdate.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -314,12 +299,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Analytics\Analytics.csproj">
-      <Project>{C14A2844-C1EF-406E-A83A-7F058567BFA8}</Project>
-      <Name>Analytics</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

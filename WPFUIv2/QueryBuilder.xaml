@@ -2,11 +2,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:toolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
+        
     xmlns:Custom="clr-namespace:UI.Controls"
     xmlns:enums="clr-namespace:Analytics.Data.Enums;assembly=Analytics"
     xmlns:data="clr-namespace:Analytics.Data;assembly=Analytics"
-    SizeToContent="WidthAndHeight" WindowStyle="SingleBorderWindow" AllowsTransparency="False"   
-    WindowStartupLocation="CenterScreen" ShowInTaskbar="True" ResizeMode="CanResizeWithGrip"  
+    WindowStyle="SingleBorderWindow" AllowsTransparency="False"   
+    SizeToContent="Manual" WindowStartupLocation="CenterScreen" ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" SnapsToDevicePixels="False"
         Title="Excellent Analytics"  Background="LightGray" 
         MouseEnter="Window_MouseEnter" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="633">
 
@@ -97,12 +98,12 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <Expander Canvas.Left="4" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="DimensionsExpander_Expanded">
-            <Custom:CustomTreeView Background="White" Cursor="Arrow" Panel.ZIndex="1" Margin="10,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView"  />
+                <Custom:CustomTreeView Background="White" Cursor="Arrow" MouseMove="DimensionsExpander_MouseMove" Panel.ZIndex="1" Margin="10,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView" />
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Dimension" />
             </Expander.Header>
         </Expander>
-        <Expander Canvas.Left="122" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="MetricsExpander_Collapsed" x:Name="MetricsExpander"  ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="MetricsExpander_Expanded">
+        <Expander Canvas.Left="122" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" MouseMove="MetricsExpander_MouseMove" Collapsed="MetricsExpander_Collapsed" x:Name="MetricsExpander"  ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="MetricsExpander_Expanded">
             <Custom:CustomTreeView   Cursor="Arrow" Panel.ZIndex="1" Margin="-110,5,0,0" ItemsDataType="Metric" x:Name="MetricsView" />
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Metrics" />
@@ -134,10 +135,10 @@
 
         <Button FontWeight="Bold" MouseEnter="ExecuteButton_MouseEnter" MouseLeave="ExecuteButton_MouseLeave" x:Name="ExecuteButton" Height="23" Click="ExecuteButton_Click" Content="Execute"  Width="60" Canvas.Left="503" Canvas.Top="566"/>
         <Button x:Name="CancelButton" Height="23" Click="CancelButton_Click" Content="Cancel" Width="60" Canvas.Left="413" Canvas.Top="566"/>
-        <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="152" Canvas.Top="342" ErrorMessage="" Visibility="Collapsed" Height="63" Width="243.8" />
-        <TextBox Canvas.Left="472" TextChanged="validate_int" Canvas.Top="93" Height="23" Name="startIndexTextBox" Width="81">0</TextBox>
+        <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="282" Canvas.Top="460" ErrorMessage="" Visibility="Collapsed" Height="80" Width="273.8" />
+        <TextBox Canvas.Left="472" TextChanged="validate_int" Canvas.Top="93" Height="23" Name="startIndexTextBox" Width="81"></TextBox>
         <Label Canvas.Left="391" Canvas.Top="93" Height="28" Name="label2" Width="70">Start index</Label>
-        <TextBox TextChanged="validate_int" Canvas.Left="472" Canvas.Top="135" Height="23" Name="maxResultsTextBox" Width="81">50</TextBox>
+        <TextBox TextChanged="validate_int" Canvas.Left="472" Canvas.Top="135" Height="23" Name="maxResultsTextBox" Text="" Width="81" ></TextBox>
         <Label Canvas.Left="393" Canvas.Top="135" Height="28" Name="label3" Width="70">Max results</Label>
         <TabControl Canvas.Left="11" Canvas.Top="18.961" Height="223" Name="timeSpantabControl" Width="377">
             <TabItem Header="Select dates"  Name="calendarTab">

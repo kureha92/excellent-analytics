@@ -19,7 +19,7 @@ namespace GA_Addin.UI
         public bool CheckForUpdates()
         {
             string result = null;
-            string url = "http://excellentanalytics.com/about/google-analytics-data-in-excel/download/";
+            string url = "http://excellentanalytics.com/wp-content/themes/dfblog/version.php";
             WebResponse response = null;
             StreamReader reader = null;
             string version = "";
@@ -44,13 +44,12 @@ namespace GA_Addin.UI
                     reader.Close();
                 if (response != null)
                     response.Close();
-                if (result.Contains("Version:"))
-                {
+/*                if (result.Contains("Version:"))
                     int position = result.IndexOf("Version:", 0);
                     version = result.Substring(position + 9, 9);
-                    version = version.Trim();
-                }
-
+                    version = version.Trim();*/
+                version = result.Replace(".", "");
+  
             }
 
             // The version number is only displayed in the GUI in the published application.
@@ -61,9 +60,10 @@ namespace GA_Addin.UI
                 System.Deployment.Application.ApplicationDeployment ad =
                 System.Deployment.Application.ApplicationDeployment.CurrentDeployment;
                 currentVersion = ad.CurrentVersion.ToString();
+                currentVersion.Replace(".","");
             }
 
-            if (version != currentVersion)
+            if (result != currentVersion)
             {
                 updateAvail = true;
             }
