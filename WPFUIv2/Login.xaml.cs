@@ -14,6 +14,10 @@ using Analytics.Authorization;
 using System.Net;
 using System.Windows.Threading;
 using System.Threading;
+using System.IO;
+using System.Reflection;
+using WPFUIv2.Properties;
+using System.Security.Cryptography;
 
 namespace UI
 {
@@ -28,11 +32,25 @@ namespace UI
         public delegate void Logout();
         public event Logout logOut;
         UserAccount activeUser;
-        
+        string userName = WPFUIv2.Properties.Settings.Default.UserName;
+        string password = WPFUIv2.Properties.Settings.Default.Password;
+//        public delegate void SettingsSavingEventHandler(object sender, System.ComponentModel.CancelEventArgs e);
 
         public Login(UserAccount uAcc)
         {
             InitializeComponent();
+
+            if (userName != null)
+                textBEmail.Text = userName;
+
+            if (password != null)
+            {
+                textBPassword.Password = password;
+                passwordRemember.IsChecked = true;
+            }
+
+            if (textBPassword.Padding != null)
+                passwordRemember.Visibility = Visibility.Visible;
 
             if (uAcc != null && !String.IsNullOrEmpty(uAcc.AuthToken))
             {
@@ -48,9 +66,22 @@ namespace UI
             }
         }
 
+
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+
+
             Authenticate();
+            /*
+            WPFUIv2.Properties.Settings.Default.UserName = textBEmail.Text;
+            if (passwordRemember.IsChecked == true)
+                WPFUIv2.Properties.Settings.Default.Password = textBPassword.Password;
+            else
+                WPFUIv2.Properties.Settings.Default.Password  = "";
+            */
+
+
         }
 
         internal void Authenticate()
@@ -92,6 +123,12 @@ namespace UI
                     logOut();
                 }
             }
+            WPFUIv2.Properties.Settings.Default["UserName"] = textBEmail.Text;
+            if (passwordRemember.IsChecked == true)
+                WPFUIv2.Properties.Settings.Default["Password"] = textBPassword.Password;
+            else
+                WPFUIv2.Properties.Settings.Default["Password"] = "";
+            WPFUIv2.Properties.Settings.Default.Save();
         }
 
         void accMan_authProgress(int progress, string progressMessage)
@@ -111,6 +148,16 @@ namespace UI
                 VisualStateManager.GoToState(buttonLogin, "Pressed", true);
                 Authenticate();
             }
+        }
+
+        private void passwordRemember_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void passwordRemember_Unchecked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

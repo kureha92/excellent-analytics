@@ -163,8 +163,8 @@ namespace UI
 
         private void DimensionsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-
-            inValidParameters = ValidationHandler();
+            if (validationActivate.IsChecked == true)
+                inValidParameters = ValidationHandler();
             _query.Dimensions.Clear();
             _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
             BindSizeList(ListType.Dim);
@@ -214,7 +214,8 @@ namespace UI
 
         private void MetricsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            inValidParameters = ValidationHandler();
+            if (validationActivate.IsChecked == true)
+                inValidParameters = ValidationHandler();
             if (inValidParameters)
             {
                 MetricsExpander.IsExpanded = true;
@@ -514,15 +515,24 @@ namespace UI
             BindSizeList(ListType.Sort);
         }
 
+        private void validationActivate_Unchecked(object sender, RoutedEventArgs e)
+        {
+            SizeViewModel dimCategories = DimensionsView.tree.Items[0] as SizeViewModel;
+            SizeViewModel metCategories = MetricsView.tree.Items[0] as SizeViewModel;
+            EnableAllMetrics(metCategories);
+            EnableAllDimenions(dimCategories);
+        }
+
         private void DimensionsExpander_MouseMove(object sender, MouseEventArgs e)
         {
             _query.Dimensions.Clear();
             _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
-            if (ValidationHandler())
-            {
-                InvalidCombination invalidCombo = new InvalidCombination();
-                invalidCombo.Show();
-            }
+            if (validationActivate.IsChecked == true)
+                if (ValidationHandler())
+                {
+                    InvalidCombination invalidCombo = new InvalidCombination();
+                    invalidCombo.Show();
+                }
             if (_query.Dimensions.Count > 0)
             {
                 SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
@@ -533,11 +543,12 @@ namespace UI
         {
             _query.Metrics.Clear();
             _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
-            if (ValidationHandler())
-            {
-                InvalidCombination invalidCombo = new InvalidCombination();
-                invalidCombo.Show();
-            }
+            if (validationActivate.IsChecked == true)
+                if (ValidationHandler())
+                {
+                    InvalidCombination invalidCombo = new InvalidCombination();
+                    invalidCombo.Show();
+                }
             if (_query.Metrics.Count > 0)
             {
                 SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
@@ -1229,10 +1240,6 @@ namespace UI
         }
 
         #endregion
-
-
-
-
 
 
     }

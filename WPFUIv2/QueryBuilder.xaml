@@ -203,7 +203,7 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-
+            <CheckBox Canvas.Left="472" Canvas.Top="195" Content="Validation" Unchecked="validationActivate_Unchecked" Height="16" Name="validationActivate" IsChecked="False" />
         </Canvas>
 
     </ScrollViewer>

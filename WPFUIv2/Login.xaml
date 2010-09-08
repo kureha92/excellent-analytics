@@ -2,7 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Custom="clr-namespace:UI.Controls"
-    ResizeMode="NoResize" Background="LightGray" WindowStartupLocation="CenterScreen" Height="241" Width="304" WindowStyle="SingleBorderWindow" OverridesDefaultStyle="False" Title="Excellent Analytics" SizeToContent="Manual">
+    ResizeMode="NoResize" Background="LightGray" WindowStartupLocation="CenterScreen" Height="284" Width="304" WindowStyle="SingleBorderWindow" OverridesDefaultStyle="False" Title="Excellent Analytics">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -10,11 +10,11 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Canvas Height="203" KeyDown="Canvas_KeyDown" FocusManager.FocusedElement="{Binding ElementName=textBEmail}">
+    <Canvas Height="243" KeyDown="Canvas_KeyDown" FocusManager.FocusedElement="{Binding ElementName=textBEmail}">
         <Label Foreground="Black"  Content="Email:" Height="23" 
             Canvas.Left="30" Canvas.Top="98"  />
         
-        <TextBox x:Name="textBEmail"  Width="174" TabIndex="0" 
+        <TextBox x:Name="textBEmail" Tag=""  Width="174" TabIndex="0" 
             Canvas.Left="96" Canvas.Top="98" />
         
         <Label Foreground="Black"  Content="Password:" Height="23" Canvas.Left="11" 
@@ -22,15 +22,16 @@
         
         <PasswordBox x:Name="textBPassword"  Width="174" PasswordChar="●" TabIndex="1" IsTabStop="True" 
         Canvas.Left="96" Canvas.Top="123" />
-        
-        <Button Focusable="True"  x:Name="buttonLogin"  Content="Login"  Width="50"  HorizontalAlignment="Left" Click="Button_Click" TabIndex="3"
-            Canvas.Left="220" Canvas.Top="160"/>
+
+        <Button Focusable="True"  x:Name="buttonLogin" Content="Login"  Width="50"  HorizontalAlignment="Left" Click="Button_Click" TabIndex="3"
+            Canvas.Left="220" Canvas.Top="201"/>
         
         <Button  x:Name="buttonCancel"  Content="Cancel"  Width="50"  HorizontalAlignment="Right" Click="buttonCancel_Click" TabIndex="4"  
-            Canvas.Left="147" Canvas.Top="161" />
+            Canvas.Left="147" Canvas.Top="202" />
         
         <Custom:NotifyError Visibility="Collapsed" x:Name="mainNotify" Canvas.Left="12" Canvas.Top="46" Height="44" />
         
         <Label Canvas.Left="11" Canvas.Top="12"  Name="label1"  FontSize="15">Sign in to Google Analytics</Label>
+        <CheckBox Canvas.Left="96" Canvas.Top="160" Visibility="Hidden" Content="Remember password" Height="16" Name="passwordRemember" IsChecked="False" Checked="passwordRemember_Checked" />
     </Canvas>
 </Window>
