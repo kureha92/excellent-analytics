@@ -6,15 +6,23 @@ using Analytics.Data.Enums;
 
 namespace Analytics.Data
 {
-    public class SortItem
+    public class Item
     {
         #region Fields
         string _key;
         string _value;
+        int _profileCount;
 
         #endregion
 
         #region Properties
+
+        public int ProfileCount
+        {
+            get { return _profileCount; }
+            set { _profileCount = value; }
+        }
+
         public string Key
         {
             get { return _key; }
@@ -34,7 +42,7 @@ namespace Analytics.Data
 
         #endregion
 
-        public SortItem(string key, string value)
+        public Item(string key, string value)
         {
             _key = key;
             _value = value;

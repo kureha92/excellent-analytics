@@ -7,9 +7,9 @@
     xmlns:enums="clr-namespace:Analytics.Data.Enums;assembly=Analytics"
     xmlns:data="clr-namespace:Analytics.Data;assembly=Analytics"
     WindowStyle="SingleBorderWindow" AllowsTransparency="False"   
-    SizeToContent="Manual" WindowStartupLocation="CenterScreen" ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" SnapsToDevicePixels="False"
+    SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" SnapsToDevicePixels="False"
         Title="Excellent Analytics"  Background="LightGray" 
-        MouseEnter="Window_MouseEnter" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="633">
+        MouseEnter="Window_MouseEnter" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="633" d:DesignWidth="814">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -87,17 +87,8 @@
     </Window.Resources>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <Canvas x:Name="MainCanvas" Height="595" Width="581" VerticalAlignment="Stretch" >
-
-        <Label Content="Profile:" Canvas.Left="392" Canvas.Top="44" Height="28" Name="label6" Width="45"/>
-        <ComboBox  SelectionChanged="comboBoxSites_SelectionChanged" ItemsSource="{Binding}" Canvas.Left="454" Canvas.Top="47" Height="23" Name="comboBoxSites" Width="99">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <ContentPresenter Content="{Binding Title}" Tag="{Binding ProfileId}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-        <Expander Canvas.Left="4" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="DimensionsExpander_Expanded">
+        <Canvas x:Name="MainCanvas" Height="595" Width="773" VerticalAlignment="Stretch" >
+            <Expander Canvas.Left="4" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="DimensionsExpander_Expanded">
                 <Custom:CustomTreeView Background="White" Cursor="Arrow" MouseMove="DimensionsExpander_MouseMove" Panel.ZIndex="1" Margin="10,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView" />
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Dimension" />
@@ -132,17 +123,18 @@
         <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="130" Canvas.Top="280" BorderBrush="Transparent" Height="209" x:Name="metricsSelected" Width="130" />
         <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="247" ItemTemplate="{StaticResource defaultString}" Canvas.Top="280" BorderBrush="Transparent" Height="208" x:Name="activeFilters" Width="170" />
         <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="450" ItemTemplate="{StaticResource defaultString}" Canvas.Top="280" BorderBrush="Transparent" Height="208" x:Name="activeSortings" Width="112" />
+        <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="600" ItemTemplate="{StaticResource defaultString}" Canvas.Top="280" BorderBrush="Transparent" Height="208" x:Name="activeProfiles" Width="122" />            
 
-        <Button FontWeight="Bold" MouseEnter="ExecuteButton_MouseEnter" MouseLeave="ExecuteButton_MouseLeave" x:Name="ExecuteButton" Height="23" Click="ExecuteButton_Click" Content="Execute"  Width="60" Canvas.Left="503" Canvas.Top="566"/>
-        <Button x:Name="CancelButton" Height="23" Click="CancelButton_Click" Content="Cancel" Width="60" Canvas.Left="413" Canvas.Top="566"/>
-        <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="282" Canvas.Top="460" ErrorMessage="" Visibility="Collapsed" Height="80" Width="273.8" />
-        <TextBox Canvas.Left="472" TextChanged="validate_int" Canvas.Top="93" Height="23" Name="startIndexTextBox" Width="81"></TextBox>
-        <Label Canvas.Left="391" Canvas.Top="93" Height="28" Name="label2" Width="70">Start index</Label>
-        <TextBox TextChanged="validate_int" Canvas.Left="472" Canvas.Top="135" Height="23" Name="maxResultsTextBox" Text="" Width="81" ></TextBox>
-        <Label Canvas.Left="393" Canvas.Top="135" Height="28" Name="label3" Width="70">Max results</Label>
+        <Button FontWeight="Bold" MouseEnter="ExecuteButton_MouseEnter" MouseLeave="ExecuteButton_MouseLeave" x:Name="ExecuteButton" Height="23" Click="ExecuteButton_Click" Content="Execute"  Width="60" Canvas.Left="645" Canvas.Top="561"/>
+        <Button x:Name="CancelButton" Height="23" Click="CancelButton_Click" Content="Cancel" Width="60" Canvas.Left="562" Canvas.Top="561"/>
+        <Custom:NotifyError Panel.ZIndex="10" x:Name="MainNotify" Canvas.Left="431" Canvas.Top="460" ErrorMessage="" Visibility="Collapsed" Height="80" Width="273.8" />
+        <TextBox Canvas.Left="515" TextChanged="validate_int" Canvas.Top="47" Height="23" Name="startIndexTextBox" Width="81"></TextBox>
+        <Label Canvas.Left="434" Canvas.Top="47" Height="28" Name="label2" Width="70">Start index</Label>
+        <TextBox TextChanged="validate_int" Canvas.Left="515" Canvas.Top="89" Height="23" Name="maxResultsTextBox" Text="" Width="81" ></TextBox>
+        <Label Canvas.Left="436" Canvas.Top="89" Height="28" Name="label3" Width="70">Max results</Label>
         <TabControl Canvas.Left="11" Canvas.Top="18.961" Height="223" Name="timeSpantabControl" Width="377">
             <TabItem Header="Select dates"  Name="calendarTab">
-                <Canvas Width="442" Height="202">
+                <Canvas Width="371" Height="184">
                     <toolkit:Calendar SelectionMode="SingleDate" x:Name="startDateCalendar" Margin="2,6.387,89,-21.347" Height="168" Canvas.Top="11" />
                     <toolkit:Calendar  SelectionMode="SingleDate" x:Name="endDateCalendar" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" HorizontalAlignment="Right" Margin="0,6.387,-111,-21.313" Width="179" Height="168" Canvas.Left="187" Canvas.Top="11" />
                     <Label Canvas.Left="-2" Canvas.Top="0" Height="28" Name="label5" Width="120">Start date</Label>
@@ -195,15 +187,33 @@
         <Button Canvas.Left="18" Canvas.Top="561" Content="About" Height="23" Name="About" Width="75" Click="About_Click">
         </Button>
         <TextBlock Canvas.Left="40" Canvas.Top="353" Height="46" Name="textBlock1" Text="" Width="85" />
-        <Label Canvas.Left="393" Canvas.Top="12" Content="Account:" Height="28" Name="account" Width="55" />
-        <ComboBox SelectionChanged="comboBoxAccount_SelectionChanged"  Canvas.Left="454" Canvas.Top="12" Height="23" ItemsSource="{Binding}" Name="comboBoxAccount" Width="99">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <ContentPresenter Content="{Binding AccountName}" Tag="{Binding AccountId}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-            <CheckBox Canvas.Left="472" Canvas.Top="195" Content="Validation" Unchecked="validationActivate_Unchecked" Height="16" Name="validationActivate" IsChecked="False" />
+        <CheckBox Canvas.Left="515" Canvas.Top="152" Content="Validation" Unchecked="validationActivate_Unchecked" Height="16" Name="validationActivate" IsChecked="False" />
+            <Expander Canvas.Left="590" Canvas.Top="259" Height="230" Name="Profile_Expander" Collapsed="ProfileExpander_Collapsed" Expanded="ProfileExpander_Expanded">
+            <Expander.Header>
+                <Button Width="80" HorizontalContentAlignment="Center" Click="Expand"  Content="Profiles" />
+            </Expander.Header>
+                <Canvas Cursor="Arrow" Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="ProfileCanvas" Margin="-440,5,0,0" Width="519" Height="255">
+                <Button x:Name="addProfile" Click="addProfile_Click" Canvas.Left="22" Canvas.Top="135" Content="Add" Height="26" Width="60" />
+                <Button x:Name="removeProfile" Click="removeProfile_Click" Canvas.Left="22" Canvas.Top="185" Content="Remove" Height="26" Width="60" />
+                <ComboBox SelectionChanged="comboBoxAccount_SelectionChanged" ItemsSource="{Binding}"  Canvas.Left="11" Canvas.Top="36" Name="comboBoxAccount" Width="150" Height="21">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <ContentPresenter Content="{Binding AccountName}" Tag="{Binding AccountId}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                    <ComboBox SelectionChanged="comboBoxProfile_SelectionChanged" ItemsSource="{Binding}" Canvas.Left="11" Canvas.Top="93" Name="comboBoxProfile" Width="150" Height="21">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                                <ContentPresenter Content="{Binding Title}" Tag="{Binding ProfileId}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Label Canvas.Left="11" Content="Profiles" Canvas.Top="73" Name="profiles" Height="26" />
+                <Label Canvas.Left="11" Content="Accounts" Canvas.Top="11" Name="accounts" Height="26" />
+                <ListBox  x:Name="profileBox" Canvas.Left="204" Canvas.Top="16" Width="281" Height="220" BorderThickness="1"/>
+            </Canvas>
+        </Expander>
         </Canvas>
 
     </ScrollViewer>

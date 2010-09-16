@@ -79,11 +79,12 @@
     <Compile Include="Authorization\AccountManager.cs" />
     <Compile Include="Authorization\Entry.cs" />
     <Compile Include="Authorization\UserAccount.cs" />
+    <Compile Include="Data\MultipleProfiles.cs" />
     <Compile Include="Data\Validation\MetricBasedInvalidation.cs" />
     <Compile Include="Data\Validation\DimensionBasedValidation.cs" />
     <Compile Include="Data\Validation\InvalidMultiCombinations.cs" />
     <Compile Include="Data\Sort.cs" />
-    <Compile Include="Data\SortItem.cs" />
+    <Compile Include="Data\Item.cs" />
     <Compile Include="Data\General\Enums.cs" />
     <Compile Include="Data\General\GA_RequestURIs.cs" />
     <Compile Include="Data\SizeOperator.cs" />

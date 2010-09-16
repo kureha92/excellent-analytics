@@ -16,12 +16,19 @@ namespace Analytics.Data
         private Dictionary<string, string> _dimensions;
         private Dictionary<string, string> _metrics;
         private Dictionary<string, string> _segments;
-        private Dictionary<string, string> _ids;
         private Dictionary<string, string> _accountId;
+        private Dictionary<string, string> _profileId;
         private Dictionary<string, string> _sortParams;
         private Dictionary<string, string> _listSortOrder;
+        private Dictionary<string, string> metricsDefinitions;
+        private Dictionary<string, string> dimensionDefinitions;
+        private Dictionary<string, string> filtersDefinitions;
+        private Dictionary<string, string> metricOperators;
+        private Dictionary<string, string> dimensionOperators;
+        private Dictionary<string, string> segmentOperators;
         private Filter _filter;
         private Sort _sort;
+        private MultipleProfiles _ids;
         private enum DataType {Dimension , Metric , Unknown};
 
         private DateTime _startDate;
@@ -35,23 +42,24 @@ namespace Analytics.Data
 
         private TimePeriod _timePeriod;
 
+        private string _queryInfoIdentifier;
+
         private int _maxResults;
         private int _startIndex;
-
         private int _row;
         private int _column;
 
-        private Dictionary<string, string> metricsDefinitions;
-        private Dictionary<string, string> dimensionDefinitions;
-        private Dictionary<string, string> filtersDefinitions;
 
-        private Dictionary<string, string> metricOperators;
-        private Dictionary<string, string> dimensionOperators;
-        private Dictionary<string, string> segmentOperators;
 
         #endregion
 
         #region Properties
+
+        public string QueryInfoIdentifier
+        {
+            get { return _queryInfoIdentifier; }
+            set { _queryInfoIdentifier = value; }
+        }
 
         public int Column
         {
@@ -104,17 +112,6 @@ namespace Analytics.Data
             set { _listSortOrder = value; }
         }
 
-        public Dictionary<string, string> Ids
-        {
-            get 
-            {
-                if (_ids == null)
-                    _ids = new Dictionary<string, string>();
-                return _ids; 
-            }
-            set { _ids = value; }
-        }
-
         public Dictionary<string, string> AccountId
         {
             get
@@ -124,6 +121,17 @@ namespace Analytics.Data
                 return _accountId;
             }
             set { _accountId = value; }
+        }
+
+        public Dictionary<string, string> ProfileId
+        {
+            get
+            {
+                if (_profileId == null)
+                    _profileId = new Dictionary<string, string>();
+                return _profileId;
+            }
+            set { _profileId = value; }
         }
 
         public Dictionary<string, string> Segments
@@ -168,6 +176,17 @@ namespace Analytics.Data
                 return _sort;
             }
             set { _sort = value; }
+        }
+
+        public MultipleProfiles Ids
+        {
+            get
+            {
+                if (_ids == null)
+                    _ids = new MultipleProfiles();
+                return _ids;
+            }
+            set { _ids = value; }
         }
 
         public DateTime StartDate
@@ -282,7 +301,7 @@ namespace Analytics.Data
         /// Creates a query object from a valid analytics query string
         /// </summary>
         /// <param name="queryString"></param>
-        public Query(string queryString) : this()
+        public Query(string[] queryString) : this()
         {
             CreateFromQueryString(queryString);
         }
@@ -305,21 +324,37 @@ namespace Analytics.Data
         }
 
 
-        private void CreateFromQueryString(string queryString)
+        private void CreateFromQueryString(string[] queryString)
         {
-            foreach (string queryParam in queryString.Split(new char[] { '?', '&' }).Where(s => s.Contains('=')))
-                AddQueryParamToQuery(queryParam);
+            /*
+            string profile = "";
+            foreach (string test in queryString.Split(new char[] { '[' }))
+            {
+                profile = test;
+                break;
+            }*/
+//            queryString = queryString.Substring(profile.Length, queryString.Length - profile.Length);
+            foreach (string queryParam in queryString[1].Split(new char[] { '?', '&' }).Where(s => s.Contains('=')))
+            {
+                string ids = "";
+                if (queryParam.Contains("ids="))
+                {
+                    ids = queryString[0];
+                }
+                AddQueryParamToQuery(queryParam, ids);
+            }
+
         }
 
         // Builds the query that will be sent to Gooogle Analytics.
-        private void AddQueryParamToQuery(string queryParam)
+        private void AddQueryParamToQuery(string queryParam, string profile)
         {
             int startIndex = queryParam.IndexOf('=');
             startIndex += startIndex < queryParam.Length ? 1 : 0;
 
             switch (queryParam.Substring(0, queryParam.IndexOf('=')))
             {
-                case "ids": AddIds(queryParam, startIndex); break;
+                case "ids": AddIds(queryParam, startIndex, profile); break;
                 case "dimensions": AddDimensions(queryParam, startIndex); break;
                 case "metrics": AddMetrics(queryParam, startIndex); break;
                 case "segment": AddSegments(queryParam, startIndex); break;
@@ -362,26 +397,20 @@ namespace Analytics.Data
             List<char> separators = SeparatorsFromFilterQueryParam(sortQueryParam);
             char placeFiller = '»';
             separators.Insert(0, placeFiller);
-
-//            int index1 = sortQueryParam.IndexOf('-');
-//            if (index1 != -1)
-//            {
-//                sortQueryParam = sortQueryParam.Remove(index1, 1); 
-//            }
             
             string[] sortings = sortQueryParam.Substring(startIndex).Split(new char[] { ',', ';' });
 
             for (int i = 0; i < sortings.Count(); i++)
             {
-                SortItem sItem;
+                Item sItem;
 
                 if (sortings[i].Contains("-"))
                 {
-                    sItem = new SortItem(sortings[i], "-" + sortings[i].Substring(4));
+                    sItem = new Item(sortings[i], "-" + sortings[i].Substring(4));
                 }
                 else 
                 {
-                    sItem = new SortItem(sortings[i], sortings[i].Substring(3));
+                    sItem = new Item(sortings[i], sortings[i].Substring(3));
                 }
 
                 Sort.Add(sItem);
@@ -389,11 +418,13 @@ namespace Analytics.Data
             }
         }
 
-
-        private void AddIds(string queryParam, int startIndex)
+        private void AddIds(string queryParam, int startIndex, string profile)
         {
-            Ids.Add(string.Empty, queryParam.Substring(startIndex));
+            string sortings = queryParam.Substring(startIndex);
+            Item pItem = new Item(sortings.Substring(3), profile);
+            Ids.Add(pItem);
         }
+
 
         private void AddSegments(string queryParam, int startIndex)
         {
@@ -437,11 +468,12 @@ namespace Analytics.Data
 
         
         // Transforms query to a string.
-        public override string ToString()
+        public string ToString(int profileCounter)
         {
             StringBuilder queryBuilder = new StringBuilder();
             queryBuilder.Append(General.GA_RequestURIs.Default.ReportFeed);
-            queryBuilder.Append(Ids.Count > 0 ? "?ids=" + string.Join(",", Ids.Values.ToArray()) : string.Empty);
+//            (Ids.Count > 1 ?  Ids.ToList().First().ToString() :
+            queryBuilder.Append(Ids.Count > 0 ? Ids.ToString(profileCounter) : string.Empty);
             queryBuilder.Append(Dimensions.Count > 0 ? "&dimensions=" + string.Join(",", Dimensions.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Metrics.Count > 0 ? "&metrics=" + string.Join(",", Metrics.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Segments.Count > 0 ? "&segment=" + string.Join(",", Segments.Values.ToArray()) : string.Empty);
@@ -512,7 +544,7 @@ namespace Analytics.Data
         }
 
         
-        public static Query FromString(string queryString)
+        public static Query FromString(string[] queryString)
         {
             return new Query(queryString);
         }

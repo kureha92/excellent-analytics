@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-//using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -49,7 +48,7 @@ namespace UI
         public delegate void QueryComplete(Query query);
         public event QueryComplete queryComplete;
 
-        public enum ListType { Dim, Met, Fil, Sort};
+        public enum ListType { Dim, Met, Fil, Sort, Profile};
 
         private const int maxSupportedDimensions = 7;
         private const int maxSupportedMetrics = 10;
@@ -122,6 +121,48 @@ namespace UI
 
 
         #region Events
+
+        private void addProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (comboBoxProfile.SelectedItem != null)
+            {
+                Item pItem = new Item(_query.ProfileId.First().Value, _query.ProfileId.First().Key);
+                _query.Ids.Add(pItem);
+                BindProfileListBox();
+            }
+        }
+
+        private void BindProfileListBox()
+        {
+            MultipleProfiles multiProfiles = new MultipleProfiles();
+            Binding profileBinding = new Binding();
+            MultipleProfiles multipleProfiles = new MultipleProfiles();
+            Item pItem;
+            if (_query.Ids.Count == 0)
+            {
+                pItem = new Item(_query.ProfileId.First().Value, _query.ProfileId.First().Key);
+                multipleProfiles.Add(pItem);
+                _query.Ids = multipleProfiles;
+            }
+
+            foreach (Item item in _query.Ids)
+            {
+                multiProfiles.Add(item);
+            }
+
+            _query.Ids = multiProfiles;
+            profileBinding.Source = multiProfiles;
+            profileBox.SetBinding(ListBox.ItemsSourceProperty, profileBinding);
+        }
+
+        private void removeProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (comboBoxProfile.SelectedIndex != -1)
+            {
+                _query.Ids.RemoveAt(profileBox.SelectedIndex);
+                BindProfileListBox();
+            }
+        }
 
         protected override void OnClosed(EventArgs e)
         {
@@ -273,15 +314,6 @@ namespace UI
         private void FilterExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             BindSizeList(ListType.Fil);
-        }
-
-        private void comboBoxSites_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (comboBoxSites.SelectedItem != null)
-            {
-                this._query.Ids.Clear();
-                this._query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId); 
-            }
         }
 
         private void comboBoxSegments_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -499,6 +531,16 @@ namespace UI
             }
         }
 
+        private void comboBoxProfile_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (comboBoxProfile.SelectedItem != null)
+            {
+                this._query.ProfileId.Clear();
+                this._query.ProfileId.Add((comboBoxProfile.SelectedItem as Entry).Title, (comboBoxProfile.SelectedItem as Entry).ProfileId);
+                DataBindSitesDropDown();
+            }
+        }
+
         private void SortExpander_Expanded(object sender, RoutedEventArgs e)
         {
             MetricsExpander.IsExpanded = false;
@@ -513,6 +555,23 @@ namespace UI
         private void SortExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             BindSizeList(ListType.Sort);
+        }
+
+        private void ProfileExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            MetricsExpander.IsExpanded = false;
+            DimensionsExpander.IsExpanded = false;
+            FilterExpander.IsExpanded = false;
+            SortExpander.IsExpanded = false;
+            ProfileCanvas.Visibility = Visibility.Visible;
+            ProfileCanvas.BeginAnimation(Canvas.WidthProperty, AnimatePropertyWidth);
+            ProfileCanvas.BeginAnimation(Canvas.HeightProperty, AnimatePropertyHeight);
+            BindProfileListBox();
+        }
+
+        private void ProfileExpander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            BindSizeList(ListType.Profile);
         }
 
         private void validationActivate_Unchecked(object sender, RoutedEventArgs e)
@@ -565,6 +624,7 @@ namespace UI
             BindSizeList(ListType.Met);
             BindSizeList(ListType.Fil);
             BindSizeList(ListType.Sort);
+            BindSizeList(ListType.Profile);
 
             if (_query.SortParams != null && _query.SortParams.Count > 0)
             {
@@ -601,9 +661,9 @@ namespace UI
 
 
             // The profiles are shown based on wich account is selected.
-            if (this._query.Ids.Count > 0)
+            if (this._query.ProfileId.Count > 0)
             {
-                string pId = this._query.Ids.First().Value;
+                string pId = this._query.Ids.ToSimplifiedString();
                 if (_currentUserAccount.Entrys.Find(p => p.ProfileId == pId) != null)
                 {
                     foreach (Entry entry in _currentUserAccount.Entrys)
@@ -613,14 +673,14 @@ namespace UI
                             comboBoxAccount.SelectedValue = _currentUserAccount.Entrys.Find(p => p.AccountId == entry.AccountId); ;        
                         }
                     }
-                    comboBoxSites.SelectedValue = _currentUserAccount.Entrys.Find(p => p.ProfileId == pId);
+                    comboBoxProfile.SelectedValue = _currentUserAccount.Entrys.Find(p => p.ProfileId == pId);
                     
                 }
                 else
                     Notify("Your account lacks permission on the target profile");
             }
             else if (_currentUserAccount != null)
-                comboBoxSites.SelectedIndex = _currentUserAccount.Entrys.Count > 0 ? 0 : -1;
+                comboBoxProfile.SelectedIndex = _currentUserAccount.Entrys.Count > 0 ? 0 : -1;
 
             if (CurrentUser != null)
             {
@@ -672,7 +732,7 @@ namespace UI
                         }
                 }
             sites.Source = filtering;
-            comboBoxSites.SetBinding(ComboBox.ItemsSourceProperty, sites);
+            comboBoxProfile.SetBinding(ComboBox.ItemsSourceProperty, sites);
         }
 
         private void DataBindAccountsDropDown()
@@ -758,6 +818,10 @@ namespace UI
                     binding.Source = _query.Sort.ToSimplifiedList();
                     activeSortings.SetBinding(ListBox.ItemsSourceProperty, binding);
                     break;
+                case ListType.Profile:
+                    binding.Source = _query.Ids.ToSimplifiedList();
+                    activeProfiles.SetBinding(ListBox.ItemsSourceProperty, binding);
+                    break;
                 default:
                     break;
             }
@@ -830,7 +894,7 @@ namespace UI
                 Notify("You have exceeded the maximum limit of metrics selected. Maximum is ten.");
                 return false;
             }
-            if (comboBoxSites.SelectedItem == null)
+            if (comboBoxProfile.SelectedItem == null)
             {
                 Notify("No profile is selected");
                 return false;
@@ -892,7 +956,7 @@ namespace UI
 
                 if (!(_query.SortParams.Keys.Contains(item.Key)))
                 {
-                    SortItem sItem = new SortItem(item.Value, key);
+                    Item sItem = new Item(item.Value, key);
                     _query.Sort.Add(sItem);
                 }
                 BindSortListBox();
@@ -904,7 +968,7 @@ namespace UI
             Sort s = new Sort();
             Binding sortBinding = new Binding();
 
-            foreach (SortItem item in _query.Sort)
+            foreach (Item item in _query.Sort)
             {
                 foreach (string value in _query.GetFriendlyMetricsAndDimensions)
                 {
@@ -995,6 +1059,14 @@ namespace UI
                 _query.SelectDates = true;
             }
 
+            if (_query.Ids.Count == 0)
+            {
+                Item pItem = new Item(_query.ProfileId.First().Value, _query.ProfileId.First().Key);
+                MultipleProfiles multipleProfile = new MultipleProfiles();
+                multipleProfile.Add(pItem);
+                _query.Ids = multipleProfile;
+            }
+
             // If the user have not entered a interval of hits to view, then set them static here before calling GA.
 //            if (startIndexTextBox.Text.Equals(""))
 //                startIndexTextBox.Text = "0";
@@ -1011,8 +1083,8 @@ namespace UI
             }
 
 
-            _query.Ids.Clear();
-            _query.Ids.Add((comboBoxSites.SelectedItem as Entry).Title, (comboBoxSites.SelectedItem as Entry).ProfileId);
+//            _query.Ids.Clear();
+//            _query.Ids.Add((comboBoxProfile.SelectedItem as Entry).Title, (comboBoxProfile.SelectedItem as Entry).ProfileId);
         }
 
 
@@ -1021,7 +1093,7 @@ namespace UI
          */
         private void ListSortOrder()
         {
-            foreach (SortItem sort in _query.Sort)
+            foreach (Item sort in _query.Sort)
             {
                 if (!sort.Key.Contains("-") && sort.Value.Contains("-"))
                 {
@@ -1240,6 +1312,7 @@ namespace UI
         }
 
         #endregion
+
 
 
     }

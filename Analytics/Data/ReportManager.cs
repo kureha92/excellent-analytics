@@ -31,14 +31,14 @@ namespace Analytics.Data
             }
         }
 
-        public Report GetReport(Query query, string authToken)
+        public Report GetReport(Query query, string authToken, int profileCounter)
         {
             authenticationToken = authToken;
             NotifySubscribers(10 , "Requesting report" , null);
             Report report = new Report();
             int originalStartIndex = query.StartIndex;
 
-            CreateRequest(query);
+            CreateRequest(query, profileCounter);
             RequestData(request);
 
             int dimensionsAndMetrics = query.GetDimensionsAndMetricsCount();
@@ -48,7 +48,7 @@ namespace Analytics.Data
                 NotifySubscribers(50, "Extract data", null);
                 report.Data = ExtractDataFromXml(xDoc, dimensionsAndMetrics);
                 report.Query = query.ToString();
-                report.SiteURI = query.Ids.Keys.First();
+                report.SiteURI = query.Ids[profileCounter].Value;
             }
             report.Headers = SetHeaders(query);
 
@@ -57,7 +57,7 @@ namespace Analytics.Data
             {
                 query.StartIndex = query.StartIndex + 10000;
                 query.MaxResults = upperLimitBound = query.MaxResults + 10000;
-                CreateRequest(query);
+                CreateRequest(query, profileCounter);
                 RequestData(request);
                 NotifySubscribers(50, "Extract data", null);
                 report.Data = ExtractDataFromXml(xDoc, dimensionsAndMetrics);
@@ -71,9 +71,9 @@ namespace Analytics.Data
         /*@author Daniel Sandberg
          * The method constructs the request.
          */
-        private void CreateRequest(Query query)
+        private void CreateRequest(Query query, int profileCounter)
         {
-            string uri = query.ToString();
+            string uri = query.ToString(profileCounter);
             request = HttpWebRequest.Create(uri);
             request.Proxy = ProxyHelper.GetProxy();
             request.Method = "GET";
@@ -173,6 +173,7 @@ namespace Analytics.Data
                 rowPosition++;
             }
             NotifySubscribers(100, "Report complete" , null);
+
             return data;
         }
     }

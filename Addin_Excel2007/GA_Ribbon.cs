@@ -102,11 +102,26 @@ namespace GA_Excel2007
             LaunchQueryBuilder(new Query());
         }
 
+        /// <summary>
+        /// Adds all queries to  a list. Gives each query one profileId if more than one.
+        /// Sends the manipulated list of queries to execute.
+        /// </summary>
+        /// <param name="query"></param>
         void queryComplete(Query query)
         {
+            // Here I need to go thru all selected profile and create a query for each one of them.
+            // 
+            _listQueries = new List<Query>();            
             List<Query> queries = new List<Query>();
-            queries.Add(query);
-            ExecuteQuery(queries, false);
+
+
+            foreach (Item item in query.Ids)
+            {
+                _listQueries.Add(query);
+            }
+
+
+            ExecuteQuery(_listQueries, false);
         }
 
         void queryComplete(Query query, bool worksheet)
@@ -114,7 +129,7 @@ namespace GA_Excel2007
             ExecuteQuery(_listQueries, worksheet);
         }
 
-        private void buttonAccount_Click(object sender, RibbonControlEventArgs e)
+         private void buttonAccount_Click(object sender, RibbonControlEventArgs e)
         {
             InitLogin();
         }
@@ -153,7 +168,7 @@ namespace GA_Excel2007
         {
             Query query = new Query(GetQueryExcelParamValueFromActiveCell("queryString"));
             query.TimePeriod = (Analytics.Data.Enums.TimePeriod)Enum.Parse(typeof(Analytics.Data.Enums.TimePeriod),
-                                                                            GetQueryExcelParamValueFromActiveCell("timePeriod"));
+                                                                            GetQueryExcelParamValueFromActiveCell("timePeriod")[1]);
 
             LaunchQueryBuilder(query);
         }
@@ -164,14 +179,21 @@ namespace GA_Excel2007
 
         private bool ActiveCellUpdatable()
         {
-            return !string.IsNullOrEmpty(GetQueryExcelParamValueFromActiveCell("queryString"));
+            return !string.IsNullOrEmpty(GetQueryExcelParamValueFromActiveCell("queryString")[1]);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queries"></param>
+        /// <param name="worksheet"></param>
         private void ExecuteQuery(List<Query> queries, bool worksheet)
         {
             _addressQueries = new List<string>();
             bool erasedConfirm = false;
             bool clearFormat = false;
+            int profileCounter = 0;
+
             List<Report> reportList = new List<Report>();
 
             foreach (Query query in queries)
@@ -179,9 +201,16 @@ namespace GA_Excel2007
                 _reportManager = new ReportManager();
                 _executionProgressWindow = new ExecutionProgress(_reportManager);
                 _executionProgressWindow.Show();
-                _currentReport = _reportManager.GetReport(query, _user.AuthToken);
+                if (_user == null)
+                    break;
+                _currentReport = _reportManager.GetReport(query, _user.AuthToken, profileCounter);
                 reportList.Add(_currentReport);
 
+
+//                if (profileCounter > 0)
+//                    ActiveColumn(profileCounter);
+//                else
+                if (profileCounter < 1)
                 if (_currentReport != null && _currentReport.ValidateResult())
                 {
                     if (!erasedConfirm)
@@ -200,24 +229,34 @@ namespace GA_Excel2007
                                     break;
                             }
                             ClearPreviousQueryResult(clearFormat, worksheet, query);
+                            erasedConfirm = true;
                         }
 
                     if (erasedConfirm)
                         ClearPreviousQueryResult(clearFormat, worksheet, query);
+                }
 
-                    erasedConfirm = true;
+                if (!worksheet)
+                {
+                    // If a query is executed containing more than one profile the active cell cursor must be 
+                    // moved to prevent clearing the prior report in Excel.
+                    PresentResult(query, _currentReport, profileCounter);
+                    if (query.Ids.Count > profileCounter)
+                        profileCounter++;
                 }
             }
 
             int i = 0;
             foreach (Query query in queries)
             {
+                if (_user == null)
+                    break;
                 if (worksheet)
                 {
-                    PresentResultUpdate(query, reportList[i]);
+                    PresentResultUpdate(query, reportList[i], profileCounter);
                 }
                 else
-                    PresentResult(query, _currentReport);
+                    break;
                 i++;
             }
 
@@ -242,8 +281,8 @@ namespace GA_Excel2007
 
             if (worksheet)
             {
-                if (int.TryParse(GetQueryExcelParamValueFromSpecificCell("rows", ""), out rows) &&
-                    int.TryParse(GetQueryExcelParamValueFromSpecificCell("columns", ""), out columns))
+                if (int.TryParse(GetQueryExcelParamValueFromSpecificCell("rows", "")[1], out rows) &&
+                    int.TryParse(GetQueryExcelParamValueFromSpecificCell("columns", "")[1], out columns))
                 {
                     Worksheet _sheet = (Worksheet)GA_Excel2007.Globals.ThisAddIn.Application.ActiveSheet;
 
@@ -269,8 +308,8 @@ namespace GA_Excel2007
              }
                 else
                 {
-                    if (int.TryParse(GetQueryExcelParamValueFromActiveCell("rows"), out rows) &&
-                        int.TryParse(GetQueryExcelParamValueFromActiveCell("columns"), out columns))
+                    if (int.TryParse(GetQueryExcelParamValueFromActiveCell("rows")[1], out rows) &&
+                        int.TryParse(GetQueryExcelParamValueFromActiveCell("columns")[1], out columns))
                     {
                         Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
                         Worksheet activeSheet = currentApp.ActiveSheet as Worksheet;
@@ -290,7 +329,7 @@ namespace GA_Excel2007
                 }
         }
 
-        private string GetQueryExcelParamValueFromActiveCell(string name)
+        private string[] GetQueryExcelParamValueFromActiveCell(string name)
         {
             string activeValue = ActiveCell.Value2.ToString();
             if (activeValue.Contains(queryInfoIdentifier))
@@ -311,17 +350,21 @@ namespace GA_Excel2007
                     }
                 }
 
-                string rowsParam = paramArray.Where(p => p.StartsWith(name)).First().ToString();
-                return rowsParam.Substring(rowsParam.IndexOf('=') + 1).Trim();
+                string[] rowsParam = new string[2];
+                rowsParam[1] = paramArray.Where(p => p.StartsWith(name)).First().ToString();
+                rowsParam[1] = rowsParam[1].Substring(rowsParam[1].IndexOf('=') + 1).Trim();
+                return rowsParam;
             }
-            return string.Empty;
+            return new string[2];
         }
 
-        private string GetQueryExcelParamValueFromSpecificCell(string name, string cellValue)
+        private string[] GetQueryExcelParamValueFromSpecificCell(string name, string cellValue)
         {
             if (cellValue.Equals("") && !_cellValue.Equals(""))
                 cellValue = _cellValue;
 
+            int bracket = cellValue.IndexOf("[");
+            string profile = cellValue.Substring(0, bracket);
             string paramString = cellValue.Substring(cellValue.IndexOf(queryInfoIdentifier));
             int lastBracket = paramString.Length;
             paramString = paramString.Replace(queryInfoIdentifier, string.Empty);
@@ -339,24 +382,56 @@ namespace GA_Excel2007
             }
 
             string rowsParam = paramArray.Where(p => p.StartsWith(name)).First().ToString();
-            return rowsParam.Substring(rowsParam.IndexOf('=') + 1).Trim();
+            rowsParam = rowsParam.Substring(rowsParam.IndexOf('=') + 1).Trim();
+            string[] rowsParamReturn = new string[2];
+            rowsParamReturn[0] = profile;
+            rowsParamReturn[1] = rowsParam;
+            return rowsParamReturn;
 
         }
 
-        private static void PresentResult(Query query, Report report)
+        private static int ActiveColumn(int profileCounter, int dataLength)
         {
+            Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
+            int activeColumn = currentApp.ActiveCell.Column;
+
+            if (!currentApp.ActiveCell.Cells.Value2.Equals(string.Empty))
+            {
+                activeColumn = currentApp.ActiveCell.Column + profileCounter * 2;
+                if (dataLength > 1)
+                    activeColumn += dataLength - 1;
+            }
+
+            return activeColumn;
+          }
+
+        private static void PresentResult(Query query, Report report, int profileCounter)
+        {
+            // This method shall include a verification of empty columns. If the user has selected more than one profile
+            // the second query shall be presented on the right of the first query result in Excel.
+
             Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
             Worksheet activeSheet = currentApp.ActiveSheet as Worksheet;
 
             if (currentApp.ActiveSheet != null)
             {
-                int activeColumn = currentApp.ActiveCell.Column;
-                int activeRow = currentApp.ActiveCell.Row;
+                int dataLength = 2;
+                if (report.Data != null)
+                {
+                    dataLength = report.Data.GetLength(1);
+                }
 
-                object[] queryInformation = GetQueryInformation(query, report);
+                int activeRow = currentApp.ActiveCell.Row;
+                int activeColumn = currentApp.ActiveCell.Column;
+                if (currentApp.ActiveCell.Cells.Value2 != null)
+                {
+                    activeColumn = ActiveColumn(profileCounter, dataLength);
+                }
+                
+
+                object[] queryInformation = GetQueryInformation(query, report, profileCounter);
 
                 int infoRows = queryInformation.GetLength(0);
-                int dataLength = 2;
 
                 if (report.Data != null)
                 {
@@ -381,7 +456,7 @@ namespace GA_Excel2007
             }
         }
 
-        private static void PresentResultUpdate(Query query, Report report)
+        private static void PresentResultUpdate(Query query, Report report, int profileCounter)
         {
             Microsoft.Office.Interop.Excel.Application currentApp = GA_Excel2007.Globals.ThisAddIn.Application;
             Worksheet activeSheet = currentApp.ActiveSheet as Worksheet;
@@ -393,10 +468,10 @@ namespace GA_Excel2007
                 string addressLocal = "";
                 string addressHelper = "";
 
-                object[] queryInformation = GetQueryInformation(query, report);
+                object[] queryInformation = GetQueryInformation(query, report, profileCounter);
 
                 int infoRows = queryInformation.GetLength(0);
-                int dataLength = 2;
+                int dataLength = dataLength = report.Data.GetLength(1);
 
                 Range queryInformationRange = currentApp.get_Range(activeSheet.Cells[activeRow, activeColumn],
                 activeSheet.Cells[activeRow, activeColumn + dataLength - 1]);
@@ -454,7 +529,7 @@ namespace GA_Excel2007
         private void test(string address)
         { }
 
-        private static object[] GetQueryInformation(Query query, Report report)
+        private static object[] GetQueryInformation(Query query, Report report, int profileCounter)
         {
             string timePeriod = "";
             if (!query.SelectDates)
@@ -469,7 +544,7 @@ namespace GA_Excel2007
 
             object[] queryInformation = new object[] { report.SiteURI + " [ " + query.StartDate.ToShortDateString() + " -> " + query.EndDate.ToShortDateString() + " ]\n"
                 + string.Format( "{0}queryString={1};rows={2};columns={3};timePeriod={4}]",
-                                queryInfoIdentifier, query.ToString(), report.Hits, query.GetDimensionsAndMetricsCount(), timePeriod)};
+                                queryInfoIdentifier, query.ToString(profileCounter), report.Hits, query.GetDimensionsAndMetricsCount(), timePeriod)};
             return queryInformation;
         }
 
@@ -498,7 +573,6 @@ namespace GA_Excel2007
         private void buttonUpdateWorkSheet_Click(object sender, RibbonControlEventArgs e)
         {
             Worksheet _sheet = (Worksheet)GA_Excel2007.Globals.ThisAddIn.Application.ActiveSheet;
-//            Range allCells = _sheet.Cells;
 
             Range _range = _sheet.Cells.Find(queryInfoIdentifier, _sheet.Cells.get_End(XlDirection.xlDown), Excel.XlFindLookIn.xlValues, Excel.XlLookAt.xlPart, XlSearchOrder.xlByRows,
                       Excel.XlSearchDirection.xlNext, false, false);
@@ -520,7 +594,7 @@ namespace GA_Excel2007
 
                     query1 = new Query(GetQueryExcelParamValueFromSpecificCell("queryString", _cellValue));
                     query1.TimePeriod = (Analytics.Data.Enums.TimePeriod)Enum.Parse(typeof(Analytics.Data.Enums.TimePeriod),
-                                                                                                            GetQueryExcelParamValueFromSpecificCell("timePeriod", ""));
+                                                                                                            GetQueryExcelParamValueFromSpecificCell("timePeriod", "")[1]);
 
                     query1.Column = cell.Column;
                     query1.Row = cell.Row;
@@ -528,8 +602,6 @@ namespace GA_Excel2007
 
                 _listQueries = new List<Query>();
                 _listQueries.Add(query1);
-                //Continue finding subsequent items using FindNext
-//                _range = _sheet.Cells.FindNext(_range);
                 string sAddress = "";
 
                 while (!sAddress.Equals(_sFirstFoundAddress))
@@ -549,7 +621,7 @@ namespace GA_Excel2007
 
                             Query query = new Query(GetQueryExcelParamValueFromSpecificCell("queryString", _cellValue));
                             query.TimePeriod = (Analytics.Data.Enums.TimePeriod)Enum.Parse(typeof(Analytics.Data.Enums.TimePeriod),
-                                                                                            GetQueryExcelParamValueFromSpecificCell("timePeriod", ""));
+                                                                                            GetQueryExcelParamValueFromSpecificCell("timePeriod", "")[1]);
                             query.Column = cell.Column;
                             query.Row = cell.Row;
                             _listQueries.Add(query);

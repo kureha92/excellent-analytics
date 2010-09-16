@@ -6,7 +6,7 @@ using Analytics.Data.Enums;
 
 namespace Analytics.Data
 {
-    public class Sort : List<SortItem>
+    public class Sort : List<Item>
     {
         public Sort()
         {
@@ -18,7 +18,7 @@ namespace Analytics.Data
             StringBuilder sortBuilder = new StringBuilder();
             sortBuilder.Append(this.Count > 0 ? "&sort=" : string.Empty);
             int i = 0;
-            foreach (SortItem item in this)
+            foreach (Item item in this)
             {
                 if (i > 0)
                 {
@@ -36,7 +36,7 @@ namespace Analytics.Data
         public string ToSimplifiedString()
         {
             StringBuilder sortBuilder = new StringBuilder();
-            foreach (SortItem item in this)
+            foreach (Item item in this)
             {
                 sortBuilder.Append(item.Key);
             }
@@ -46,7 +46,7 @@ namespace Analytics.Data
         public List<string> ToSimplifiedList()
         {
             List<string> items = new List<string>();
-            foreach (SortItem item in this)
+            foreach (Item item in this)
             {
                 items.Add(item.Value);
             }
