@@ -8,15 +8,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analytics", "Analytics\Analytics.csproj", "{C14A2844-C1EF-406E-A83A-7F058567BFA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Addin_Excel2007", "Addin_Excel2007\Addin_Excel2007.csproj", "{CA49FD05-7063-4676-95E2-08A77B2646B0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "WPFUIv2\UI.csproj", "{DF756E88-B3BE-486C-8820-8FE81C175180}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ExcellentAnalyticsInstaller", "EAInstaller\EAInstaller.vdproj", "{9302C6CE-0E2F-44C0-9771-83280E1A3891}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Excel2007Addin", "Excel2007Addin\Excel2007Addin.csproj", "{072A1E07-86B2-418D-8096-8190666E301D}"
+EndProject
 Global
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -26,19 +24,25 @@ Global
 		{C14A2844-C1EF-406E-A83A-7F058567BFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C14A2844-C1EF-406E-A83A-7F058567BFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C14A2844-C1EF-406E-A83A-7F058567BFA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA49FD05-7063-4676-95E2-08A77B2646B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA49FD05-7063-4676-95E2-08A77B2646B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA49FD05-7063-4676-95E2-08A77B2646B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA49FD05-7063-4676-95E2-08A77B2646B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF756E88-B3BE-486C-8820-8FE81C175180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DF756E88-B3BE-486C-8820-8FE81C175180}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF756E88-B3BE-486C-8820-8FE81C175180}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF756E88-B3BE-486C-8820-8FE81C175180}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9302C6CE-0E2F-44C0-9771-83280E1A3891}.Debug|Any CPU.ActiveCfg = Debug
+		{9302C6CE-0E2F-44C0-9771-83280E1A3891}.Release|Any CPU.ActiveCfg = Release
+		{072A1E07-86B2-418D-8096-8190666E301D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{072A1E07-86B2-418D-8096-8190666E301D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{072A1E07-86B2-418D-8096-8190666E301D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{072A1E07-86B2-418D-8096-8190666E301D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal
