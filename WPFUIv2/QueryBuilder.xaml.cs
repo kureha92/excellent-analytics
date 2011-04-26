@@ -1,34 +1,23 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Media.Animation;
-using System.Xml.Linq;
-using System.Xml;
-using System.Drawing.Text;
 
 using Analytics.Data;
 using UI.Controls;
 using Analytics.Authorization;
-using System.Windows.Interop;
 using Analytics.Data.Enums;
 
 
-using UI;
 using WPFUIv2;
 using Analytics.Data.General;
 using Analytics;
-using System.Data;
-using System.Collections;
-using System.Collections.ObjectModel;
 
 
 namespace UI
@@ -134,9 +123,9 @@ namespace UI
 
         private void BindProfileListBox()
         {
-            MultipleProfiles multiProfiles = new MultipleProfiles();
+            ProfileCollection multiProfiles = new ProfileCollection();
             Binding profileBinding = new Binding();
-            MultipleProfiles multipleProfiles = new MultipleProfiles();
+            ProfileCollection multipleProfiles = new ProfileCollection();
             Item pItem;
             if (_query.Ids.Count == 0)
             {
@@ -147,6 +136,12 @@ namespace UI
 
             foreach (Item item in _query.Ids)
             {
+                // make sure item's Value is set
+                string value = (item.Key.IndexOf("ga:") == 0 ? "" : "ga:") + item.Key;
+                if (_query.ProfileId.ContainsValue(value))
+                {
+                    item.Value = _query.ProfileId.GetKeyByValue(value);
+                }
                 multiProfiles.Add(item);
             }
 
@@ -186,7 +181,7 @@ namespace UI
             Button callButton = sender as Button;
             Expander targetExpander = callButton.Parent as Expander;
             bool isExpanded = targetExpander.IsExpanded;
-            VisualStateManager.GoToState(callButton, isExpanded ? "Normal"  : "Pressed", true);
+            System.Windows.VisualStateManager.GoToState(callButton, isExpanded ? "Normal"  : "Pressed", true);
             targetExpander.IsExpanded = !isExpanded;
             if (!isExpanded)
                 DataBindSortByDropDown();
@@ -194,49 +189,50 @@ namespace UI
 
         private void DimensionsExpander_Expanded(object sender, RoutedEventArgs e)
         {
-            MetricsExpander.IsExpanded = false;
-            FilterExpander.IsExpanded = false;
-            SortExpander.IsExpanded = false;
-            DimensionsView.Visibility = Visibility.Visible;
-            DimensionsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
-            DimensionsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight); 
+			MetricsExpander.IsExpanded = false;
+			FilterExpander.IsExpanded = false;
+			SortExpander.IsExpanded = false;
+			Profile_Expander.IsExpanded = false;
+			DimensionsView.Visibility = Visibility.Visible;
+			DimensionsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
+			DimensionsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight); 
         }
 
         private void DimensionsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            if (validationActivate.IsChecked == true)
-                inValidParameters = ValidationHandler();
-            _query.Dimensions.Clear();
-            _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
+        //    if (validationActivate.IsChecked == true)
+        //        inValidParameters = ValidationHandler();
+        //    _query.Dimensions.Clear();
+        //    _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
             BindSizeList(ListType.Dim);
-            DataBindSortByDropDown();
-            BindSortListBox();
-            BindSizeList(ListType.Sort);
+        //    DataBindSortByDropDown();
+        //    BindSortListBox();
+        //    BindSizeList(ListType.Sort);
 
-            // Verifies that erased parameters are not used in a filter.
-            filterCheck();
-            textBoxExpression.Clear();
-            BindFilterListBox();
+        //    // Verifies that erased parameters are not used in a filter.
+        //    filterCheck();
+        //    textBoxExpression.Clear();
+        //    BindFilterListBox();
 
-            if (inValidParameters)
-            {
-                DimensionsExpander.IsExpanded = true;
-            }
-            else
-            {
-                // The maximum number of dimensions is seven.
-                if (!NumberOfDimensions())
-                {
-                    MainNotify.Visibility = Visibility.Collapsed;
-                    MainNotify.ErrorMessage = string.Empty;
-                }
-                else
-                {
-                    DimensionsExpander.IsExpanded = true;
-                    ValidateForm();
+        //    if (inValidParameters)
+        //    {
+        //        DimensionsExpander.IsExpanded = true;
+        //    }
+        //    else
+        //    {
+        //        // The maximum number of dimensions is seven.
+        //        if (!NumberOfDimensions())
+        //        {
+        //            MainNotify.Visibility = Visibility.Collapsed;
+        //            MainNotify.ErrorMessage = string.Empty;
+        //        }
+        //        else
+        //        {
+        //            DimensionsExpander.IsExpanded = true;
+        //            ValidateForm();
 
-                }                
-            }
+        //        }                
+        //    }
         }
 
 
@@ -245,6 +241,7 @@ namespace UI
             DimensionsExpander.IsExpanded = false;
             FilterExpander.IsExpanded = false;
             SortExpander.IsExpanded = false;
+			Profile_Expander.IsExpanded = false;
             MetricsView.Visibility = Visibility.Visible;
             MetricsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
             MetricsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight);
@@ -546,6 +543,7 @@ namespace UI
             MetricsExpander.IsExpanded = false;
             DimensionsExpander.IsExpanded = false;
             FilterExpander.IsExpanded = false;
+			Profile_Expander.IsExpanded = false;
             SortingCanvas.Visibility = Visibility.Visible;
             SortingCanvas.BeginAnimation(Canvas.WidthProperty, AnimatePropertyWidth);
             SortingCanvas.BeginAnimation(Canvas.HeightProperty, AnimatePropertyHeight);
@@ -1062,7 +1060,7 @@ namespace UI
             if (_query.Ids.Count == 0)
             {
                 Item pItem = new Item(_query.ProfileId.First().Value, _query.ProfileId.First().Key);
-                MultipleProfiles multipleProfile = new MultipleProfiles();
+                ProfileCollection multipleProfile = new ProfileCollection();
                 multipleProfile.Add(pItem);
                 _query.Ids = multipleProfile;
             }

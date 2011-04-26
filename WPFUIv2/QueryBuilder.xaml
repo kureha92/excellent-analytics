@@ -1,9 +1,9 @@
 ﻿<Window x:Class="UI.QueryBuilder"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:toolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
-        
     xmlns:Custom="clr-namespace:UI.Controls"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:toolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"        
+    
     xmlns:enums="clr-namespace:Analytics.Data.Enums;assembly=Analytics"
     xmlns:data="clr-namespace:Analytics.Data;assembly=Analytics"
     WindowStyle="SingleBorderWindow" AllowsTransparency="False"   
@@ -88,20 +88,20 @@
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <Canvas x:Name="MainCanvas" Height="595" Width="773" VerticalAlignment="Stretch" >
-            <Expander Canvas.Left="4" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="DimensionsExpander_Expanded">
-                <Custom:CustomTreeView Background="White" Cursor="Arrow" MouseMove="DimensionsExpander_MouseMove" Panel.ZIndex="1" Margin="10,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView" />
+            <Expander Canvas.Left="4" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="DimensionsExpander_Expanded" DataContext="{Binding}">
+                <Custom:CustomTreeView Background="LightGray" Cursor="Arrow" MouseMove="DimensionsExpander_MouseMove" Panel.ZIndex="1" Margin="10,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView" Height="261" Width="329" MaxHeight="261" />
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Dimension" />
             </Expander.Header>
         </Expander>
         <Expander Canvas.Left="122" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" MouseMove="MetricsExpander_MouseMove" Collapsed="MetricsExpander_Collapsed" x:Name="MetricsExpander"  ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="MetricsExpander_Expanded">
-            <Custom:CustomTreeView   Cursor="Arrow" Panel.ZIndex="1" Margin="-110,5,0,0" ItemsDataType="Metric" x:Name="MetricsView" />
+            <Custom:CustomTreeView   Cursor="Arrow" Panel.ZIndex="1" Margin="-110,5,0,0" ItemsDataType="Metric" x:Name="MetricsView" Height="260" MaxHeight="261" Width="333" />
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Metrics" />
             </Expander.Header>
         </Expander>
         <Expander Canvas.Left="232" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="FilterExpander_Collapsed" x:Name="FilterExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="FilterExpander_Expanded">
-            <Canvas Cursor="Arrow" Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-210,5,0,0" Width="519" Height="270">
+            <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-210,5,0,0" Width="519" Height="270">
                 <Label Content="Operator" Canvas.Left="175.073" Canvas.Top="44" Height="25.96" Width="57.927" />
                 <ComboBox ItemTemplate="{StaticResource comboOperatorTemplate}" x:Name="comboBoxOperator" Width="134" Canvas.Left="180" Canvas.Top="67.92" Height="21" />
                 <Label Content="Expression" Canvas.Left="332" Canvas.Top="44"  />
@@ -136,7 +136,7 @@
             <TabItem Header="Select dates"  Name="calendarTab">
                 <Canvas Width="371" Height="184">
                     <toolkit:Calendar SelectionMode="SingleDate" x:Name="startDateCalendar" Margin="2,6.387,89,-21.347" Height="168" Canvas.Top="11" />
-                    <toolkit:Calendar  SelectionMode="SingleDate" x:Name="endDateCalendar" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" HorizontalAlignment="Right" Margin="0,6.387,-111,-21.313" Width="179" Height="168" Canvas.Left="187" Canvas.Top="11" />
+                        <toolkit:Calendar  SelectionMode="SingleDate" x:Name="endDateCalendar" ClipToBounds="False" IsHitTestVisible="True" IsEnabled="True" HorizontalAlignment="Right" Margin="0,6.387,-111,-21.313" Width="179" Height="168" Canvas.Left="187" Canvas.Top="11" />
                     <Label Canvas.Left="-2" Canvas.Top="0" Height="28" Name="label5" Width="120">Start date</Label>
                     <Label Canvas.Left="181" Canvas.Top="0" Name="label7" Width="112" Height="26">End date</Label>
                 </Canvas>
@@ -157,7 +157,7 @@
 
 
         <Expander Canvas.Left="454" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="SortExpander_Collapsed" x:Name="SortExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="SortExpander_Expanded">
-            <Canvas Cursor="Arrow" Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addSort}" x:Name="SortingCanvas" Visibility="Collapsed" Margin="-440,5,0,0" Width="519" Height="255">
+            <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addSort}" x:Name="SortingCanvas" Visibility="Collapsed" Margin="-440,5,0,0" Width="519" Height="255">
             <Button x:Name="addSortBy" Click="addSort_Click" Canvas.Left="291" Canvas.Top="112" Content="Add" Height="26" Width="60" />
             <Button x:Name="removeSortBy" Click="removeSortBy_Click" Canvas.Left="200" Canvas.Top="113" Content="Remove" Height="26" Width="60" />
             <ListBox x:Name="sortingBox" Canvas.Left="60" Canvas.Top="151"  Width="431" Height="91" BorderThickness="1"/>
@@ -192,7 +192,7 @@
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand"  Content="Profiles" />
             </Expander.Header>
-                <Canvas Cursor="Arrow" Background="White" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="ProfileCanvas" Margin="-440,5,0,0" Width="519" Height="255">
+                <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="ProfileCanvas" Margin="-440,5,0,0" Width="519" Height="255">
                 <Button x:Name="addProfile" Click="addProfile_Click" Canvas.Left="22" Canvas.Top="135" Content="Add" Height="26" Width="60" />
                 <Button x:Name="removeProfile" Click="removeProfile_Click" Canvas.Left="22" Canvas.Top="185" Content="Remove" Height="26" Width="60" />
                 <ComboBox SelectionChanged="comboBoxAccount_SelectionChanged" ItemsSource="{Binding}"  Canvas.Left="11" Canvas.Top="36" Name="comboBoxAccount" Width="150" Height="21">
