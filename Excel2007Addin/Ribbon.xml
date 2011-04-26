@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI onLoad="Ribbon_Load" xmlns="http://schemas.microsoft.com/office/2006/01/customui">
+    <ribbon>
+        <tabs>
+            <tab id="tab1" label="Excellent Analytics">
+                <group id="GoogleAnalytics" label="Excellent Analytics">
+                    <button id="buttonAccount" onAction="buttonAccount_Click" label="Account" size="large" />
+                    <separator id="separator1" />
+                    <button id="buttonQuery" onAction="buttonQuery_Click" label="New Query" size="large" />
+                    <separator id="separator2" />
+                    <button id="buttonUpdate" onAction="buttonUpdate_Click" enabled="false" label="Update  Query" size="large" />
+                </group>
+            </tab>
+        </tabs>
+    </ribbon>
+</customUI>
