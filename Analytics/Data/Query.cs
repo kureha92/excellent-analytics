@@ -28,7 +28,7 @@ namespace Analytics.Data
         private Dictionary<string, string> segmentOperators;
         private Filter _filter;
         private Sort _sort;
-        private MultipleProfiles _ids;
+        private ProfileCollection _ids;
         private enum DataType {Dimension , Metric , Unknown};
 
         private DateTime _startDate;
@@ -63,22 +63,14 @@ namespace Analytics.Data
 
         public int Column
         {
-            get
-            {
-                return _column;
-            }
+            get { return _column; }
             set { _column = value; }
         }        
-
         public int Row
         {
-            get
-            {
-                return _row;
-            }
+            get { return _row; }
             set { _row = value; }
         }
-
         public Dictionary<string, string> Dimensions
         {
             get 
@@ -89,7 +81,6 @@ namespace Analytics.Data
             }
             set { _dimensions = value; }
         }
-
         public Dictionary<string, string> Metrics
         {
             get 
@@ -99,8 +90,7 @@ namespace Analytics.Data
                 return _metrics; 
             }
             set { _metrics = value; }
-        }
-        
+        }        
         public Dictionary<string, string> ListSortOrder
         {
             get
@@ -111,7 +101,6 @@ namespace Analytics.Data
             }
             set { _listSortOrder = value; }
         }
-
         public Dictionary<string, string> AccountId
         {
             get
@@ -122,7 +111,6 @@ namespace Analytics.Data
             }
             set { _accountId = value; }
         }
-
         public Dictionary<string, string> ProfileId
         {
             get
@@ -133,7 +121,6 @@ namespace Analytics.Data
             }
             set { _profileId = value; }
         }
-
         public Dictionary<string, string> Segments
         {
             get
@@ -144,7 +131,6 @@ namespace Analytics.Data
             }
             set { _segments = value; }
         }
-
         public Dictionary<string, string> SortParams
         {
             get 
@@ -155,7 +141,6 @@ namespace Analytics.Data
             }
             set { _sortParams = value; }
         }
-
         public Filter Filter
         {
             get
@@ -166,7 +151,6 @@ namespace Analytics.Data
             }
             set { _filter = value; }
         }
-
         public Sort Sort
         {
             get
@@ -178,12 +162,12 @@ namespace Analytics.Data
             set { _sort = value; }
         }
 
-        public MultipleProfiles Ids
+        public ProfileCollection Ids
         {
             get
             {
                 if (_ids == null)
-                    _ids = new MultipleProfiles();
+                    _ids = new ProfileCollection();
                 return _ids;
             }
             set { _ids = value; }
@@ -194,45 +178,37 @@ namespace Analytics.Data
             get { return _startDate; }
             set { _startDate = value; }
         }
-
         public DateTime EndDate
         {
             get { return _endDate; }
             set { _endDate = value; }
         }
-
         public bool SelectDates
         {
             get { return _selectDates; }
             set { _selectDates = value; }
-        }
-        
+        }        
         public DateTime RadioButton
         {
             get { return _radioButton; }
             set { _radioButton = value; }
         }
-
         public TimePeriod TimePeriod
         {
             get { return _timePeriod; }
             set { _timePeriod = value; }
         }
-
         public int MaxResults
         {
             get { return _maxResults; }
             set { _maxResults = value; }
         }
-
         public int StartIndex
         {
             get { return _startIndex; }
             set { _startIndex = value; }
         }
-
         #endregion
-
         #region Private properties
         private Dictionary<string, string> MetricDefinitions
         {
@@ -661,8 +637,7 @@ namespace Analytics.Data
         private Dictionary<string, string> GetSizeCollection(SizeKeyType feedObjectType)
         {
             Dictionary<string, string> sizes = new Dictionary<string, string>();
-            XDocument xDocument = XDocument.Load(System.Xml.XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General." +
-            (feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics") + ".xml")));
+            XDocument xDocument = GetSizeCollectionAsXML(feedObjectType);
             foreach (XElement element in xDocument.Root.Elements("Category"))
                 foreach (XElement subElement in element.Elements(feedObjectType == SizeKeyType.Dimension ? "Dimension" : "Metric"))
                     sizes.Add(subElement.Attribute("name").Value, subElement.Attribute("value").Value);
@@ -671,10 +646,9 @@ namespace Analytics.Data
 
         public static XDocument GetSizeCollectionAsXML(SizeKeyType feedObjectType)
         {
-            XDocument xDocument = XDocument.Load(System.Xml.XmlReader.Create(Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General." +
-            (feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics") + ".xml")));
-            return xDocument;
+            return XDocument.Parse((feedObjectType == SizeKeyType.Dimension ? Settings.Instance.DimensionsXml : Settings.Instance.MetricsXml).OuterXml);
         } 
+
         #endregion
 
     }

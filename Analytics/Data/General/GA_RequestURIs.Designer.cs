@@ -40,5 +40,13 @@ namespace Analytics.Data.General {
                 return ((string)(this["AccountFeed"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Xml.Linq.XDocument Setting {
+            get {
+                return ((global::System.Xml.Linq.XDocument)(this["Setting"]));
+            }
+        }
     }
 }

@@ -15,11 +15,11 @@ namespace Analytics.Data.Validation
      */
     public class XmlLoader
     {
-        
+
         private List<XElement> dimCategories;
         private List<XElement> metCategories;
 
-        
+
         public void Loader()
         {
             dimCategories = new List<XElement>();
@@ -60,5 +60,28 @@ namespace Analytics.Data.Validation
             get { return dimCategories; }
             set { dimCategories = value; }
         }
+
+
+        public static System.Xml.XmlDocument Dimensions
+        {
+            get
+            {
+                System.Xml.XmlDocument dimensions = new System.Xml.XmlDocument();
+                dimensions.Load(System.Xml.XmlReader.Create(
+                        System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General.Dimensions.xml")));
+                return dimensions;
+            }
+        }
+        public static System.Xml.XmlDocument Metrics
+        {
+            get
+            {
+                System.Xml.XmlDocument metrics = new System.Xml.XmlDocument();
+                metrics.Load(System.Xml.XmlReader.Create(
+                        System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("Analytics.Data.General.Metrics.xml")));
+                return metrics;
+            }
+        }
+
     }
 }

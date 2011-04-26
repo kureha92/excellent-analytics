@@ -29,12 +29,12 @@ namespace Analytics.Authorization
         {
             UserAccount uAcc = new UserAccount(authToken , eMail);
             UTF8Encoding encoding = new UTF8Encoding();
-            WebRequest request = HttpWebRequest.Create(Data.General.GA_RequestURIs.Default.AccountFeed + "default?v=2");
-            request.Proxy = ProxyHelper.GetProxy();
+            WebRequest request = HttpRequestFactory.Instance.CreateRequest(Data.General.GA_RequestURIs.Default.AccountFeed + "default?v=2");
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = 0;
             request.Headers.Add("Authorization: GoogleLogin auth=" + uAcc.AuthToken);
+            request.Timeout = 20000;
 
             HttpWebResponse response = null;
 
@@ -170,8 +170,7 @@ namespace Analytics.Authorization
         public string Authenticate(string email, string password , out HttpStatusCode responseCode)
         {
             string uri = "https://www.google.com/accounts/ClientLogin";
-            WebRequest request = HttpWebRequest.Create(uri);
-            request.Proxy = ProxyHelper.GetProxy();
+            WebRequest request = HttpRequestFactory.Instance.CreateRequest(uri);
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded";
             UTF8Encoding encoding = new UTF8Encoding();

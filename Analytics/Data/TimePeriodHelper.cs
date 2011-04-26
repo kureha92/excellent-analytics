@@ -92,7 +92,7 @@ namespace Analytics.Data
 
         public DateTime LastQuarter(bool quarter)
         {
-            string strMonth = DateTime.Now.ToString("MMMM");
+            int currentMonth = DateTime.Now.Month;
             DateTime dateTime = DateTime.Now;
             DateTime dateOfQuarter = new DateTime();
 
@@ -109,23 +109,14 @@ namespace Analytics.Data
                 q4 = (new DateTime(dateTime.Year, 12, 31)).AddYears(-1);
             }
 
-            if (strMonth.Equals("januari") || strMonth.Equals("februari") || strMonth.Equals("mars"))
-            {
+            if (currentMonth <= 3)
                 dateOfQuarter = q4;
-
-            }
-            else if (strMonth.Equals("april") || strMonth.Equals("maj") || strMonth.Equals("juni"))
-            {
+            else if (currentMonth <= 6)
                 dateOfQuarter = q1;
-            }
-            else if (strMonth.Equals("juli") || strMonth.Equals("augusti") || strMonth.Equals("september"))
-            {
+            else if (currentMonth <= 9)
                 dateOfQuarter = q2;
-            }
-            else if (strMonth.Equals("oktober") || strMonth.Equals("november") || strMonth.Equals("december"))
-            {
+            else
                 dateOfQuarter = q3;
-            }
 
             if (quarter)
             {

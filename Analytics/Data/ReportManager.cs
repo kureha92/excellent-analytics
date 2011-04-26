@@ -39,7 +39,8 @@ namespace Analytics.Data
             int originalStartIndex = query.StartIndex;
 
             CreateRequest(query, profileCounter);
-            RequestData(request);
+            if (!RequestData(request))
+                return report;
 
             int dimensionsAndMetrics = query.GetDimensionsAndMetricsCount();
 
@@ -58,7 +59,8 @@ namespace Analytics.Data
                 query.StartIndex = query.StartIndex + 10000;
                 query.MaxResults = upperLimitBound = query.MaxResults + 10000;
                 CreateRequest(query, profileCounter);
-                RequestData(request);
+                if (!RequestData(request))
+                    return report;
                 NotifySubscribers(50, "Extract data", null);
                 report.Data = ExtractDataFromXml(xDoc, dimensionsAndMetrics);
                 if (upperLimitBound <= query.MaxResults)
@@ -74,8 +76,7 @@ namespace Analytics.Data
         private void CreateRequest(Query query, int profileCounter)
         {
             string uri = query.ToString(profileCounter);
-            request = HttpWebRequest.Create(uri);
-            request.Proxy = ProxyHelper.GetProxy();
+            request = HttpRequestFactory.Instance.CreateRequest(uri);
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
             UTF8Encoding encoding = new UTF8Encoding();
@@ -88,7 +89,7 @@ namespace Analytics.Data
          * This method executes the call to Google Analytics.
          * Google Analytics return an XML document, which is saved into the global parameter xDoc.
          */
-        private void RequestData(WebRequest request)
+        private bool RequestData(WebRequest request)
         {
             try
             {
@@ -102,11 +103,25 @@ namespace Analytics.Data
                     }
                 }
             }
+            catch (WebException e)
+            {
+                if (e.Status == WebExceptionStatus.Timeout)
+                {
+                    NotifySubscribers(50, "Request timed out", HttpStatusCode.RequestTimeout.ToString());
+                    MessageBox.Show("Request timed out. Increase timeout in settings and try again.", "Request timed out",MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+                NotifySubscribers(50, "Request failed", HttpStatusCode.BadRequest.ToString());
+                MessageBox.Show("Request failed. Probably because of invalid input.", "Bad request");
+                return false;
+            }
             catch (Exception)
             {
                 NotifySubscribers(50, "Request failed", HttpStatusCode.BadRequest.ToString());
                 MessageBox.Show("Request failed. Probably because of invalid input.", "Bad request");
+                return false;
             }
+            return true;
         }
 
         private object[,] SetHeaders(Query query)

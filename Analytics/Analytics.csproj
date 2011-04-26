@@ -60,7 +60,9 @@
     </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -79,7 +81,7 @@
     <Compile Include="Authorization\AccountManager.cs" />
     <Compile Include="Authorization\Entry.cs" />
     <Compile Include="Authorization\UserAccount.cs" />
-    <Compile Include="Data\MultipleProfiles.cs" />
+    <Compile Include="Data\ProfileCollection.cs" />
     <Compile Include="Data\Validation\MetricBasedInvalidation.cs" />
     <Compile Include="Data\Validation\DimensionBasedValidation.cs" />
     <Compile Include="Data\Validation\InvalidMultiCombinations.cs" />
@@ -87,7 +89,7 @@
     <Compile Include="Data\Item.cs" />
     <Compile Include="Data\General\Enums.cs" />
     <Compile Include="Data\General\GA_RequestURIs.cs" />
-    <Compile Include="Data\SizeOperator.cs" />
+    <Compile Include="Authorization\SizeOperator.cs" />
     <Compile Include="Data\FilterItem.cs" />
     <Compile Include="Data\Filter.cs" />
     <Compile Include="Data\Query.cs" />
@@ -100,10 +102,11 @@
     </Compile>
     <Compile Include="Data\TimePeriodHelper.cs" />
     <Compile Include="Data\Validation\XmlLoader.cs" />
+    <Compile Include="HttpRequestFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyHelper.cs" />
     <Compile Include="Authorization\UserSegment.cs" />
-    <Compile Include="Updates.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -163,6 +166,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
