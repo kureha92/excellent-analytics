@@ -11,6 +11,7 @@ using GA_Addin.UI;
 using WPFUIv2;
 using System.Windows.Forms;
 using System.Security.Cryptography;
+using System.Xml;
 
 namespace GA_Excel2007
 {
@@ -128,6 +129,7 @@ namespace GA_Excel2007
 			AccountManager accMan = new AccountManager();
 			_user = accMan.GetAccountData(email, authToken);
 			LaunchQueryBuilder(new Query());
+            Excel2007Addin.Updates.CheckForUpdates();
 		}
 
 		private void buttonUpdate_Click(object sender, RibbonControlEventArgs e)
@@ -551,13 +553,19 @@ namespace GA_Excel2007
                     System.Xml.XmlDocument doc = new System.Xml.XmlDataDocument();
                     try
                     {
-                        doc.Load(settingsdlg.MetricsFileName);
+                        doc.Load(XmlReader.Create(settingsdlg.MetricsFileName,
+                                                    new XmlReaderSettings()
+                                                    {
+                                                        Schemas = Analytics.Data.Validation.XmlValidator.LoadSchema("metrics.xsd"),
+                                                        ValidationType = ValidationType.Schema
+                                                    }));
                         settings.Metrics = doc;
                     }
                     catch (Exception)
                     {
-                        MessageBox.Show("Error parsing metrics xml. No metrics updated.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                         MessageBox.Show("Error parsing metrics xml. No metrics updated.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+                      
                 }
                 // Update dimensions xml?
                 if (!string.IsNullOrEmpty(settingsdlg.DimensionsFileName))
@@ -565,7 +573,10 @@ namespace GA_Excel2007
                     System.Xml.XmlDocument doc = new System.Xml.XmlDataDocument();
                     try
                     {
-                        doc.Load(settingsdlg.DimensionsFileName);
+                        doc.Load(XmlReader.Create(settingsdlg.DimensionsFileName,
+                                                    new XmlReaderSettings() { 
+                                                            Schemas = Analytics.Data.Validation.XmlValidator.LoadSchema("dimensions.xsd"),
+                                                            ValidationType = ValidationType.Schema }));
                         settings.Dimensions = doc;
                     }
                     catch (Exception)

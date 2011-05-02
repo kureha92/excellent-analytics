@@ -19,9 +19,6 @@ namespace UI
 		public delegate void Logout();
 		public event Logout logOut;
 		UserAccount activeUser;
-		string userName;
-		string password;
-
 		private byte[] randomBytes = { 4,32,62,9,145,5};
 
 		public Login(UserAccount uAcc)

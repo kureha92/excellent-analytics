@@ -2,8 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
-    <PublishUrlHistory>C:\Projects\Publish\ExcellentAnalytics\</PublishUrlHistory>
-    <InstallUrlHistory />
-    <SupportUrlHistory />
+    <PublishUrlHistory>H:\project\Excellent Analytics\Publish\</PublishUrlHistory>
+    <InstallUrlHistory>
+    </InstallUrlHistory>
+    <SupportUrlHistory>http://www.excellent-analytics.com</SupportUrlHistory>
   </PropertyGroup>
 </Project>

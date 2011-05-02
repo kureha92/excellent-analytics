@@ -23,6 +23,7 @@ namespace WPFUIv2
         {
             InitializeComponent();
 
+            remindMeAgainPeriods.Add(DateTime.Now, "Next time I start Excel");
             remindMeAgainPeriods.Add(DateTime.Now.AddDays(1), "In a day");
             remindMeAgainPeriods.Add(DateTime.Now.AddDays(7), "In a week");
             remindMeAgainPeriods.Add(DateTime.Now.AddMonths(1), "In a Month");

@@ -26,7 +26,6 @@ namespace GA_Excel2007
                 settings.FirstStartup = false;
                 settings.Save();
             }
-            Updates.CheckForUpdates();
             
             Analytics.Settings.Instance.UseProxy = settings.UseProxy;
             Analytics.Settings.Instance.ProxyAddress = settings.ProxyAddress;

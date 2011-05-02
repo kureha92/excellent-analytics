@@ -102,6 +102,7 @@
     </Compile>
     <Compile Include="Data\TimePeriodHelper.cs" />
     <Compile Include="Data\Validation\XmlLoader.cs" />
+    <Compile Include="Data\Validation\XmlValidator.cs" />
     <Compile Include="HttpRequestFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyHelper.cs" />
@@ -112,10 +113,16 @@
     <None Include="app.config" />
     <None Include="Analytics.cd" />
     <None Include="ClassDiagram1.cd" />
+    <EmbeddedResource Include="Data\General\dimensions.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="Data\General\GA_RequestURIs.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>GA_RequestURIs.Designer.cs</LastGenOutput>
     </None>
+    <EmbeddedResource Include="Data\General\metrics.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Authorization\AccountFeedPropertyNames.resx">
@@ -126,24 +133,17 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data\General\Dimensions.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Data\General\Metrics.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Data\General\Metrics.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Data\General\MetricFilterOperators.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Data\General\MetricFilterOperators.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Data\General\DimensionFilterOperators.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Data\General\DimensionFilterOperators.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Data\General\SegmentOperators.xml">

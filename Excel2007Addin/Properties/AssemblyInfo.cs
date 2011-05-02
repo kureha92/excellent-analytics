@@ -7,12 +7,12 @@ using Microsoft.Office.Tools.Excel;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GA_Excel2007")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Excellent Analytics")]
+[assembly: AssemblyDescription("Fetches data from google analytics.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GA_Excel2007")]
-[assembly: AssemblyCopyright("Copyright ©  2009")]
+[assembly: AssemblyCompany("Ampliofy/Know IT")]
+[assembly: AssemblyProduct("Excellent Analytics")]
+[assembly: AssemblyCopyright("Copyright ©  2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,8 +34,8 @@ using Microsoft.Office.Tools.Excel;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0")]
+[assembly: AssemblyFileVersion("1.1.0")]
 
 // 
 // The ExcelLocale1033 attribute controls the locale that is passed to the Excel

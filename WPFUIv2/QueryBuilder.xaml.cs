@@ -373,6 +373,8 @@ namespace UI
         {
             if (ValidateForm())
             {
+                if (profileBox.Items.Count > 1)
+                    MessageBox.Show("This query contains multiple profiles. To update the query,\nyou have to do one update per profile.", "Information regarding query update", MessageBoxButton.OK, MessageBoxImage.Information);
                 CompleteQuery();
                 this.Close();
                 SetSelectedDates();
