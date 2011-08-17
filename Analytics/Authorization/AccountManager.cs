@@ -80,7 +80,7 @@ namespace Analytics.Authorization
 
             IEnumerable<XElement> segmentElements = xDoc.Root.Elements(segmentElementName);
             UserSegment noSegment = new UserSegment();
-            noSegment.SegmentName = "";
+            noSegment.SegmentName = "Default (use if uncertain)";
             noSegment.SegmentId = "";
             segments.Add(noSegment);
 
@@ -175,8 +175,8 @@ namespace Analytics.Authorization
             request.ContentType = "application/x-www-form-urlencoded";
             UTF8Encoding encoding = new UTF8Encoding();
             string service = "analytics";
-            string source = "Drop IT AB-Excellent Analytics-0.01";
-            string requestContent = "accountType=GOOGLE&Email=" + email + "&Passwd=" + password + "&service=" + service + "&source=" + source;
+            string source = "Excellent Analytics " + System.Reflection.AssemblyName.GetAssemblyName(System.Reflection.Assembly.GetExecutingAssembly().Location).Version.ToString();            
+            string requestContent = "accountType=GOOGLE&Email=" + System.Web.HttpUtility.UrlEncode(email) + "&Passwd=" + System.Web.HttpUtility.UrlEncode(password) + "&service=" + service + "&source=" + source;
             request.ContentLength = encoding.GetByteCount(requestContent);
 
 

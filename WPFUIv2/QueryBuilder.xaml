@@ -88,19 +88,19 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <Canvas x:Name="MainCanvas" Height="595" Width="773" VerticalAlignment="Stretch" >
             <Expander Canvas.Left="4" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="DimensionsExpander_Expanded" DataContext="{Binding}">
-                <Custom:CustomTreeView Background="LightGray" Cursor="Arrow" MouseMove="DimensionsExpander_MouseMove" Panel.ZIndex="1" Margin="10,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView" Height="261" Width="329" MaxHeight="261" />
+                <Custom:CustomTreeView Background="LightGray" Cursor="Arrow" MouseMove="DimensionsExpander_MouseMove" Panel.ZIndex="1" Margin="0,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView" Height="261" Width="329" MaxHeight="261" />
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Dimension" />
             </Expander.Header>
         </Expander>
         <Expander Canvas.Left="122" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" MouseMove="MetricsExpander_MouseMove" Collapsed="MetricsExpander_Collapsed" x:Name="MetricsExpander"  ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="MetricsExpander_Expanded">
-            <Custom:CustomTreeView   Cursor="Arrow" Panel.ZIndex="1" Margin="-110,5,0,0" ItemsDataType="Metric" x:Name="MetricsView" Height="260" MaxHeight="261" Width="333" />
+            <Custom:CustomTreeView   Cursor="Arrow" Panel.ZIndex="1" Margin="-120,5,0,0" ItemsDataType="Metric" x:Name="MetricsView" Height="260" MaxHeight="261" Width="333" />
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Metrics" />
             </Expander.Header>
         </Expander>
         <Expander Canvas.Left="232" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="FilterExpander_Collapsed" x:Name="FilterExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="FilterExpander_Expanded">
-            <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-210,5,0,0" Width="519" Height="270">
+            <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="FilterCanvas" Margin="-230,5,0,0" Width="750" Height="270">
                 <Label Content="Operator" Canvas.Left="175.073" Canvas.Top="44" Height="25.96" Width="57.927" />
                 <ComboBox ItemTemplate="{StaticResource comboOperatorTemplate}" x:Name="comboBoxOperator" Width="134" Canvas.Left="180" Canvas.Top="67.92" Height="21" />
                 <Label Content="Expression" Canvas.Left="332" Canvas.Top="44"  />
@@ -117,9 +117,9 @@
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Filters" />
             </Expander.Header>
         </Expander>
-                
-        <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="20" Canvas.Top="280" BorderBrush="Transparent" Height="211" x:Name="dimensionsSelected" Width="130" />
-        <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="130" Canvas.Top="280" BorderBrush="Transparent" Height="209" x:Name="metricsSelected" Width="130" />
+
+        <ListBox Background="White" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="false" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="8" Canvas.Top="280" Height="209" x:Name="dimensionsSelected" Width="114" />
+        <ListBox Background="White" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" ItemTemplate="{StaticResource listbTemplate}" Canvas.Left="124" Canvas.Top="280" Height="209" x:Name="metricsSelected" Width="114" />
         <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="247" ItemTemplate="{StaticResource defaultString}" Canvas.Top="280" BorderBrush="Transparent" Height="208" x:Name="activeFilters" Width="170" />
         <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="450" ItemTemplate="{StaticResource defaultString}" Canvas.Top="280" BorderBrush="Transparent" Height="208" x:Name="activeSortings" Width="112" />
         <ListBox Background="LightGray" Panel.ZIndex="0" Margin="0,15,0,0" ScrollViewer.CanContentScroll="False" Canvas.Left="600" ItemTemplate="{StaticResource defaultString}" Canvas.Top="280" BorderBrush="Transparent" Height="208" x:Name="activeProfiles" Width="122" />            
@@ -156,7 +156,7 @@
 
 
         <Expander Canvas.Left="454" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="SortExpander_Collapsed" x:Name="SortExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="SortExpander_Expanded">
-            <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addSort}" x:Name="SortingCanvas" Visibility="Collapsed" Margin="-440,5,0,0" Width="519" Height="255">
+            <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addSort}" x:Name="SortingCanvas" Visibility="Collapsed" Margin="-454,5,0,0" Width="750" Height="255">
             <Button x:Name="addSortBy" Click="addSort_Click" Canvas.Left="291" Canvas.Top="112" Content="Add" Height="26" Width="60" />
             <Button x:Name="removeSortBy" Click="removeSortBy_Click" Canvas.Left="200" Canvas.Top="113" Content="Remove" Height="26" Width="60" />
             <ListBox x:Name="sortingBox" Canvas.Left="60" Canvas.Top="151"  Width="431" Height="91" BorderThickness="1"/>
@@ -185,13 +185,12 @@
         </ComboBox>
         <Button Canvas.Left="18" Canvas.Top="561" Content="About" Height="23" Name="About" Width="75" Click="About_Click">
         </Button>
-        <TextBlock Canvas.Left="40" Canvas.Top="353" Height="46" Name="textBlock1" Text="" Width="85" />
-        <CheckBox Canvas.Left="515" Canvas.Top="152" Content="Validation" Unchecked="validationActivate_Unchecked" Height="16" Name="validationActivate" IsChecked="False" />
+            <!--<CheckBox Canvas.Left="515" Canvas.Top="152" Content="Validation" Unchecked="validationActivate_Unchecked" Height="16" Name="validationActivate" IsChecked="False" />-->
             <Expander Canvas.Left="590" Canvas.Top="259" Height="230" Name="Profile_Expander" Collapsed="ProfileExpander_Collapsed" Expanded="ProfileExpander_Expanded">
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand"  Content="Profiles" />
             </Expander.Header>
-                <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="1" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="ProfileCanvas" Margin="-440,5,0,0" Width="519" Height="255">
+                <Canvas Cursor="Arrow" Background="LightGray" Panel.ZIndex="30" FocusManager.FocusedElement="{Binding ElementName=addFilter}" x:Name="ProfileCanvas" Margin="-330,5,0,0" Width="500" Height="265">
                 <Button x:Name="addProfile" Click="addProfile_Click" Canvas.Left="22" Canvas.Top="135" Content="Add" Height="26" Width="60" />
                 <Button x:Name="removeProfile" Click="removeProfile_Click" Canvas.Left="22" Canvas.Top="185" Content="Remove" Height="26" Width="60" />
                 <ComboBox SelectionChanged="comboBoxAccount_SelectionChanged" ItemsSource="{Binding}"  Canvas.Left="11" Canvas.Top="36" Name="comboBoxAccount" Width="150" Height="21">
@@ -213,6 +212,18 @@
                 <ListBox  x:Name="profileBox" Canvas.Left="204" Canvas.Top="16" Width="281" Height="220" BorderThickness="1"/>
             </Canvas>
         </Expander>
+            <Button Canvas.Left="10" Canvas.Top="510" Height="23" Name="button1" Width="54" Click="DimensionsSortUp_Click">
+                <Image Source="Resources/up.png" />
+            </Button>
+            <Button Canvas.Left="66" Canvas.Top="510" Height="23" Name="button2" Width="54" Click="DimensionsSortDown_Click">
+                <Image Source="Resources/down.png" />
+            </Button>
+            <Button Canvas.Left="126" Canvas.Top="510" Height="23" Name="button3" Width="54" Click="MetricsSortUp_Click">
+                <Image Source="Resources/up.png" />
+            </Button>
+            <Button Canvas.Left="182" Canvas.Top="510" Height="23" Name="button4" Width="54" Click="MetricsSortDown_Click">
+                <Image Source="Resources/down.png" />
+            </Button>
         </Canvas>
 
     </ScrollViewer>

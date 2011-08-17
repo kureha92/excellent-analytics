@@ -39,6 +39,29 @@ namespace Excel2007Addin
         {
             return Version;
         }
+
+        public bool IsNewerThan(object obj)
+        {
+            VersionInformation other = obj as VersionInformation;
+            if (other == null)
+                return false;
+            if (this.major < other.major)
+                return false;
+            if (this.major == other.major
+                && this.minor < other.minor)
+                return false;
+            if (this.major == other.major
+                && this.minor == other.minor
+                && this.build < other.build)
+                return false;
+            if (this.major == other.major
+                && this.minor == other.minor
+                && this.build == other.build
+                && this.rev <= other.rev)
+                return false;
+
+            return true;
+        }
     }
 
     
@@ -122,7 +145,7 @@ namespace Excel2007Addin
             //    currentVersion.Replace(".", "");
             //}                      
 
-			return verinfo.Version != currentVersion.Version;			
+			return verinfo.IsNewerThan(currentVersion);			
 		}
 
 		public string UpdateUrl { get { if (verinfo == null) return ""; return verinfo.Url; } }

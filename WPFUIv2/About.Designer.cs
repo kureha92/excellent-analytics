@@ -38,8 +38,6 @@ namespace WPFUIv2
             this.linkLabelFAQ = new System.Windows.Forms.LinkLabel();
             this.Release = new System.Windows.Forms.Label();
             this.linkLabelRelease = new System.Windows.Forms.LinkLabel();
-            this.linkLabelFeedback = new System.Windows.Forms.LinkLabel();
-            this.Contact = new System.Windows.Forms.Label();
             this.OK = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -111,29 +109,9 @@ namespace WPFUIv2
             this.linkLabelRelease.Text = "http://feeds.feedburner.com/excellentanalytics";
             this.linkLabelRelease.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelRelease_LinkClicked);
             // 
-            // linkLabelMail
-            // 
-            this.linkLabelFeedback.AutoSize = true;
-            this.linkLabelFeedback.Location = new System.Drawing.Point(65, 327);
-            this.linkLabelFeedback.Name = "linkLabelMail";
-            this.linkLabelFeedback.Size = new System.Drawing.Size(169, 13);
-            this.linkLabelFeedback.TabIndex = 6;
-            this.linkLabelFeedback.TabStop = true;
-            this.linkLabelFeedback.Text = "feedback@excellentanalytics.com";
-            this.linkLabelFeedback.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelFeedback_LinkClicked);
-            // 
-            // Contact
-            // 
-            this.Contact.AutoSize = true;
-            this.Contact.Location = new System.Drawing.Point(12, 327);
-            this.Contact.Name = "Contact";
-            this.Contact.Size = new System.Drawing.Size(47, 13);
-            this.Contact.TabIndex = 7;
-            this.Contact.Text = "Contact:";
-            // 
             // OK
             // 
-            this.OK.Location = new System.Drawing.Point(430, 327);
+            this.OK.Location = new System.Drawing.Point(448, 254);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 8;
@@ -146,33 +124,65 @@ namespace WPFUIv2
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(436, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 13);
+            this.label1.Size = new System.Drawing.Size(0, 13);
             this.label1.TabIndex = 9;
-
-            string uri = "http://excellentanalytics.com/wp-content/themes/dfblog/version.php";
-            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(uri);
-            myRequest.Method = "GET";
-            WebResponse myResponse = myRequest.GetResponse();
-            StreamReader sr = new StreamReader(myResponse.GetResponseStream(), System.Text.Encoding.UTF8);
-            this.label1.Text = sr.ReadToEnd();
-            sr.Close();
-            myResponse.Close();
-
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(0, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(100, 23);
+            this.label2.TabIndex = 0;
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(0, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 23);
+            this.label3.TabIndex = 0;
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(0, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(100, 23);
+            this.label4.TabIndex = 0;
+            // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(0, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(100, 23);
+            this.label5.TabIndex = 0;
+            // 
+            // label6
+            // 
+            this.label6.Location = new System.Drawing.Point(0, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(100, 23);
+            this.label6.TabIndex = 0;
+            // 
+            // About
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(535, 362);
+            this.ClientSize = new System.Drawing.Size(535, 289);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.OK);
-            this.Controls.Add(this.Contact);
-            this.Controls.Add(this.linkLabelFeedback);
             this.Controls.Add(this.linkLabelRelease);
             this.Controls.Add(this.Release);
             this.Controls.Add(this.linkLabelFAQ);
             this.Controls.Add(this.FAQ);
             this.Controls.Add(this.linkLabelAboutEA);
             this.Controls.Add(this.AboutEA);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "About";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "About Excellent Analytics";
+            this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -186,8 +196,6 @@ namespace WPFUIv2
         private System.Windows.Forms.LinkLabel linkLabelFAQ;
         private System.Windows.Forms.Label Release;
         private System.Windows.Forms.LinkLabel linkLabelRelease;
-        private System.Windows.Forms.Label Contact;
-        private System.Windows.Forms.LinkLabel linkLabelFeedback;
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;

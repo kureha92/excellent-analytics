@@ -190,12 +190,14 @@ namespace UI
         private void DimensionsExpander_Expanded(object sender, RoutedEventArgs e)
         {
 			MetricsExpander.IsExpanded = false;
-			FilterExpander.IsExpanded = false;
-			SortExpander.IsExpanded = false;
-			Profile_Expander.IsExpanded = false;
-			DimensionsView.Visibility = Visibility.Visible;
-			DimensionsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
-			DimensionsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight); 
+            FilterExpander.IsExpanded = false;
+            SortExpander.IsExpanded = false;
+            Profile_Expander.IsExpanded = false;
+            DimensionsView.Visibility = Visibility.Visible;
+            DimensionsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
+            DimensionsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight);
+
+            SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
         }
 
         private void DimensionsExpander_Collapsed(object sender, RoutedEventArgs e)
@@ -203,7 +205,7 @@ namespace UI
         //    if (validationActivate.IsChecked == true)
         //        inValidParameters = ValidationHandler();
         //    _query.Dimensions.Clear();
-        //    _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
+            _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
             BindSizeList(ListType.Dim);
         //    DataBindSortByDropDown();
         //    BindSortListBox();
@@ -245,6 +247,7 @@ namespace UI
             MetricsView.Visibility = Visibility.Visible;
             MetricsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
             MetricsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight);
+            SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
         }
 
 
@@ -252,35 +255,37 @@ namespace UI
 
         private void MetricsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            if (validationActivate.IsChecked == true)
-                inValidParameters = ValidationHandler();
-            if (inValidParameters)
-            {
-                MetricsExpander.IsExpanded = true;
-            }
-            _query.Metrics.Clear();
-            // The maximum number of metrics is ten.
-            if (!NumberOfMetrics())
-            {
-                _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
-                BindSizeList(ListType.Met);
-                DataBindSortByDropDown();
-                BindSortListBox();
-                BindSizeList(ListType.Sort);
+            _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
+            BindSizeList(ListType.Met);
+            //if (validationActivate.IsChecked == true)
+            //    inValidParameters = ValidationHandler();
+            //if (inValidParameters)
+            //{
+            //    MetricsExpander.IsExpanded = true;
+            //}
+            //_query.Metrics.Clear();
+            //// The maximum number of metrics is ten.
+            //if (!NumberOfMetrics())
+            //{
+            //    _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
+            //    BindSizeList(ListType.Met);
+            //    DataBindSortByDropDown();
+            //    BindSortListBox();
+            //    BindSizeList(ListType.Sort);
 
-                // Verifies that an erased parameter is not used in a filter.
-                filterCheck();
-                textBoxExpression.Clear();
-                BindFilterListBox();
+            //    // Verifies that an erased parameter is not used in a filter.
+            //    filterCheck();
+            //    textBoxExpression.Clear();
+            //    BindFilterListBox();
 
-                MainNotify.Visibility = Visibility.Collapsed;
-                MainNotify.ErrorMessage = string.Empty;
-            }
-            else
-            {
-                MetricsExpander.IsExpanded = true;
-                ValidateForm();
-            }
+            //    MainNotify.Visibility = Visibility.Collapsed;
+            //    MainNotify.ErrorMessage = string.Empty;
+            //}
+            //else
+            //{
+            //    MetricsExpander.IsExpanded = true;
+            //    ValidateForm();
+            //}
         }
          
         
@@ -300,9 +305,9 @@ namespace UI
             BindFilterListBox();
 
             Binding dimBinding = new Binding();
-            dimBinding.Source = _query.Dimensions;
+            dimBinding.Source = Analytics.Data.Query.GetSizeCollection(SizeKeyType.Dimension); //_query.Dimensions;
             Binding metBinding = new Binding();
-            metBinding.Source = _query.Metrics;
+            metBinding.Source = Analytics.Data.Query.GetSizeCollection(SizeKeyType.Metric); //_query.Metrics;
             Binding segBinding = new Binding();
             comboBoxDimensions.SetBinding(ComboBox.ItemsSourceProperty, dimBinding);
             comboBoxMetrics.SetBinding(ComboBox.ItemsSourceProperty, metBinding);
@@ -315,12 +320,18 @@ namespace UI
 
         private void comboBoxSegments_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (comboBoxSegments.SelectedItem != null)
-            {
-                this._query.Segments.Clear();
-                this._query.Segments.Add((comboBoxSegments.SelectedItem as UserSegment).SegmentName, (comboBoxSegments.SelectedItem as UserSegment).SegmentId);
+            if (comboBoxSegments.SelectedItem == null)
+                return;
 
-            }
+            UserSegment us = comboBoxSegments.SelectedItem as UserSegment;
+            if (us == null)
+                return;
+
+            if (us.SegmentName.CompareTo("All Visits") == 0)
+                MessageBox.Show("This segment may cause faulty figures if combined with the visitor metric.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            this._query.Segments.Clear();
+            this._query.Segments.Add((comboBoxSegments.SelectedItem as UserSegment).SegmentName, (comboBoxSegments.SelectedItem as UserSegment).SegmentId);          
         }
 
         private void cancelFilterButton_Click(object sender, RoutedEventArgs e)
@@ -373,6 +384,16 @@ namespace UI
         {
             if (ValidateForm())
             {
+
+                if (NumberOfDimensions() &&
+                    MessageBox.Show("You have exceeded the maximum limit of dimensions selected. Maximum is 7.\nDo you still want to proceed with your query?", "To many dimensions", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                        return;
+                
+                if (NumberOfMetrics() &&
+                    MessageBox.Show("You have exceeded the maximum limit of metrics selected. Maximum is 10.\nDo you still want to proceed with your query?", "To many metrics", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                    return;
+                
+
                 if (profileBox.Items.Count > 1)
                     MessageBox.Show("This query contains multiple profiles. To update the query,\nyou have to do one update per profile.", "Information regarding query update", MessageBoxButton.OK, MessageBoxImage.Information);
                 CompleteQuery();
@@ -386,12 +407,13 @@ namespace UI
 
         private void SortDropDown_MouseEnter(object sender, RoutedEventArgs e)
         {
+            /*
             _query.Metrics.Clear();
             _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
 
             _query.Dimensions.Clear();
             _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
-
+            */
             DataBindSortByDropDown();
         }
 
@@ -399,12 +421,12 @@ namespace UI
         {
             SortDropDown_MouseEnter(sender, e);
 
-            _query.Metrics.Clear();
+            /*_query.Metrics.Clear();
             _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
 
             _query.Dimensions.Clear();
             _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
-
+            */
             if (ValidateForm())
             {
                 MainNotify.Visibility = Visibility.Collapsed;
@@ -454,14 +476,14 @@ namespace UI
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)
         {
-            if (_query.Metrics.Count > 0)
-            {
-                SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
-            }
-            if (_query.Dimensions.Count > 0)
-            {
-                SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
-            }
+            //if (_query.Metrics.Count > 0)
+            //{
+            //    //SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
+            //}
+            //if (_query.Dimensions.Count > 0)
+            //{
+            //    //SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
+            //}
         }
 
 
@@ -584,34 +606,34 @@ namespace UI
 
         private void DimensionsExpander_MouseMove(object sender, MouseEventArgs e)
         {
-            _query.Dimensions.Clear();
-            _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
-            if (validationActivate.IsChecked == true)
-                if (ValidationHandler())
-                {
-                    InvalidCombination invalidCombo = new InvalidCombination();
-                    invalidCombo.Show();
-                }
-            if (_query.Dimensions.Count > 0)
-            {
-                SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
-            }
+            //_query.Dimensions.Clear();
+            //_query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
+            //if (validationActivate.IsChecked == true)
+            //    if (ValidationHandler())
+            //    {
+            //        InvalidCombination invalidCombo = new InvalidCombination();
+            //        invalidCombo.Show();
+            //    }
+            //if (_query.Dimensions.Count > 0)
+            //{
+            //    //SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
+            //}
         }
 
         private void MetricsExpander_MouseMove(object sender, MouseEventArgs e)
         {
-            _query.Metrics.Clear();
-            _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
-            if (validationActivate.IsChecked == true)
-                if (ValidationHandler())
-                {
-                    InvalidCombination invalidCombo = new InvalidCombination();
-                    invalidCombo.Show();
-                }
-            if (_query.Metrics.Count > 0)
-            {
-                SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
-            }
+            //_query.Metrics.Clear();
+            //_query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
+            //if (validationActivate.IsChecked == true)
+            //    if (ValidationHandler())
+            //    {
+            //        InvalidCombination invalidCombo = new InvalidCombination();
+            //        invalidCombo.Show();
+            //    }
+            //if (_query.Metrics.Count > 0)
+            //{
+            //    SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
+            //}
         }
 
         #endregion
@@ -619,7 +641,7 @@ namespace UI
         #region Methods
 
         private void InitializeForm()
-        {
+        {            
             BindSizeList(ListType.Dim);
             BindSizeList(ListType.Met);
             BindSizeList(ListType.Fil);
@@ -884,7 +906,7 @@ namespace UI
                 return false;
             }
 
-            if (NumberOfDimensions())
+            /*if (NumberOfDimensions())
             {
                 Notify("You have exceeded the maximum limit of dimensions selected. Maximum is seven.");
                 return false;
@@ -893,7 +915,7 @@ namespace UI
             {
                 Notify("You have exceeded the maximum limit of metrics selected. Maximum is ten.");
                 return false;
-            }
+            }*/
             if (comboBoxProfile.SelectedItem == null)
             {
                 Notify("No profile is selected");
@@ -1313,7 +1335,84 @@ namespace UI
 
         #endregion
 
+        private void DimensionsSortUp_Click(object sender, RoutedEventArgs e)
+        {
+            KeyValuePair<string, string> item = (KeyValuePair<string, string>)dimensionsSelected.SelectedItem;
+            if (dimensionsSelected.SelectedIndex > 0)
+            {
+                int i = dimensionsSelected.SelectedIndex;
 
+                List<KeyValuePair<string, string>> dimensions = _query.Dimensions.ToList();
+
+                dimensions.RemoveAt(i);
+                dimensions.Insert(i - 1, item);
+
+                _query.Dimensions.Clear();
+                foreach (KeyValuePair<string, string> pair in dimensions)
+                    _query.Dimensions.Add(pair.Key, pair.Value);
+                dimensionsSelected.Items.Refresh();
+                dimensionsSelected.SelectedIndex = i - 1;
+            }
+                
+        }
+
+        private void DimensionsSortDown_Click(object sender, RoutedEventArgs e)
+        {
+            KeyValuePair<string, string> item = (KeyValuePair<string, string>)dimensionsSelected.SelectedItem;
+            if (dimensionsSelected.SelectedIndex < (dimensionsSelected.Items.Count - 1))
+            {
+                int i = dimensionsSelected.SelectedIndex;
+
+                List<KeyValuePair<string, string>> dimensions = _query.Dimensions.ToList();
+
+                dimensions.RemoveAt(i);
+                dimensions.Insert(i + 1, item);
+
+                _query.Dimensions.Clear();
+                foreach (KeyValuePair<string, string> pair in dimensions)
+                    _query.Dimensions.Add(pair.Key, pair.Value);
+                dimensionsSelected.Items.Refresh();
+                dimensionsSelected.SelectedIndex = i + 1;
+            }
+        }
+        private void MetricsSortUp_Click(object sender, RoutedEventArgs e)
+        {
+            KeyValuePair<string, string> item = (KeyValuePair<string, string>)metricsSelected.SelectedItem;
+            if (metricsSelected.SelectedIndex > 0)
+            {
+                int i = metricsSelected.SelectedIndex;
+
+                List<KeyValuePair<string, string>> metrics = _query.Metrics.ToList();
+
+                metrics.RemoveAt(i);
+                metrics.Insert(i - 1, item);
+
+                _query.Metrics.Clear();
+                foreach (KeyValuePair<string, string> pair in metrics)
+                    _query.Metrics.Add(pair.Key, pair.Value);
+                metricsSelected.Items.Refresh();
+                metricsSelected.SelectedIndex = i - 1;
+            }
+        }
+        private void MetricsSortDown_Click(object sender, RoutedEventArgs e)
+        {
+            KeyValuePair<string, string> item = (KeyValuePair<string, string>)metricsSelected.SelectedItem;
+            if (metricsSelected.SelectedIndex < (metricsSelected.Items.Count - 1))
+            {
+                int i = metricsSelected.SelectedIndex;
+
+                List<KeyValuePair<string, string>> metrics = _query.Metrics.ToList();
+
+                metrics.RemoveAt(i);
+                metrics.Insert(i + 1, item);
+
+                _query.Metrics.Clear();
+                foreach (KeyValuePair<string, string> pair in metrics)
+                    _query.Metrics.Add(pair.Key, pair.Value);
+                metricsSelected.Items.Refresh();
+                metricsSelected.SelectedIndex = i + 1;
+            }
+        }
 
     }
 }

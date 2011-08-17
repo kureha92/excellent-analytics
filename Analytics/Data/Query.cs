@@ -634,7 +634,7 @@ namespace Analytics.Data
             throw new Exception("Invalid filter size param");
         }
 
-        private Dictionary<string, string> GetSizeCollection(SizeKeyType feedObjectType)
+        public static Dictionary<string, string> GetSizeCollection(SizeKeyType feedObjectType)
         {
             Dictionary<string, string> sizes = new Dictionary<string, string>();
             XDocument xDocument = GetSizeCollectionAsXML(feedObjectType);

@@ -31,27 +31,31 @@ namespace UI.Controls
         private static List<SizeViewModel> LoadXML(SizeKeyType feedObjectType)
         {
             SizeViewModel sizes = new SizeViewModel(feedObjectType == SizeKeyType.Dimension ? "Dimensions" : "Metrics");
-            XDocument xDocument = Analytics.Data.Query.GetSizeCollectionAsXML(feedObjectType);
-            foreach (XElement element in xDocument.Root.Elements("Category"))
+            try
             {
-                SizeViewModel category = new SizeViewModel(element.Attribute("name").Value);
-
-                foreach (XElement subElement in element.Elements(feedObjectType == SizeKeyType.Dimension ? "Dimension" : "Metric"))
+                XDocument xDocument = Analytics.Data.Query.GetSizeCollectionAsXML(feedObjectType);
+                foreach (XElement element in xDocument.Root.Elements("Category"))
                 {
-                    string paramValue = subElement.Attribute("value").Value;
-                    SizeViewModel size = new SizeViewModel(subElement.Attribute("name").Value , paramValue);
-                 /*   if (size.Name.Contains("hour"))
+                    SizeViewModel category = new SizeViewModel(element.Attribute("name").Value);
+
+                    foreach (XElement subElement in element.Elements(feedObjectType == SizeKeyType.Dimension ? "Dimension" : "Metric"))
                     {
-                        size.IsChecked = true;
-                    }*/
-                    category.Children.Add(size);
+                        string paramValue = subElement.Attribute("value").Value;
+                        SizeViewModel size = new SizeViewModel(subElement.Attribute("name").Value, paramValue);
+                        /*   if (size.Name.Contains("hour"))
+                           {
+                               size.IsChecked = true;
+                           }*/
+                        category.Children.Add(size);
+                    }
+                    category.IsInitiallyExpanded = false;
+
+                    sizes.Children.Add(category);
                 }
-                category.IsInitiallyExpanded = false;
-                
-                sizes.Children.Add(category);
+                sizes.IsInitiallyExpanded = true;
+                sizes.Initialize();
             }
-            sizes.IsInitiallyExpanded = true;
-            sizes.Initialize();
+            catch { }
             return new List<SizeViewModel> { sizes };
         }
 

@@ -40,11 +40,12 @@ namespace UI.Controls
             Type = DependencyProperty.Register("Type",
             typeof(DataType), typeof(CustomTreeView), new FrameworkPropertyMetadata(OnTypeChanged));
         }
-
+        
         public CustomTreeView()
         {
             InitializeComponent();
         }
+
 
         private static void OnTypeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
@@ -54,7 +55,7 @@ namespace UI.Controls
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             DataContext = ItemsDataType == DataType.Dimension ?
-            Resources["dimProvider"] : Resources["metProvider"];
+                Resources["dimProvider"] : Resources["metProvider"];
         }
 
         private void UncheckAll_Click(object sender, RoutedEventArgs e)

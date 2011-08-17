@@ -41,7 +41,7 @@ namespace WPFUIv2
             System.Diagnostics.Process.Start("http://excellentanalytics.com/faq/");
         }
 
-        private void linkLabelFeedback_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        /*private void linkLabelFeedback_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             // Change the color of the link text by setting LinkVisited 
             // to true.
@@ -50,7 +50,7 @@ namespace WPFUIv2
             //with a URL:
             System.Diagnostics.Process.Start("http://excellentanalytics.com/about/#feedback");
             
-        }
+        }*/
 
         private void linkLabelRelease_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
