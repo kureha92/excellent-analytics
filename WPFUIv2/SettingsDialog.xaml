@@ -31,8 +31,11 @@
                     <Label Content="Update dimensions" Height="28" HorizontalAlignment="Left" Margin="6,62,0,0" Name="UpdateDimensionsLabel" VerticalAlignment="Top" />
                     <Button Content="Open ..." Height="23" HorizontalAlignment="Left" Margin="126,35,0,0" Name="UpdateMetricsButton" VerticalAlignment="Top" Width="75" Click="UpdateMetricsButton_Click" />
                     <Button Content="Open ..." Height="23" HorizontalAlignment="Left" Margin="126,65,0,0" Name="UpdateDimensionsButton" VerticalAlignment="Top" Width="75" Click="UpdateDimensionsButton_Click" />
+
+                    <Label Content="Cell formatting" Height="28" HorizontalAlignment="Left" Margin="6,90,0,0" Name="CellFormattingLabel" VerticalAlignment="Top" />
+                    <ComboBox Height="23" HorizontalAlignment="Left" Margin="126,95,0,0" Name="CellFormattingBox" VerticalAlignment="Top" Width="159" SelectedIndex="0"/>
                 </Grid>                
             </TabItem>
         </TabControl>
     </Grid>
-</Window>
+</Window> 

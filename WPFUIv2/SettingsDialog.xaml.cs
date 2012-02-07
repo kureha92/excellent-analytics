@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 
 namespace WPFUIv2
 {
+
     /// <summary>
     /// Interaction logic for SettingsDialog.xaml
     /// </summary>
@@ -32,6 +33,11 @@ namespace WPFUIv2
             AddressBox.TextChanged += new TextChangedEventHandler(ChangesMade);
             RequestTimeoutBox.TextChanged += new TextChangedEventHandler(ChangesMade);
 
+            CellFormattingBox.Items.Add(new CellFormatting("Always ask", CellFormattingEnum.ask));
+            CellFormattingBox.Items.Add(new CellFormatting("Always save", CellFormattingEnum.save));
+            CellFormattingBox.Items.Add(new CellFormatting("Never save", CellFormattingEnum.never));
+            CellFormattingBox.SelectionChanged += new SelectionChangedEventHandler(ChangesMade);
+            
             this.Closing += new System.ComponentModel.CancelEventHandler(SettingsDialog_Closing);
         }
         public new bool? ShowDialog()
@@ -141,7 +147,56 @@ namespace WPFUIv2
             get { uint timeout; return uint.TryParse(RequestTimeoutBox.Text, out timeout) ? timeout : 0; }
             set { RequestTimeoutBox.Text = value.ToString(); }
         }
-
+        public CellFormattingEnum CellFormatting { 
+            get { return ((CellFormatting)CellFormattingBox.SelectedValue).Value; }
+            set {
+                int i = 0;
+                foreach (var item in CellFormattingBox.Items)
+                {
+                    if (((CellFormatting)item).Value == value)
+                    {
+                        CellFormattingBox.SelectedIndex = i;
+                        break;
+                    }
+                    ++i;
+                }
+            }
+        }
         
+    }
+
+    public enum CellFormattingEnum
+    {
+        save = 0,
+        ask = 1,
+        never = 2
+    }
+
+    public class CellFormatting
+    {
+        private string text;
+        private CellFormattingEnum value;
+        public CellFormatting(string text, CellFormattingEnum value)
+        {
+            this.text = text;
+            this.value = value;
+        }
+
+        public CellFormattingEnum Value { get { return value; } }
+
+        public override bool Equals(object obj)
+        {
+            return ((CellFormatting)obj).Value == Value;
+        }
+
+        public override int GetHashCode()
+        {
+            return value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return this.text;
+        }
     }
 }

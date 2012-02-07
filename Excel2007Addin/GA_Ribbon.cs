@@ -12,6 +12,7 @@ using WPFUIv2;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.Xml;
+using Analytics;
 
 namespace GA_Excel2007
 {
@@ -183,8 +184,10 @@ namespace GA_Excel2007
 					if (ActiveCellHasQueryResult || worksheet)
 					{
 
-						clearFormat = MessageBox.Show("Do you want to erase the format of your excel query columns?",
-													  "Document format", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+                        clearFormat = Excel2007Addin.Settings.Default.CellFormatting == (int)WPFUIv2.CellFormattingEnum.never ||
+                                        (Excel2007Addin.Settings.Default.CellFormatting == (int)WPFUIv2.CellFormattingEnum.ask && 
+                                        MessageBox.Show("Do you want to erase the format of your excel query columns?",
+													  "Document format", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
 						ClearPreviousQueryResult(clearFormat, worksheet, query);
 					}
 				}
@@ -243,7 +246,7 @@ namespace GA_Excel2007
 					queryInformationRange.MergeCells = false;
 
 					Range rangeToClear = _sheet.get_Range(_sheet.Cells[activeRow + 1, activeColumn],
-																_sheet.Cells[activeRow + rows + 1, activeColumn + columns - 1]);
+																_sheet.Cells[activeRow + rows - 1, activeColumn + columns - 1]);
 
 
 					if (clearFormat)
@@ -265,8 +268,8 @@ namespace GA_Excel2007
 					int activeColumn = currentApp.ActiveCell.Column;
 					int activeRow = currentApp.ActiveCell.Row;
 
-					Range rangeToClear = currentApp.get_Range(activeSheet.Cells[activeRow + 1, activeColumn + 1],
-																activeSheet.Cells[activeRow + rows + 1, activeColumn + columns - 1]);
+					Range rangeToClear = activeSheet.get_Range(activeSheet.Cells[activeRow + 1, activeColumn],
+																activeSheet.Cells[activeRow + rows - 1, activeColumn + columns - 1]);
 					if (clearFormat)
 						rangeToClear.Clear();
 					else
@@ -397,9 +400,9 @@ namespace GA_Excel2007
 				queryInformationRange.Font.Italic = true;
 				queryInformationRange.MergeCells = true;
 				queryInformationRange.Borders.Weight = XlBorderWeight.xlThin;
-				queryInformationRange.Value2 = queryInformation;
-
-				activeSheet.Columns.AutoFit();
+                               
+                queryInformationRange.Value2 = queryInformation;
+                //int height = (int)queryInformationRange.Height; queryInformationRange.RowHeight = height;
 			}
 		}
 
@@ -421,7 +424,7 @@ namespace GA_Excel2007
 				int dataLength = dataLength = report.Data.GetLength(1);
 
 				Range queryInformationRange = currentApp.get_Range(activeSheet.Cells[activeRow, activeColumn],
-				activeSheet.Cells[activeRow, activeColumn + dataLength - 1]);
+                activeSheet.Cells[activeRow, activeColumn + dataLength - 1]);
 
 				//
 				addressLocal = queryInformationRange.get_Address().Replace("$", "");
@@ -448,11 +451,11 @@ namespace GA_Excel2007
 					}
 				}
 
+                ((Style)queryInformationRange.Style).WrapText = false;
 				queryInformationRange.Font.Italic = true;
 				queryInformationRange.MergeCells = true;
 				queryInformationRange.Borders.Weight = XlBorderWeight.xlThin;
 				queryInformationRange.Value2 = queryInformation;
-
 
 				if (report.Data != null)
 				{
@@ -505,16 +508,16 @@ namespace GA_Excel2007
 
 
             _login.Username = settings.Username;
-            _login.Password = UnProtect(settings.Password);
+            _login.Password = DataProtectionHelper.UnProtect(settings.Password);
             _login.RememberPassword = settings.RememberPassword;
             if (_login.ShowDialog().GetValueOrDefault(false))
             {
                 settings.RememberPassword = _login.RememberPassword;
                 settings.Username = _login.Username;
                 if (_login.RememberPassword)
-                    settings.Password = Protect(_login.Password);
+                    settings.Password = DataProtectionHelper.Protect(_login.Password);
                 else
-                    settings.Password = Protect("");
+                    settings.Password = DataProtectionHelper.Protect("");
                 settings.Save();
             }
 		}
@@ -542,8 +545,9 @@ namespace GA_Excel2007
             settingsdlg.ProxyAddress = settings.ProxyAddress;
             settingsdlg.ProxyPort = settings.ProxyPort;
             settingsdlg.ProxyUsername = settings.ProxyUsername;
-            settingsdlg.ProxyPassword = UnProtect(settings.ProxyPassword);
+            settingsdlg.ProxyPassword = DataProtectionHelper.UnProtect(settings.ProxyPassword);
             settingsdlg.RequestTimeout = settings.RequestTimeout;
+            settingsdlg.CellFormatting = (CellFormattingEnum)settings.CellFormatting;
 
             if (settingsdlg.ShowDialog().GetValueOrDefault(false))
             {   
@@ -588,9 +592,10 @@ namespace GA_Excel2007
                 settings.UseProxy = settingsdlg.UseProxy;
                 settings.ProxyAddress = settingsdlg.ProxyAddress;
                 settings.ProxyUsername = settingsdlg.ProxyUsername;
-                settings.ProxyPassword = Protect(settingsdlg.ProxyPassword);
+                settings.ProxyPassword = DataProtectionHelper.Protect(settingsdlg.ProxyPassword);
                 settings.ProxyPort = settingsdlg.ProxyPort;
                 settings.RequestTimeout = settingsdlg.RequestTimeout;
+                settings.CellFormatting = (int)settingsdlg.CellFormatting;
                 settings.Save();
 
                 Analytics.Settings.Instance.UseProxy = settings.UseProxy;
@@ -605,23 +610,29 @@ namespace GA_Excel2007
             }
         }
 
-        private string Protect(string str)
+        private void AboutButton_Click(object sender, RibbonControlEventArgs e)
         {
-            System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
-            return Convert.ToBase64String(ProtectedData.Protect(encoding.GetBytes(str), randomBytes, DataProtectionScope.CurrentUser));
+            About dlg = new About();
+            dlg.ShowDialog();
         }
-        private string UnProtect(string bytes)
-        {
-            System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
-            try
-            {
-                return encoding.GetString(ProtectedData.Unprotect(Convert.FromBase64String(bytes), randomBytes, DataProtectionScope.CurrentUser));
-            }
-            catch (Exception e)
-            {
-                return bytes;
-            }
-        }
+
+        //private string Protect(string str)
+        //{
+        //    System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
+        //    return Convert.ToBase64String(ProtectedData.Protect(encoding.GetBytes(str), randomBytes, DataProtectionScope.CurrentUser));
+        //}
+        //private string UnProtect(string bytes)
+        //{
+        //    System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
+        //    try
+        //    {
+        //        return encoding.GetString(ProtectedData.Unprotect(Convert.FromBase64String(bytes), randomBytes, DataProtectionScope.CurrentUser));
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return bytes;
+        //    }
+        //}
         //private void buttonUpdateWorkSheet_Click(object sender, RibbonControlEventArgs e)
         //{
         //    Worksheet _sheet = (Worksheet)GA_Excel2007.Globals.ThisAddIn.Application.ActiveSheet;

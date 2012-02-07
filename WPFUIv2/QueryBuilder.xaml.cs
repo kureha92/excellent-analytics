@@ -63,7 +63,7 @@ namespace UI
             get
             {
                 return new RadioButton[] { todayCheckBox, yesterdayCheckBox, weekCheckBox, weekCheckBoxAnglosax, monthCheckBox, 
-                    quarterCheckBox, yearCheckBox, periodNotSpecifiedCheckBox }.Where(p => p != null).ToList<RadioButton>();
+                    quarterCheckBox, yearCheckBox, periodNotSpecifiedCheckBox, thisYearBox }.Where(p => p != null).ToList<RadioButton>();
             }
         }
 
@@ -106,8 +106,9 @@ namespace UI
             _currentUserAccount = userAccount;
             InitializeForm();
             SetTimePeriod(query);
+            if (query.Ids.Count > 0)
+                PreselectProfile(userAccount, query.Ids.First());
         }
-
 
         #region Events
 
@@ -328,7 +329,7 @@ namespace UI
                 return;
 
             if (us.SegmentName.CompareTo("All Visits") == 0)
-                MessageBox.Show("This segment may cause faulty figures if combined with the visitor metric.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("The \"All Visits\" segment may cause faulty figures if combined with the visitor metric, or with AdWords data. We recommend that you use the \"Default\" segment if you want to query all visits.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 
             this._query.Segments.Clear();
             this._query.Segments.Add((comboBoxSegments.SelectedItem as UserSegment).SegmentName, (comboBoxSegments.SelectedItem as UserSegment).SegmentId);          
@@ -516,7 +517,6 @@ namespace UI
         private void About_Click(object sender, RoutedEventArgs e)
         {
             About about = new About();
-
             about.Show();
 
         }
@@ -1322,6 +1322,46 @@ namespace UI
                     itBox.IsChecked = query.TimePeriod.ToString() == itBox.Tag.ToString();
 
                 timeSpanTab.IsSelected = true;
+            }
+        }
+
+        private void PreselectProfile(UserAccount userAccount, Item profile)
+        {            
+            string profileId = profile.Key;
+            var entries = userAccount.Entrys.Where(e => e.ProfileId == "ga:"+profileId);
+            var entry = entries.SingleOrDefault();
+            if (entry == null)
+                return;
+
+            int i = 0;
+            foreach (var item in comboBoxAccount.Items)
+            {
+                var eitem = item as Entry;
+                if (eitem == null)
+                    continue;
+                if (eitem.AccountId == entry.AccountId)
+                {
+                    comboBoxAccount.SelectedIndex = i;
+                    break;
+                }
+                ++i;
+            }
+
+            if (comboBoxProfile.Items.Count > 0)
+            {
+                i = 0;
+                foreach (var item in comboBoxProfile.Items)
+                {
+                    var eitem = item as Entry;
+                    if (eitem == null)
+                        continue;
+                    if (eitem.ProfileId == entry.ProfileId)
+                    {
+                        comboBoxProfile.SelectedIndex = i;
+                        break;
+                    }
+                    ++i;
+                }
             }
         }
 

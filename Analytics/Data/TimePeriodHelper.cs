@@ -146,6 +146,14 @@ namespace Analytics.Data
             return firstDayOfPreviousYear;
         }
 
+        public DateTime startThisYear()
+        {
+            return (StartDate = new DateTime(DateTime.Now.Year, 1, 1));
+        }
+        public DateTime endThisYear()
+        {
+            return (EndDate = new DateTime(DateTime.Now.Year+1, 1, 1).AddDays(-1));
+        }
         public DateTime StartDate
         {
             get { return _startDate; }

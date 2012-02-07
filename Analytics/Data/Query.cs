@@ -500,6 +500,8 @@ namespace Analytics.Data
                     return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.LastQuarter(startQuarterDate)), ToUnifiedCultureFormat(_timeHelper.LastQuarter(startQuarterDate = false)));
                 case TimePeriod.LastYear:
                     return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.startLastYear()), ToUnifiedCultureFormat(_timeHelper.endLastYear()));
+                    case TimePeriod.ThisYear:
+                    return string.Format(paramContainer, ToUnifiedCultureFormat(_timeHelper.startThisYear()), ToUnifiedCultureFormat(_timeHelper.endThisYear()));
                 case TimePeriod.PeriodNotSpecified:
                     return string.Format(paramContainer, StartDate, EndDate);
                 default:
@@ -530,9 +532,9 @@ namespace Analytics.Data
             SizeOperator paramOperator = GetParamOperator(filter);
             if (paramOperator != null)
             {
-                string[] filterParts = filter.Replace(paramOperator.URIEncoded, "|").Split('|');
-                string size = filterParts[0];
-                string expression = filterParts[1];
+                ///string[] filterParts = filter.Replace(paramOperator.URIEncoded, "|").Split('|');
+                string size =  filter.Substring(0,filter.IndexOf(paramOperator.URIEncoded)); //filterParts[0];
+                string expression = filter.Substring(filter.IndexOf(paramOperator.URIEncoded) + paramOperator.URIEncoded.Length); //filterParts[1];
                 LogicalOperator lOp;
                 switch (logicalOp)
                 {

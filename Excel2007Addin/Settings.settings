@@ -30,7 +30,7 @@
       <Value Profile="(Default)">2011-03-27</Value>
     </Setting>
     <Setting Name="RequestTimeout" Type="System.UInt32" Scope="User">
-      <Value Profile="(Default)">15</Value>
+      <Value Profile="(Default)">30</Value>
     </Setting>
     <Setting Name="Dimensions" Type="System.Xml.XmlDocument" Scope="User">
       <Value Profile="(Default)" />
@@ -40,6 +40,9 @@
     </Setting>
     <Setting Name="FirstStartup" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="CellFormatting" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

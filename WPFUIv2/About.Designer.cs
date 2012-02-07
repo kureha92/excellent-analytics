@@ -32,100 +32,27 @@ namespace WPFUIv2
         /// </summary>
         private void InitializeComponent()
         {
-            this.AboutEA = new System.Windows.Forms.Label();
-            this.linkLabelAboutEA = new System.Windows.Forms.LinkLabel();
-            this.FAQ = new System.Windows.Forms.Label();
-            this.linkLabelFAQ = new System.Windows.Forms.LinkLabel();
-            this.Release = new System.Windows.Forms.Label();
-            this.linkLabelRelease = new System.Windows.Forms.LinkLabel();
             this.OK = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.DescriptionLabel = new System.Windows.Forms.Label();
+            this.VersionLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // AboutEA
-            // 
-            this.AboutEA.AutoSize = true;
-            this.AboutEA.Location = new System.Drawing.Point(15, 60);
-            this.AboutEA.Name = "AboutEA";
-            this.AboutEA.Size = new System.Drawing.Size(434, 13);
-            this.AboutEA.TabIndex = 0;
-            this.AboutEA.Text = "Excellent Analytics is an open source initiative. For more information about the " +
-                "project, visit:";
-            // 
-            // linkLabelAboutEA
-            // 
-            this.linkLabelAboutEA.AutoSize = true;
-            this.linkLabelAboutEA.Location = new System.Drawing.Point(15, 73);
-            this.linkLabelAboutEA.Name = "linkLabelAboutEA";
-            this.linkLabelAboutEA.Size = new System.Drawing.Size(181, 13);
-            this.linkLabelAboutEA.TabIndex = 1;
-            this.linkLabelAboutEA.TabStop = true;
-            this.linkLabelAboutEA.Tag = "";
-            this.linkLabelAboutEA.Text = "http://excellentanalytics.com/about/";
-            this.linkLabelAboutEA.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelAboutEA_LinkClicked);
-            // 
-            // FAQ
-            // 
-            this.FAQ.AutoSize = true;
-            this.FAQ.Location = new System.Drawing.Point(15, 123);
-            this.FAQ.Name = "FAQ";
-            this.FAQ.Size = new System.Drawing.Size(174, 13);
-            this.FAQ.TabIndex = 2;
-            this.FAQ.Text = "For answers to your questions, visit:";
-            // 
-            // linkLabelFAQ
-            // 
-            this.linkLabelFAQ.AutoSize = true;
-            this.linkLabelFAQ.Location = new System.Drawing.Point(15, 136);
-            this.linkLabelFAQ.Name = "linkLabelFAQ";
-            this.linkLabelFAQ.Size = new System.Drawing.Size(169, 13);
-            this.linkLabelFAQ.TabIndex = 3;
-            this.linkLabelFAQ.TabStop = true;
-            this.linkLabelFAQ.Text = "http://excellentanalytics.com/faq/";
-            this.linkLabelFAQ.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelFAQ_LinkClicked);
-            // 
-            // Release
-            // 
-            this.Release.AutoSize = true;
-            this.Release.Location = new System.Drawing.Point(15, 188);
-            this.Release.Name = "Release";
-            this.Release.Size = new System.Drawing.Size(175, 13);
-            this.Release.TabIndex = 4;
-            this.Release.Text = "Information about the latest release:";
-            // 
-            // linkLabelRelease
-            // 
-            this.linkLabelRelease.AutoSize = true;
-            this.linkLabelRelease.Location = new System.Drawing.Point(15, 201);
-            this.linkLabelRelease.Name = "linkLabelRelease";
-            this.linkLabelRelease.Size = new System.Drawing.Size(229, 13);
-            this.linkLabelRelease.TabIndex = 5;
-            this.linkLabelRelease.TabStop = true;
-            this.linkLabelRelease.Text = "http://feeds.feedburner.com/excellentanalytics";
-            this.linkLabelRelease.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelRelease_LinkClicked);
             // 
             // OK
             // 
-            this.OK.Location = new System.Drawing.Point(448, 254);
+            this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OK.Location = new System.Drawing.Point(501, 413);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 8;
             this.OK.Text = "OK";
             this.OK.UseVisualStyleBackColor = true;
             this.OK.Click += new System.EventHandler(this.OK_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(436, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 13);
-            this.label1.TabIndex = 9;
             // 
             // label2
             // 
@@ -162,19 +89,46 @@ namespace WPFUIv2
             this.label6.Size = new System.Drawing.Size(100, 23);
             this.label6.TabIndex = 0;
             // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.AutoScroll = true;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel1.Location = new System.Drawing.Point(12, 112);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(564, 290);
+            this.panel1.TabIndex = 11;
+            // 
+            // DescriptionLabel
+            // 
+            this.DescriptionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.DescriptionLabel.Location = new System.Drawing.Point(12, 36);
+            this.DescriptionLabel.Name = "DescriptionLabel";
+            this.DescriptionLabel.Size = new System.Drawing.Size(553, 73);
+            this.DescriptionLabel.TabIndex = 13;
+            this.DescriptionLabel.Text = "DescriptionLabel";
+            // 
+            // VersionLabel
+            // 
+            this.VersionLabel.AutoSize = true;
+            this.VersionLabel.Location = new System.Drawing.Point(12, 9);
+            this.VersionLabel.Name = "VersionLabel";
+            this.VersionLabel.Size = new System.Drawing.Size(42, 13);
+            this.VersionLabel.TabIndex = 12;
+            this.VersionLabel.Text = "Version";
+            // 
             // About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(535, 289);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(588, 443);
+            this.Controls.Add(this.DescriptionLabel);
+            this.Controls.Add(this.VersionLabel);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.OK);
-            this.Controls.Add(this.linkLabelRelease);
-            this.Controls.Add(this.Release);
-            this.Controls.Add(this.linkLabelFAQ);
-            this.Controls.Add(this.FAQ);
-            this.Controls.Add(this.linkLabelAboutEA);
-            this.Controls.Add(this.AboutEA);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "About";
@@ -190,19 +144,15 @@ namespace WPFUIv2
 
         #endregion
 
-        private System.Windows.Forms.Label AboutEA;
-        private System.Windows.Forms.LinkLabel linkLabelAboutEA;
-        private System.Windows.Forms.Label FAQ;
-        private System.Windows.Forms.LinkLabel linkLabelFAQ;
-        private System.Windows.Forms.Label Release;
-        private System.Windows.Forms.LinkLabel linkLabelRelease;
         private System.Windows.Forms.Button OK;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label DescriptionLabel;
+        private System.Windows.Forms.Label VersionLabel;
         
 
     }

@@ -37,6 +37,8 @@
             this.buttonUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator2 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.SettingsButton = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.separator3 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
+            this.AboutButton = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.tab1.SuspendLayout();
             this.GoogleAnalytics.SuspendLayout();
             this.SuspendLayout();
@@ -55,6 +57,8 @@
             this.GoogleAnalytics.Items.Add(this.buttonUpdate);
             this.GoogleAnalytics.Items.Add(this.separator2);
             this.GoogleAnalytics.Items.Add(this.SettingsButton);
+            this.GoogleAnalytics.Items.Add(this.separator3);
+            this.GoogleAnalytics.Items.Add(this.AboutButton);
             this.GoogleAnalytics.Label = "Excellent Analytics";
             this.GoogleAnalytics.Name = "GoogleAnalytics";
             // 
@@ -103,6 +107,19 @@
             this.SettingsButton.ShowImage = true;
             this.SettingsButton.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.SettingsButton_Click);
             // 
+            // separator3
+            // 
+            this.separator3.Name = "separator3";
+            // 
+            // AboutButton
+            // 
+            this.AboutButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.AboutButton.Image = ((System.Drawing.Image)(resources.GetObject("AboutButton.Image")));
+            this.AboutButton.Label = "About";
+            this.AboutButton.Name = "AboutButton";
+            this.AboutButton.ShowImage = true;
+            this.AboutButton.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.AboutButton_Click);
+            // 
             // GA_Ribbon
             // 
             this.Name = "GA_Ribbon";
@@ -129,6 +146,8 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator1;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator2;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton SettingsButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator3;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton AboutButton;
     }
 
     partial class ThisRibbonCollection : Microsoft.Office.Tools.Ribbon.RibbonReadOnlyCollection

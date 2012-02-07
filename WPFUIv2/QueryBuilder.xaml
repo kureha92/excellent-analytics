@@ -141,16 +141,17 @@
                 </Canvas>
             </TabItem>
             <TabItem  Header="Time span" MouseEnter="TimeSpanTab_MouseEnter"  Name="timeSpanTab">
-                <Canvas>
-                    <RadioButton  Canvas.Left="20" Canvas.Top="10" Tag="Today" Height="19" Checked="Timespan_Checked" Name="todayCheckBox" Width="150">Today</RadioButton>
-                    <RadioButton  Canvas.Left="20" Canvas.Top="35" Tag="Yesterday" Height="19" Checked="Timespan_Checked" Name="yesterdayCheckBox" Width="150">Yesterday</RadioButton>
-                    <RadioButton  Canvas.Left="20" Canvas.Top="60" Tag="Week" Height="19" Checked="Timespan_Checked" Name="weekCheckBox" Width="150">Last week (Mo - Sun)</RadioButton>
-                    <RadioButton  Canvas.Left="20" Canvas.Top="85" Tag="WeekAnglo" Height="19" Checked="Timespan_Checked" Name="weekCheckBoxAnglosax" Width="150">Last week (Sun - Sat)</RadioButton>
-                    <RadioButton  Canvas.Left="20" Canvas.Top="110" Tag="LastMonth" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
-                    <RadioButton  Canvas.Left="20" Canvas.Top="135" Tag="LastQuarter" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
-                    <RadioButton  Canvas.Left="20" Canvas.Top="160" Tag="LastYear" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
-                    <RadioButton  Canvas.Left="20" Canvas.Top="160" Tag="PeriodNotSpecified" Height="16" Visibility="Hidden" Checked="Timespan_Checked" Name="periodNotSpecifiedCheckBox" Width="120"></RadioButton>
-                </Canvas>
+                    <Canvas>
+                        <RadioButton  Canvas.Left="20" Canvas.Top="10" Tag="Today" Height="19" Checked="Timespan_Checked" Name="todayCheckBox" Width="150">Today</RadioButton>
+                        <RadioButton  Canvas.Left="20" Canvas.Top="35" Tag="Yesterday" Height="19" Checked="Timespan_Checked" Name="yesterdayCheckBox" Width="150">Yesterday</RadioButton>
+                        <RadioButton  Canvas.Left="20" Canvas.Top="60" Tag="Week" Height="19" Checked="Timespan_Checked" Name="weekCheckBox" Width="150">Last week (Mo - Sun)</RadioButton>
+                        <RadioButton  Canvas.Left="20" Canvas.Top="85" Tag="WeekAnglo" Height="19" Checked="Timespan_Checked" Name="weekCheckBoxAnglosax" Width="150">Last week (Sun - Sat)</RadioButton>
+                        <RadioButton  Canvas.Left="20" Canvas.Top="110" Tag="LastMonth" Height="16" Checked="Timespan_Checked" Name="monthCheckBox" Width="120">Last month</RadioButton>
+                        <RadioButton  Canvas.Left="20" Canvas.Top="135" Tag="LastQuarter" Height="16" Checked="Timespan_Checked" Name="quarterCheckBox" Width="120">Last quarter</RadioButton>
+                        <RadioButton  Canvas.Left="20" Canvas.Top="160" Tag="LastYear" Height="16" Checked="Timespan_Checked" Name="yearCheckBox" Width="120">Last year</RadioButton>
+                        <RadioButton  Canvas.Left="176" Canvas.Top="10" Tag="ThisYear" Height="16" Checked="Timespan_Checked" Name="thisYearBox"> This year</RadioButton>
+                        <RadioButton  Canvas.Left="20" Canvas.Top="160" Tag="PeriodNotSpecified" Height="16" Visibility="Hidden" Checked="Timespan_Checked" Name="periodNotSpecifiedCheckBox" Width="120"></RadioButton>                    
+               </Canvas>
             </TabItem>
         </TabControl>
 

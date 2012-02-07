@@ -75,7 +75,7 @@ namespace Excel2007Addin
         public static void CheckForUpdates()
         {
             Updates checkUp = new Updates();
-            if (Excel2007Addin.Settings.Default.RemingMeAgainIn < DateTime.Now && checkUp.NewVersionExists())
+            if (/*Excel2007Addin.Settings.Default.RemingMeAgainIn < DateTime.Now &&*/ checkUp.NewVersionExists())
             {
                 WPFUIv2.UpdateDialog upDialog = new WPFUIv2.UpdateDialog();
                 if (upDialog.ShowDialog().GetValueOrDefault(false))
@@ -108,10 +108,13 @@ namespace Excel2007Addin
 				reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
 				result = reader.ReadToEnd();
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				// handle error
-				MessageBox.Show("Error fetching version information.", "Version check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Error fetching version information:" + Environment.NewLine + ex.Message,
+                //                "Version check failed",
+                //                MessageBoxButtons.OK,
+                //                MessageBoxIcon.Error);
                 if (reader != null)
                     reader.Close();
                 if (response != null)
@@ -130,7 +133,7 @@ namespace Excel2007Addin
 				verinfo = jss.Deserialize<VersionInformation>(result);
 			}
 			catch {
-				MessageBox.Show("Error parsing version information.", "Version check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show("Error parsing version information.", "Version check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
             

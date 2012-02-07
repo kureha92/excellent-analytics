@@ -133,7 +133,7 @@ namespace Excel2007Addin {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
         public uint RequestTimeout {
             get {
                 return ((uint)(this["RequestTimeout"]));
@@ -174,6 +174,18 @@ namespace Excel2007Addin {
             }
             set {
                 this["FirstStartup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CellFormatting {
+            get {
+                return ((int)(this["CellFormatting"]));
+            }
+            set {
+                this["CellFormatting"] = value;
             }
         }
     }

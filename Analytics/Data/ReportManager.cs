@@ -115,7 +115,7 @@ namespace Analytics.Data
                 MessageBox.Show("Request failed. Probably because of invalid input.", "Bad request");
                 return false;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 NotifySubscribers(50, "Request failed", HttpStatusCode.BadRequest.ToString());
                 MessageBox.Show("Request failed. Probably because of invalid input.", "Bad request");
@@ -166,7 +166,7 @@ namespace Analytics.Data
             List<XElement> entryElements = xDoc.Root.Elements(entryElementName).ToList<XElement>();
             if (rowPosition < 1)
             {
-                data = new object[entryElements.Count() > 0 ? totalHitResult + 2 : 1  , dimensionsAndMetrics];
+                data = new object[entryElements.Count() > 0 ? totalHitResult /*+ 2*/ : 1  , dimensionsAndMetrics];
             }
             
 

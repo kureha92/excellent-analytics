@@ -76,8 +76,26 @@ namespace Analytics.Data
 
         public override string ToString()
         {
-            return (LOperator == LogicalOperator.And ? ";" : LOperator == LogicalOperator.Or ? "," : string.Empty)
-            + Value + Operator.URIEncoded + Expression.Trim().Replace(" ", "%20").Replace(",", "\\,").Replace(";", "\\;").Replace("\\", @"\\,");
+            string ret = (LOperator == LogicalOperator.And ? ";" : LOperator == LogicalOperator.Or ? "," : string.Empty)
+            + Value + Operator.URIEncoded + Expression.Trim().Replace(@"\", @"\\").Replace(",", @"\,");
+            return ret; /* ) */
+        }
+
+        public string encode(string str)
+        {
+            StringBuilder sb = new StringBuilder(str.Length * 2);
+            string unsafes = "\"<>%\\^[]`+$,";
+            foreach (char c in str.ToCharArray())
+            {
+                if (unsafes.IndexOf(c) == -1 && 32 < c && c < 123)
+                {
+                    sb.Append(c);
+                    continue;
+                }
+                sb.Append('%' + ((int)c).ToString("X"));
+            }
+
+            return sb.ToString();
         }
 
         public string ToSimplifiedString()
