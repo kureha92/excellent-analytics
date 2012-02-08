@@ -6,7 +6,13 @@
       <Value Profile="(Default)">https://www.google.com/analytics/feeds/data</Value>
     </Setting>
     <Setting Name="AccountFeed" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">https://www.google.com/analytics/feeds/accounts/</Value>
+      <Value Profile="(Default)">https://www.googleapis.com/analytics/v2.4/management/accounts/</Value>
+    </Setting>
+    <Setting Name="PorfileFeed" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://www.googleapis.com/analytics/v2.4/management/accounts/~all/webproperties/~all/profiles</Value>
+    </Setting>
+    <Setting Name="SegmentFeed" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://www.googleapis.com/analytics/v2.4/management/segments/</Value>
     </Setting>
   </Settings>
 </SettingsFile>

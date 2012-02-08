@@ -28,12 +28,61 @@ namespace Analytics.Authorization
         public UserAccount GetAccountData(string eMail , string authToken)
         {
             UserAccount uAcc = new UserAccount(authToken , eMail);
+            //UTF8Encoding encoding = new UTF8Encoding();
+            //WebRequest request = HttpRequestFactory.Instance.CreateRequest(Data.General.GA_RequestURIs.Default.AccountFeed);
+            //request.Method = "GET";
+            //request.ContentType = "application/x-www-form-urlencoded";
+            //request.ContentLength = 0;
+            //request.Headers.Add("Authorization: GoogleLogin auth=" + uAcc.AuthToken);
+            //request.Timeout = 20000;
+
+            //HttpWebResponse response = null;
+
+            //XDocument xDoc = null;
+            //try
+            //{
+            //    using (response = (HttpWebResponse)request.GetResponse())
+            //    {
+            //        if (response != null && response.StatusCode == HttpStatusCode.OK)
+            //        {
+            //            xDoc = XDocument.Load(new StreamReader(response.GetResponseStream()));
+            //        }
+            //    }
+            //}
+            //catch (WebException webEx)
+            //{
+            //    throw webEx;
+            //}
+            //finally 
+            //{
+            //    if (xDoc != null)
+            //    {
+            //        uAcc.Entrys = ExtractDataFromXml(xDoc);
+            //        //uAcc.Segments = ExtractSegmentDataFromXml(xDoc);
+            //    }
+            //    else
+            //    {
+            //        NotifySubscribers(0 , "Connection failure" );
+            //    }
+            //}
+            XDocument accountData = GetData(Data.General.GA_RequestURIs.Default.AccountFeed, authToken);
+            List<Entry> accounts = ExtractAccountDataFromXml(accountData);
+            XDocument profileData = GetData(Data.General.GA_RequestURIs.Default.PorfileFeed, authToken);
+            List<Entry> profiles = ExtractProfileDataFromXml(profileData, accounts);
+            uAcc.Entrys = profiles;
+
+            XDocument segmentData = GetData(Data.General.GA_RequestURIs.Default.SegmentFeed, authToken);
+            uAcc.Segments = ExtractSegmentDataFromXml(segmentData);
+            return uAcc;
+        }
+        public XDocument GetData(string url, string authToken)
+        {
             UTF8Encoding encoding = new UTF8Encoding();
-            WebRequest request = HttpRequestFactory.Instance.CreateRequest(Data.General.GA_RequestURIs.Default.AccountFeed + "default?v=2");
+            WebRequest request = HttpRequestFactory.Instance.CreateRequest(url);
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = 0;
-            request.Headers.Add("Authorization: GoogleLogin auth=" + uAcc.AuthToken);
+            request.Headers.Add("Authorization: GoogleLogin auth=" + authToken);
             request.Timeout = 20000;
 
             HttpWebResponse response = null;
@@ -53,116 +102,182 @@ namespace Analytics.Authorization
             {
                 throw webEx;
             }
-            finally 
-            {
-                if (xDoc != null)
-                {
-                    uAcc.Entrys = ExtractDataFromXml(xDoc);
-                    uAcc.Segments = ExtractSegmentDataFromXml(xDoc);
-                }
-                else
-                {
-                    NotifySubscribers(0 , "Connection failure" );
-                }
-            }
-          
-            return uAcc;
+            return xDoc;
         }
-
         private List<UserSegment> ExtractSegmentDataFromXml(XDocument xDoc)
         {
             List<UserSegment> segments = new List<UserSegment>();
-            List<UserSegment> customerSegments = new List<UserSegment>();
+            List<UserSegment> customSegments = new List<UserSegment>();
 
-            XNamespace dxp = "http://schemas.google.com/analytics/2009";
+            XNamespace nsDxp = "http://schemas.google.com/analytics/2009";
+            XNamespace nsAtom = "http://www.w3.org/2005/Atom";
+            XName entryElementName = nsAtom + "entry";
+            XName segmentElementName = nsDxp + "segment";
 
-            XName segmentElementName = dxp + "segment";
+            IEnumerable<XElement> segmentElements = xDoc.Root.Elements(entryElementName);
 
-            IEnumerable<XElement> segmentElements = xDoc.Root.Elements(segmentElementName);
-            UserSegment noSegment = new UserSegment();
-            noSegment.SegmentName = "Default (use if uncertain)";
-            noSegment.SegmentId = "";
-            segments.Add(noSegment);
-
-            foreach (XElement segmentElement in segmentElements)
+            foreach (XElement temp in segmentElements)
             {
-                UserSegment segment = new UserSegment();
-                segment.SegmentId = segmentElement.FirstAttribute.Value;
-                segment.SegmentName = segmentElement.FirstAttribute.NextAttribute.Value;                
-
-                if (!segmentElement.FirstAttribute.Value.Contains("-"))
-                {
-                    customerSegments.Add(segment);
-                }
-                else 
-                {
-                    segments.Add(segment);
-                }
+                XElement segmentElement = temp.Element(segmentElementName);
+                string segmentId = segmentElement.Attribute("id").Value;
+                string segmentName = segmentElement.Attribute("name").Value;
+                int iSegmentId;
+                if (int.TryParse(segmentId.Substring(segmentId.IndexOf(':') + 2), out iSegmentId) && iSegmentId > -1)
+                    customSegments.Add(new UserSegment() { SegmentName=segmentName, SegmentId=segmentId} );
+                else
+                    segments.Add(new UserSegment() { SegmentName=segmentName, SegmentId=segmentId} );
             }
-
-            UserSegment defCustSeparator = new UserSegment();
-            defCustSeparator.SegmentName = "____________________________";
-            defCustSeparator.SegmentId = "";
-            segments.Add(defCustSeparator);
-            List<UserSegment> allSegments = new List<UserSegment>();
-            foreach (UserSegment segment in customerSegments)
-            {
-                segments.Add(segment);
-            }
-
+            customSegments.Sort(delegate(UserSegment a, UserSegment b) { return a.SegmentName.CompareTo(b.SegmentName); });
+            if (customSegments.Count > 0)
+                segments.Add(new UserSegment() { SegmentName = "____________________________", SegmentId= "" });
+            segments.AddRange(customSegments);
             return segments;
+
+
+
+            //XNamespace dxp = "http://schemas.google.com/analytics/2009";
+
+            //XName segmentElementName = dxp + "segment";
+
+            //IEnumerable<XElement> segmentElements = xDoc.Root.Elements(segmentElementName);
+            //UserSegment noSegment = new UserSegment();
+            //noSegment.SegmentName = "Default (use if uncertain)";
+            //noSegment.SegmentId = "";
+            //segments.Add(noSegment);
+
+            //foreach (XElement segmentElement in segmentElements)
+            //{
+            //    UserSegment segment = new UserSegment();
+            //    segment.SegmentId = segmentElement.FirstAttribute.Value;
+            //    segment.SegmentName = segmentElement.FirstAttribute.NextAttribute.Value;                
+
+            //    if (!segmentElement.FirstAttribute.Value.Contains("-"))
+            //    {
+            //        customerSegments.Add(segment);
+            //    }
+            //    else 
+            //    {
+            //        segments.Add(segment);
+            //    }
+            //}
+
+            //UserSegment defCustSeparator = new UserSegment();
+            //defCustSeparator.SegmentName = "____________________________";
+            //defCustSeparator.SegmentId = "";
+            //segments.Add(defCustSeparator);
+            //List<UserSegment> allSegments = new List<UserSegment>();
+            //foreach (UserSegment segment in customerSegments)
+            //{
+            //    segments.Add(segment);
+            //}
+
+            //return segments;
         }
-        
-        private List<Entry> ExtractDataFromXml(XDocument xDoc)
+        private List<Entry> ExtractProfileDataFromXml(XDocument xDoc, List<Entry> accounts)
         {
-            List<Entry> entrys = new List<Entry>();
-            
-            XNamespace dxp = "http://schemas.google.com/analytics/2009";
-            XNamespace atom = "http://www.w3.org/2005/Atom";
+            XNamespace nsDxp = "http://schemas.google.com/analytics/2009";
+            XNamespace nsAtom = "http://www.w3.org/2005/Atom";
+            XName entryElementName = nsAtom + "entry";
+            XName updatedElement = nsAtom + "updated";
+            XName propertyElement = nsDxp + "property";
 
-            string webPropertyId = "ga:webPropertyId";
-            string profileID = "ga:profileId";
-            string accountName = "ga:accountName";
-            string accountId = "ga:accountId";
-            string name = "name";
-            string value = "value";
-            
-            XName title = atom + "title";
-            XName link = atom + "link";
-            XName updated = atom + "updated";
-            
-            XName entryElementName = atom + "entry";
-            XName propertyElementName = dxp + "property";
-            
+            List<Entry> profiles = new List<Entry>();
             IEnumerable<XElement> entryElements = xDoc.Root.Elements(entryElementName);
-            foreach (XElement entryEmelent in entryElements)
+            foreach (XElement entryElement in entryElements)
             {
-                Entry entry = new Entry();
-                entry.Title = entryEmelent.Element(title).Value;
-                entry.AccountLink = entryEmelent.Element(link).Value;
-                entry.LastUpdated = entryEmelent.Element(updated).Value;
+                IEnumerable<XElement> properties = entryElement.Elements(propertyElement);
 
-                foreach (XElement propEle in entryEmelent.Elements(propertyElementName))
+                string title = properties.SingleOrDefault(p => p.Attribute("name").Value.Equals("ga:profileName")).Attribute("value").Value;
+                string tableId = properties.SingleOrDefault(p => p.Attribute("name").Value.Equals("dxp:tableId")).Attribute("value").Value;
+                string updated = entryElement.Element(updatedElement).Value;
+                string accountId = properties.SingleOrDefault(p => p.Attribute("name").Value.Equals("ga:accountId")).Attribute("value").Value;
+
+                Entry account = accounts.Single(a => a.AccountId == accountId);
+                Entry profile = new Entry()
                 {
-                    if (propEle.Attribute(name).Value == profileID)
-                    {
-                        entry.ProfileId = "ga:" + propEle.Attribute(value).Value;
-                    }
-                    if (propEle.Attribute(name).Value == webPropertyId)
-                    {
-                        entry.WebPropertyId = propEle.Attribute(value).Value;
-                    }
-                    if (propEle.Attribute(name).Value == accountId)
-                    {
-                        entry.AccountId = propEle.Attribute(value).Value;
-                    }
-                    if (propEle.Attribute(name).Value == accountName)
-                    {
-                        entry.AccountName = propEle.Attribute(value).Value;
-                    }
-                }
-                entrys.Add(entry);
+                    AccountId=accountId,
+                    AccountName=account.AccountName,
+                    ProfileId=tableId,
+                    Title=title,
+                    LastUpdated=updated
+                };
+                profiles.Add(profile);
+                
             }
+            return profiles;
+        }
+        private List<Entry> ExtractAccountDataFromXml(XDocument xDoc)
+        {
+
+            XNamespace nsDxp = "http://schemas.google.com/analytics/2009";
+            XNamespace nsAtom = "http://www.w3.org/2005/Atom";
+            List<Entry> entrys = new List<Entry>();
+
+            XName entryElementName = nsAtom + "entry";
+            XName propertyElement = nsDxp + "property";
+
+            IEnumerable<XElement> entryElements = xDoc.Root.Elements(entryElementName);
+
+            foreach (XElement entryElement in entryElements)
+            {
+                IEnumerable<XElement> properties = entryElement.Elements(propertyElement);
+
+                string accountName = properties.Where(p => p.Attribute("name").Value.Equals("ga:accountName")).First().Attribute("value").Value;
+                string accountId = properties.Where(p => p.Attribute("name").Value.Equals("ga:accountId")).First().Attribute("value").Value;
+
+                entrys.Add(new Entry() {
+                        AccountName = accountName,
+                        AccountId=accountId
+                });
+            }
+
+
+            //XNamespace dxp = "http://schemas.google.com/analytics/2009";
+            //XNamespace atom = "http://www.w3.org/2005/Atom";
+
+            //string webPropertyId = "ga:webPropertyId";
+            //string profileID = "ga:profileId";
+            //string accountName = "ga:accountName";
+            //string accountId = "ga:accountId";
+            //string name = "name";
+            //string value = "value";
+            
+            //XName title = atom + "title";
+            //XName link = atom + "link";
+            //XName updated = atom + "updated";
+            
+            //XName entryElementName = atom + "entry";
+            //XName propertyElementName = dxp + "property";
+            
+            //IEnumerable<XElement> entryElements = xDoc.Root.Elements(entryElementName);
+            //foreach (XElement entryEmelent in entryElements)
+            //{
+            //    Entry entry = new Entry();
+            //    entry.Title = entryEmelent.Element(title).Value;
+            //    entry.AccountLink = entryEmelent.Element(link).Value;
+            //    entry.LastUpdated = entryEmelent.Element(updated).Value;
+
+            //    //foreach (XElement propEle in entryEmelent.Elements(propertyElementName))
+            //    //{
+            //    //    if (propEle.Attribute(name).Value == profileID)
+            //    //    {
+            //    //        entry.ProfileId = "ga:" + propEle.Attribute(value).Value;
+            //    //    }
+            //    //    if (propEle.Attribute(name).Value == webPropertyId)
+            //    //    {
+            //    //        entry.WebPropertyId = propEle.Attribute(value).Value;
+            //    //    }
+            //    //    if (propEle.Attribute(name).Value == accountId)
+            //    //    {
+            //    //        entry.AccountId = propEle.Attribute(value).Value;
+            //    //    }
+            //    //    if (propEle.Attribute(name).Value == accountName)
+            //    //    {
+            //    //        entry.AccountName = propEle.Attribute(value).Value;
+            //    //    }
+            //    //}
+            //    entrys.Add(entry);
+            //}
             return entrys.OrderBy(p => p.Title).ToList<Entry>();
         }
 

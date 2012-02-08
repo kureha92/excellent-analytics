@@ -280,6 +280,8 @@ namespace GA_Excel2007
 
 		private string[] GetQueryExcelParamValueFromActiveCell(string name)
 		{
+            if (ActiveCell.Value2 == null)
+                return new string[2];
 			string activeValue = ActiveCell.Value2.ToString();
 			if (activeValue.Contains(queryInfoIdentifier))
 			{
