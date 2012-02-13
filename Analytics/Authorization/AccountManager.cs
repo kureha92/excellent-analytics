@@ -116,6 +116,11 @@ namespace Analytics.Authorization
 
             IEnumerable<XElement> segmentElements = xDoc.Root.Elements(entryElementName);
 
+            UserSegment noSegment = new UserSegment();
+            noSegment.SegmentName = "Default (use if uncertain)";
+            noSegment.SegmentId = "";
+            segments.Add(noSegment);
+
             foreach (XElement temp in segmentElements)
             {
                 XElement segmentElement = temp.Element(segmentElementName);
