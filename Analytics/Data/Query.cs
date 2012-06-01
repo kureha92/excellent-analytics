@@ -452,7 +452,8 @@ namespace Analytics.Data
             queryBuilder.Append(Ids.Count > 0 ? Ids.ToString(profileCounter) : string.Empty);
             queryBuilder.Append(Dimensions.Count > 0 ? "&dimensions=" + string.Join(",", Dimensions.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Metrics.Count > 0 ? "&metrics=" + string.Join(",", Metrics.Values.ToArray()) : string.Empty);
-            queryBuilder.Append(Segments.Count > 0 ? "&segment=" + string.Join(",", Segments.Values.ToArray()) : string.Empty);
+            if (Segments.Count > 0 && !Segments.Any(s => s.Value==""))
+                queryBuilder.Append(Segments.Count > 0 ? "&segment=" + string.Join(",", Segments.Values.ToArray()) : string.Empty);
             queryBuilder.Append(Filter.ToString());
             queryBuilder.Append(Sort.ToString());
             if (_selectDates.Equals(false))
@@ -642,7 +643,8 @@ namespace Analytics.Data
             XDocument xDocument = GetSizeCollectionAsXML(feedObjectType);
             foreach (XElement element in xDocument.Root.Elements("Category"))
                 foreach (XElement subElement in element.Elements(feedObjectType == SizeKeyType.Dimension ? "Dimension" : "Metric"))
-                    sizes.Add(subElement.Attribute("name").Value, subElement.Attribute("value").Value);
+                    if (!sizes.ContainsKey(subElement.Attribute("name").Value))
+                        sizes.Add(subElement.Attribute("name").Value, subElement.Attribute("value").Value);
             return sizes;
         }
 

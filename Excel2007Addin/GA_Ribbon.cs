@@ -135,10 +135,10 @@ namespace GA_Excel2007
 
 		private void buttonUpdate_Click(object sender, RibbonControlEventArgs e)
 		{
-			Query query = new Query(GetQueryExcelParamValueFromActiveCell("queryString"));
-			query.TimePeriod = (Analytics.Data.Enums.TimePeriod)Enum.Parse(typeof(Analytics.Data.Enums.TimePeriod),
-																			GetQueryExcelParamValueFromActiveCell("timePeriod")[1]);
-			LaunchQueryBuilder(query);
+            Query query = new Query(GetQueryExcelParamValueFromActiveCell("queryString"));
+            query.TimePeriod = (Analytics.Data.Enums.TimePeriod)Enum.Parse(typeof(Analytics.Data.Enums.TimePeriod),
+                                                                            GetQueryExcelParamValueFromActiveCell("timePeriod")[1]);
+            LaunchQueryBuilder(query);
 		}
 
 		#endregion

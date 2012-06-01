@@ -88,7 +88,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <Canvas x:Name="MainCanvas" Height="595" Width="773" VerticalAlignment="Stretch" >
             <Expander Canvas.Left="4" Canvas.Top="259" Panel.ZIndex="1" Cursor="Hand" Collapsed="DimensionsExpander_Collapsed" x:Name="DimensionsExpander" ExpandDirection="Down" Padding="0" IsExpanded="False" Expanded="DimensionsExpander_Expanded" DataContext="{Binding}">
-                <Custom:CustomTreeView Background="LightGray" Cursor="Arrow" MouseMove="DimensionsExpander_MouseMove" Panel.ZIndex="1" Margin="0,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView" Height="261" Width="329" MaxHeight="261" />
+                <Custom:CustomTreeView Background="LightGray" Cursor="Arrow"  MouseMove="DimensionsExpander_MouseMove" Panel.ZIndex="1" Margin="0,5,0,0" ItemsDataType="Dimension" x:Name="DimensionsView" Height="261" Width="329" MaxHeight="261" />
             <Expander.Header>
                 <Button Width="80" HorizontalContentAlignment="Center" Click="Expand" Content="Dimension" />
             </Expander.Header>

@@ -47,6 +47,9 @@ namespace UI
         private string ascending = "Ascending";
         bool inValidParameters = false;
 
+        private bool metricsMayHaveChanged = false;
+        private bool dimensionsMayHaveChanged = false;
+
         SizeKeyType activeSize; 
         #endregion
 
@@ -108,6 +111,8 @@ namespace UI
             SetTimePeriod(query);
             if (query.Ids.Count > 0)
                 PreselectProfile(userAccount, query.Ids.First());
+
+
         }
 
         #region Events
@@ -197,48 +202,45 @@ namespace UI
             DimensionsView.Visibility = Visibility.Visible;
             DimensionsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
             DimensionsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight);
-
             SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
+            dimensionsMayHaveChanged = true;
         }
-
         private void DimensionsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-        //    if (validationActivate.IsChecked == true)
-        //        inValidParameters = ValidationHandler();
-        //    _query.Dimensions.Clear();
+            //    if (validationActivate.IsChecked == true)
+            //        inValidParameters = ValidationHandler();
+            //    _query.Dimensions.Clear();
             _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
             BindSizeList(ListType.Dim);
-        //    DataBindSortByDropDown();
-        //    BindSortListBox();
-        //    BindSizeList(ListType.Sort);
+            //    DataBindSortByDropDown();
+            //    BindSortListBox();
+            //    BindSizeList(ListType.Sort);
 
-        //    // Verifies that erased parameters are not used in a filter.
-        //    filterCheck();
-        //    textBoxExpression.Clear();
-        //    BindFilterListBox();
+            //    // Verifies that erased parameters are not used in a filter.
+            //    filterCheck();
+            //    textBoxExpression.Clear();
+            //    BindFilterListBox();
 
-        //    if (inValidParameters)
-        //    {
-        //        DimensionsExpander.IsExpanded = true;
-        //    }
-        //    else
-        //    {
-        //        // The maximum number of dimensions is seven.
-        //        if (!NumberOfDimensions())
-        //        {
-        //            MainNotify.Visibility = Visibility.Collapsed;
-        //            MainNotify.ErrorMessage = string.Empty;
-        //        }
-        //        else
-        //        {
-        //            DimensionsExpander.IsExpanded = true;
-        //            ValidateForm();
+            //    if (inValidParameters)
+            //    {
+            //        DimensionsExpander.IsExpanded = true;
+            //    }
+            //    else
+            //    {
+            //        // The maximum number of dimensions is seven.
+            //        if (!NumberOfDimensions())
+            //        {
+            //            MainNotify.Visibility = Visibility.Collapsed;
+            //            MainNotify.ErrorMessage = string.Empty;
+            //        }
+            //        else
+            //        {
+            //            DimensionsExpander.IsExpanded = true;
+            //            ValidateForm();
 
-        //        }                
-        //    }
+            //        }                
+            //    }
         }
-
-
         private void MetricsExpander_Expanded(object sender, RoutedEventArgs e)
         {
             DimensionsExpander.IsExpanded = false;
@@ -249,11 +251,8 @@ namespace UI
             MetricsView.BeginAnimation(TreeView.WidthProperty, AnimatePropertyWidth);
             MetricsView.BeginAnimation(TreeView.HeightProperty, AnimatePropertyHeight);
             SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
+            metricsMayHaveChanged = true;
         }
-
-
-
-
         private void MetricsExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
@@ -288,13 +287,10 @@ namespace UI
             //    ValidateForm();
             //}
         }
-         
-        
         private void CancelBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.Close();
         }
-
         private void FilterExpander_Expanded(object sender, RoutedEventArgs e)
         {
             MetricsExpander.IsExpanded = false;
@@ -313,12 +309,10 @@ namespace UI
             comboBoxDimensions.SetBinding(ComboBox.ItemsSourceProperty, dimBinding);
             comboBoxMetrics.SetBinding(ComboBox.ItemsSourceProperty, metBinding);
         }
-
         private void FilterExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             BindSizeList(ListType.Fil);
         }
-
         private void comboBoxSegments_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (comboBoxSegments.SelectedItem == null)
@@ -334,44 +328,37 @@ namespace UI
             this._query.Segments.Clear();
             this._query.Segments.Add((comboBoxSegments.SelectedItem as UserSegment).SegmentName, (comboBoxSegments.SelectedItem as UserSegment).SegmentId);          
         }
-
         private void cancelFilterButton_Click(object sender, RoutedEventArgs e)
         {
             FilterExpander.IsExpanded = false;
         }
-
         private void comboBoxMetrics_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             activeSize = SizeKeyType.Metric;
             BindOperatorList(SizeKeyType.Metric);
         }
-
         private void comboBoxMetrics_DropDownOpened(object sender, EventArgs e)
         {
             comboBoxDimensions.SelectedIndex = -1;
             activeSize = SizeKeyType.Metric;
             BindOperatorList(SizeKeyType.Metric);
         }
-
         private void comboBoxDimensions_DropDownOpened(object sender, EventArgs e)
         {
             comboBoxMetrics.SelectedIndex = -1;
             activeSize = SizeKeyType.Dimension;
             BindOperatorList(SizeKeyType.Dimension);
         }
-
         private void comboBoxDimensions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             activeSize = SizeKeyType.Dimension;
             BindOperatorList(SizeKeyType.Dimension);
         }
-
         private void addFilter_Click(object sender, RoutedEventArgs e)
         {
             if (comboBoxOperator.SelectedIndex != -1 && !String.IsNullOrEmpty(textBoxExpression.Text))
                 AddFilter(activeSize);
         }
-
         private void removeFilter_Click(object sender, RoutedEventArgs e)
         {
             if (filterBox.SelectedIndex != -1)
@@ -380,7 +367,6 @@ namespace UI
                 BindFilterListBox();
             }
         }
-
         private void ExecuteButton_Click(object sender, RoutedEventArgs e)
         {
             if (ValidateForm())
@@ -403,9 +389,6 @@ namespace UI
                 queryComplete(_query);
             }
         }
-
-
-
         private void SortDropDown_MouseEnter(object sender, RoutedEventArgs e)
         {
             /*
@@ -417,7 +400,6 @@ namespace UI
             */
             DataBindSortByDropDown();
         }
-
         private void ExecuteButton_MouseEnter(object sender, MouseEventArgs e)
         {
             SortDropDown_MouseEnter(sender, e);
@@ -433,20 +415,17 @@ namespace UI
                 MainNotify.Visibility = Visibility.Collapsed;
                 MainNotify.ErrorMessage = string.Empty;
             }
-         }
-
+        }
         private void ExecuteButton_MouseLeave(object sender, MouseEventArgs e)
         {
             ExecuteButton.IsEnabled = true;
             MainNotify.Visibility = Visibility.Collapsed;
             MainNotify.ErrorMessage = string.Empty;
         }
-
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
         private void logOPBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (filterBox.Items.Count > 0)
@@ -460,7 +439,6 @@ namespace UI
                 }
             }
         }
-
         private void TimeSpanTab_MouseEnter(object sender, MouseEventArgs e)
         {
             if (startDateCalendar.SelectedDate.Value.Date != DateTime.Today || endDateCalendar.SelectedDate.Value.Date != DateTime.Today)
@@ -474,7 +452,6 @@ namespace UI
 
             }        
         }
-
         private void Window_MouseEnter(object sender, MouseEventArgs e)
         {
             //if (_query.Metrics.Count > 0)
@@ -486,22 +463,16 @@ namespace UI
             //    //SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
             //}
         }
-
-
-
-
         void DimensionsView_treeDatabound()
         {
             SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
         }
-
         private void validate_int(object sender, TextChangedEventArgs e)
         {
             int i;
             if (!int.TryParse((sender as TextBox).Text, out i))
                 (sender as TextBox).Text = string.Empty;
         }
-
         private void listOrder_Click(object sender, RoutedEventArgs e)
         {
             if (listOrder.Content.Equals(ascending))
@@ -513,26 +484,21 @@ namespace UI
                 listOrder.Content = ascending;
             }
         }
-
         private void About_Click(object sender, RoutedEventArgs e)
         {
             About about = new About();
             about.Show();
 
         }
-
         private void ContentPresenter_MouseEnter(object sender, MouseEventArgs e)
         {
             ((ContentPresenter)sender).ToolTip = ((ContentPresenter)sender).Content.ToString();
         }
-
         private void addSort_Click(object sender, RoutedEventArgs e)
         {
             if (!String.IsNullOrEmpty(sortBycomboBox.Text))
                 AddSortByParam(activeSize);
         }
-
-
         private void removeSortBy_Click(object sender, RoutedEventArgs e)
         {
             if (sortingBox.SelectedIndex != -1)
@@ -541,7 +507,6 @@ namespace UI
                 BindSortListBox();
             }
         }
-
         private void comboBoxAccount_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (comboBoxAccount.SelectedItem != null)
@@ -551,7 +516,6 @@ namespace UI
                 DataBindSitesDropDown();
             }
         }
-
         private void comboBoxProfile_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (comboBoxProfile.SelectedItem != null)
@@ -561,7 +525,6 @@ namespace UI
                 DataBindSitesDropDown();
             }
         }
-
         private void SortExpander_Expanded(object sender, RoutedEventArgs e)
         {
             MetricsExpander.IsExpanded = false;
@@ -573,12 +536,10 @@ namespace UI
             SortingCanvas.BeginAnimation(Canvas.HeightProperty, AnimatePropertyHeight);
             BindSortListBox();
         }
-
         private void SortExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             BindSizeList(ListType.Sort);
         }
-
         private void ProfileExpander_Expanded(object sender, RoutedEventArgs e)
         {
             MetricsExpander.IsExpanded = false;
@@ -590,12 +551,10 @@ namespace UI
             ProfileCanvas.BeginAnimation(Canvas.HeightProperty, AnimatePropertyHeight);
             BindProfileListBox();
         }
-
         private void ProfileExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             BindSizeList(ListType.Profile);
         }
-
         private void validationActivate_Unchecked(object sender, RoutedEventArgs e)
         {
             SizeViewModel dimCategories = DimensionsView.tree.Items[0] as SizeViewModel;
@@ -603,7 +562,6 @@ namespace UI
             EnableAllMetrics(metCategories);
             EnableAllDimenions(dimCategories);
         }
-
         private void DimensionsExpander_MouseMove(object sender, MouseEventArgs e)
         {
             //_query.Dimensions.Clear();
@@ -619,7 +577,6 @@ namespace UI
             //    //SetCheckedItems(_query.Dimensions, DimensionsView.tree.Items[0] as SizeViewModel);
             //}
         }
-
         private void MetricsExpander_MouseMove(object sender, MouseEventArgs e)
         {
             //_query.Metrics.Clear();
@@ -635,7 +592,6 @@ namespace UI
             //    SetCheckedItems(_query.Metrics, MetricsView.tree.Items[0] as SizeViewModel);
             //}
         }
-
         #endregion
 
         #region Methods
@@ -1089,6 +1045,10 @@ namespace UI
                 _query.Ids = multipleProfile;
             }
 
+            if (dimensionsMayHaveChanged)
+                _query.Dimensions = GetCheckedItems(DimensionsView.tree.Items[0] as SizeViewModel);
+            if (metricsMayHaveChanged)
+                _query.Metrics = GetCheckedItems(MetricsView.tree.Items[0] as SizeViewModel);
             // If the user have not entered a interval of hits to view, then set them static here before calling GA.
 //            if (startIndexTextBox.Text.Equals(""))
 //                startIndexTextBox.Text = "0";
@@ -1395,7 +1355,6 @@ namespace UI
             }
                 
         }
-
         private void DimensionsSortDown_Click(object sender, RoutedEventArgs e)
         {
             KeyValuePair<string, string> item = (KeyValuePair<string, string>)dimensionsSelected.SelectedItem;
