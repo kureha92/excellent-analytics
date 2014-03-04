@@ -48,4 +48,4 @@ using Microsoft.Office.Tools.Excel;
 // 
 //[assembly: ExcelLocale1033(true)]
 
-[assembly: SecurityTransparent()]
+//[assembly: SecurityTransparent()]

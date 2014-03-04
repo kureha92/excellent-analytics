@@ -1,4 +1,4 @@
-﻿
+﻿extern alias WPF;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -120,7 +120,8 @@ namespace UI
 		{
 			if (e.Key == Key.Enter)
 			{
-				System.Windows.VisualStateManager.GoToState(buttonLogin, "Pressed", true);
+                WPF.System.Windows.VisualStateManager.GoToState(buttonLogin, "Pressed", true);
+                //System.Windows.VisualStateManager.GoToState(buttonLogin, "Pressed", true);
 				Authenticate();
 			}
 		}

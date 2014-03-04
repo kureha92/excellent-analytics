@@ -16,7 +16,7 @@ using Analytics;
 
 namespace GA_Excel2007
 {
-	public partial class GA_Ribbon : OfficeRibbon
+	public partial class GA_Ribbon : RibbonBase
 	{
 		#region fields
 		private const string queryInfoIdentifier = "queryInfo[";
@@ -67,10 +67,21 @@ namespace GA_Excel2007
 			}
 		}
 
-		public GA_Ribbon()
+
+        /*
+        public GA_Ribbon()
 		{
 			InitializeComponent();
 			this.Load += new EventHandler<RibbonUIEventArgs>(GA_Ribbon_Load);
+			//buttonUpdateWorkSheet.Enabled = true;
+		}
+         */
+        public GA_Ribbon()
+            : base(Globals.Factory.GetRibbonFactory())
+		{
+			InitializeComponent();
+			//this.Load += new EventHandler<RibbonUIEventArgs>(GA_Ribbon_Load);
+            this.Load += new RibbonUIEventHandler(GA_Ribbon_Load);
 			//buttonUpdateWorkSheet.Enabled = true;
 		}
 
@@ -382,23 +393,23 @@ namespace GA_Excel2007
 
 				object[] queryInformation = GetQueryInformation(query, report, profileCounter);
 
-				int infoRows = queryInformation.GetLength(0);
-
+                int infoRows = queryInformation.GetLength(0);
+               
 				if (report.Data != null)
-				{
+                {
 					dataLength = report.Data.GetLength(1);
-					Range dataRange = currentApp.get_Range(activeSheet.Cells[activeRow + infoRows + 1, activeColumn],
-					activeSheet.Cells[activeRow + infoRows + report.Data.GetLength(0), activeColumn + report.Data.GetLength(1) - 1]);
+                    Range dataRange = currentApp.get_Range((object)activeSheet.Cells[activeRow + infoRows + 1, activeColumn],
+                    (object) activeSheet.Cells[activeRow + infoRows + report.Data.GetLength(0), activeColumn + report.Data.GetLength(1) - 1]);
 					dataRange.Value2 = report.Data;
 
-					Range headerRange = currentApp.get_Range(activeSheet.Cells[activeRow + infoRows, activeColumn],
-					activeSheet.Cells[activeRow + infoRows, activeColumn + report.Headers.GetLength(1) - 1]);
+					Range headerRange = currentApp.get_Range((object)activeSheet.Cells[activeRow + infoRows, activeColumn],
+					(object)activeSheet.Cells[activeRow + infoRows, activeColumn + report.Headers.GetLength(1) - 1]);
 					headerRange.Value2 = report.Headers;
 					headerRange.Font.Bold = true;
 				}
 
-				Range queryInformationRange = currentApp.get_Range(activeSheet.Cells[activeRow, activeColumn],
-				activeSheet.Cells[activeRow, activeColumn + dataLength - 1]);
+				Range queryInformationRange = currentApp.get_Range((object)activeSheet.Cells[activeRow, activeColumn],
+				(object)activeSheet.Cells[activeRow, activeColumn + dataLength - 1]);
 				queryInformationRange.Font.Italic = true;
 				queryInformationRange.MergeCells = true;
 				queryInformationRange.Borders.Weight = XlBorderWeight.xlThin;

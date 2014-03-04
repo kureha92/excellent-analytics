@@ -1,4 +1,5 @@
-﻿
+﻿extern alias WPF;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ using Analytics.Data.Enums;
 using WPFUIv2;
 using Analytics.Data.General;
 using Analytics;
+
+
 
 
 namespace UI
@@ -187,7 +190,8 @@ namespace UI
             Button callButton = sender as Button;
             Expander targetExpander = callButton.Parent as Expander;
             bool isExpanded = targetExpander.IsExpanded;
-            System.Windows.VisualStateManager.GoToState(callButton, isExpanded ? "Normal"  : "Pressed", true);
+            WPF.System.Windows.VisualStateManager.GoToState(callButton, isExpanded ? "Normal" : "Pressed", true);
+            //System.Windows.VisualStateManager.GoToState(callButton, isExpanded ? "Normal"  : "Pressed", true);
             targetExpander.IsExpanded = !isExpanded;
             if (!isExpanded)
                 DataBindSortByDropDown();

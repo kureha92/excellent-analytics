@@ -28,20 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GA_Ribbon));
-            this.tab1 = new Microsoft.Office.Tools.Ribbon.RibbonTab();
-            this.GoogleAnalytics = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.buttonAccount = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator1 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.buttonQuery = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.buttonUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator2 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.SettingsButton = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator3 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.AboutButton = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.tab1 = this.Factory.CreateRibbonTab();
+            this.GoogleAnalytics = this.Factory.CreateRibbonGroup();
+            this.buttonAccount = this.Factory.CreateRibbonButton();
+            this.separator1 = this.Factory.CreateRibbonSeparator();
+            this.buttonQuery = this.Factory.CreateRibbonButton();
+            this.buttonUpdate = this.Factory.CreateRibbonButton();
+            this.separator2 = this.Factory.CreateRibbonSeparator();
+            this.SettingsButton = this.Factory.CreateRibbonButton();
+            this.separator3 = this.Factory.CreateRibbonSeparator();
+            this.AboutButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.GoogleAnalytics.SuspendLayout();
-            this.SuspendLayout();
             // 
             // tab1
             // 
@@ -65,11 +63,10 @@
             // buttonAccount
             // 
             this.buttonAccount.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.buttonAccount.Image = ((System.Drawing.Image)(resources.GetObject("buttonAccount.Image")));
             this.buttonAccount.Label = "Account";
             this.buttonAccount.Name = "buttonAccount";
             this.buttonAccount.ShowImage = true;
-            this.buttonAccount.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.buttonAccount_Click);
+            this.buttonAccount.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonAccount_Click);
             // 
             // separator1
             // 
@@ -78,21 +75,19 @@
             // buttonQuery
             // 
             this.buttonQuery.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.buttonQuery.Image = ((System.Drawing.Image)(resources.GetObject("buttonQuery.Image")));
             this.buttonQuery.Label = "New Query";
             this.buttonQuery.Name = "buttonQuery";
             this.buttonQuery.ShowImage = true;
-            this.buttonQuery.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.buttonQuery_Click);
+            this.buttonQuery.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonQuery_Click);
             // 
             // buttonUpdate
             // 
             this.buttonUpdate.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.buttonUpdate.Enabled = false;
-            this.buttonUpdate.Image = ((System.Drawing.Image)(resources.GetObject("buttonUpdate.Image")));
             this.buttonUpdate.Label = "Update  Query";
             this.buttonUpdate.Name = "buttonUpdate";
             this.buttonUpdate.ShowImage = true;
-            this.buttonUpdate.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.buttonUpdate_Click);
+            this.buttonUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.buttonUpdate_Click);
             // 
             // separator2
             // 
@@ -105,7 +100,7 @@
             this.SettingsButton.Label = "Settings";
             this.SettingsButton.Name = "SettingsButton";
             this.SettingsButton.ShowImage = true;
-            this.SettingsButton.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.SettingsButton_Click);
+            this.SettingsButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.SettingsButton_Click);
             // 
             // separator3
             // 
@@ -114,23 +109,21 @@
             // AboutButton
             // 
             this.AboutButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.AboutButton.Image = ((System.Drawing.Image)(resources.GetObject("AboutButton.Image")));
             this.AboutButton.Label = "About";
             this.AboutButton.Name = "AboutButton";
             this.AboutButton.ShowImage = true;
-            this.AboutButton.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.AboutButton_Click);
+            this.AboutButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.AboutButton_Click);
             // 
             // GA_Ribbon
             // 
             this.Name = "GA_Ribbon";
             this.RibbonType = "Microsoft.Excel.Workbook";
             this.Tabs.Add(this.tab1);
-            this.Load += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonUIEventArgs>(this.GA_Ribbon_Load);
+            this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.GA_Ribbon_Load);
             this.tab1.ResumeLayout(false);
             this.tab1.PerformLayout();
             this.GoogleAnalytics.ResumeLayout(false);
             this.GoogleAnalytics.PerformLayout();
-            this.ResumeLayout(false);
 
         }
 
