@@ -1,4 +1,4 @@
-excellent-analytics
+Excellent Analytics
 ======================
 
 Excellent Analytics is an addin for Microsoft Excel that makes it possible to fetch data from Google Analytics to a spreadsheet.
