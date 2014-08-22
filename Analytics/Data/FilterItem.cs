@@ -75,10 +75,15 @@ namespace Analytics.Data
         }
 
         public override string ToString()
-        {
-            string ret = (LOperator == LogicalOperator.And ? ";" : LOperator == LogicalOperator.Or ? "," : string.Empty)
-            + Value + Operator.URIEncoded + Expression.Trim().Replace(@"\", @"\\").Replace(",", @"\,");
-            return ret; /* ) */
+        {          
+            string str = ((this.LOperator == LogicalOperator.And) ? ";" : ((this.LOperator == LogicalOperator.Or) ? "," : string.Empty)) + this.Value + this.Operator.URIEncoded;
+            string text = this.Expression.Trim();
+            if (Settings.Instance.AutoEscapeFilter)
+            {
+                text = text.Replace("\\", "\\\\").Replace(",", "\\,").Replace(";", "\\;");
+            }
+            return str + text;
+
         }
 
         public string encode(string str)

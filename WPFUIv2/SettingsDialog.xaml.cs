@@ -25,6 +25,7 @@ namespace WPFUIv2
         {
             InitializeComponent();
 
+            AutoEscapeFilters.Checked += new RoutedEventHandler(ChangesMade);
             UseProxyCheckBox.Checked += new RoutedEventHandler(ChangesMade);
             UseProxyCheckBox.Unchecked += new RoutedEventHandler(ChangesMade);
             UsernameBox.TextChanged += new TextChangedEventHandler(ChangesMade);
@@ -147,6 +148,18 @@ namespace WPFUIv2
             get { uint timeout; return uint.TryParse(RequestTimeoutBox.Text, out timeout) ? timeout : 0; }
             set { RequestTimeoutBox.Text = value.ToString(); }
         }
+        public bool AutoEscapeFilter
+        {
+            get
+            {
+                return this.AutoEscapeFilters.IsChecked.GetValueOrDefault(false);
+            }
+            set
+            {
+                this.AutoEscapeFilters.IsChecked = new bool?(value);
+            }
+        }
+
         public CellFormattingEnum CellFormatting { 
             get { return ((CellFormatting)CellFormattingBox.SelectedValue).Value; }
             set {

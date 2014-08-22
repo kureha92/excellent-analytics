@@ -34,8 +34,8 @@ using Microsoft.Office.Tools.Excel;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.11")]
-[assembly: AssemblyFileVersion("1.1.11")]
+[assembly: AssemblyVersion("1.1.12")]
+[assembly: AssemblyFileVersion("1.1.12")]
 
 // 
 // The ExcelLocale1033 attribute controls the locale that is passed to the Excel
@@ -48,4 +48,4 @@ using Microsoft.Office.Tools.Excel;
 // 
 //[assembly: ExcelLocale1033(true)]
 
-//[assembly: SecurityTransparent()]
+[assembly: SecurityTransparent()]

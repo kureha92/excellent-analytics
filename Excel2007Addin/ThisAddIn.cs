@@ -26,7 +26,7 @@ namespace GA_Excel2007
                 settings.FirstStartup = false;
                 settings.Save();
             }
-            
+            Analytics.Settings.Instance.AutoEscapeFilter = settings.AutoEscapeFilter;
             Analytics.Settings.Instance.UseProxy = settings.UseProxy;
             Analytics.Settings.Instance.ProxyAddress = settings.ProxyAddress;
             Analytics.Settings.Instance.ProxyPassword = settings.ProxyPassword;

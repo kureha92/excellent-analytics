@@ -386,15 +386,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Excellent Analytics"
-        "ProductCode" = "8:{C6797B93-F18D-4927-A24A-767723FAC791}"
-        "PackageCode" = "8:{399065B0-14F3-490C-81CA-FF1DCC3F2667}"
+        "ProductCode" = "8:{0EC655F3-1AA7-47CD-B79A-56DB92061CCF}"
+        "PackageCode" = "8:{E517E75E-5865-448E-AAB6-628658ECCBEE}"
         "UpgradeCode" = "8:{FD44488D-4C4F-4723-B1C6-F2F06F903FC0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1.11"
+        "ProductVersion" = "8:1.1.12"
         "Manufacturer" = "8:Ampliofy"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -982,7 +982,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9A1DCD938A574877BAE8F544ED299CA5"
             {
-            "SourcePath" = "8:..\\Excel2007Addin\\obj\\Debug\\ExcellentAnalytics.dll"
+            "SourcePath" = "8:..\\Excel2007Addin\\obj\\Release\\ExcellentAnalytics.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_247747335EFC47DCB96355FEDDB24F73"
