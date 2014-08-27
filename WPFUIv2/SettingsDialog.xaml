@@ -6,6 +6,12 @@
         <Button Content="Save" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="SaveButton" VerticalAlignment="Bottom" Width="75" IsDefault="True" Click="SaveButton_Click" />
         <Button Content="Cancel" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="CancelBUtton" VerticalAlignment="Bottom" Width="75" IsCancel="True" />
         <TabControl Name="tabControl1" VerticalAlignment="Top" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" HorizontalAlignment="Stretch" Height="221">
+            <TabItem Header="General" Name="GeneralTab">
+                <Grid>
+                    <Label Content="Auto escape filters" Height="28" Margin="5,6,196,0" Name="AutoEscapeFilterlabel" VerticalAlignment="Top" />
+                    <CheckBox Height="23" HorizontalAlignment="Left" Margin="121,13,0,0" Name="AutoEscapeFilters" VerticalAlignment="Top" FlowDirection="RightToLeft" />
+                </Grid>
+            </TabItem>
             <TabItem Header="Proxy" Name="ProxyTab">
                 <Grid>
                     <CheckBox Height="23" HorizontalAlignment="Left" Margin="81,11,0,0" Name="UseProxyCheckBox" VerticalAlignment="Top" FlowDirection="RightToLeft" />

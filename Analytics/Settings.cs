@@ -14,7 +14,7 @@ namespace Analytics
         {
             get { return _instance == null ? (_instance = new Settings()) : _instance; }
         }
-
+        public bool AutoEscapeFilter = true;
         public uint RequestTimeout = 10000;
         public string ProxyAddress = string.Empty;
         public uint ProxyPort;
